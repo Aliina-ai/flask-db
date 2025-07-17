@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>База PostgreSQL</title></head>
+<body>
+    <h1>Додати запис</h1>
+    <form method="post">
+        <input type="text" name="content" required>
+        <button type="submit">Зберегти</button>
+    </form>
+    <h2>Записи</h2>
+    <ul>
+        {% for entry in entries %}
+            <li>{{ entry[1] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
