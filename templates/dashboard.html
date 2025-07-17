@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Кабінет користувача</title>
     <style>
         body {
@@ -16,13 +16,17 @@
             color: white;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         .content {
             padding: 40px;
+            display: flex;
+            gap: 40px;
         }
         h1 {
             color: #003366;
             font-size: 28px;
+            margin-top: 0;
         }
         .role-box {
             margin-top: 20px;
@@ -31,6 +35,7 @@
             padding: 16px;
             border-radius: 4px;
             font-size: 16px;
+            max-width: 400px;
         }
         .logout {
             color: white;
@@ -40,6 +45,42 @@
         .logout:hover {
             text-decoration: underline;
         }
+        .menu {
+            background-color: #f8fbff;
+            border: 1px solid #00509e;
+            border-radius: 6px;
+            padding: 20px 24px;
+            max-width: 220px;
+            font-size: 16px;
+            color: #003366;
+            height: fit-content;
+        }
+        .menu h2 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 22px;
+        }
+        .menu a {
+            display: block;
+            color: #00509e;
+            text-decoration: none;
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+        .menu a:hover {
+            color: #003366;
+            text-decoration: underline;
+        }
+        /* Для більшої гнучкості — можна додати адаптивність */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .menu, .role-box {
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -48,15 +89,25 @@
         <div><a class="logout" href="{{ url_for('logout') }}">Вийти</a></div>
     </div>
     <div class="content">
-        <h1>Особистий кабінет</h1>
-        <div class="role-box">
-            Ваша роль: <strong>{{ role | capitalize }}</strong><br>
-            {% if role == 'admin' %}
-                🔐 Ви маєте повний доступ до системи.
-            {% elif role == 'operator' %}
-                🛠️ Ви можете працювати з підписниками та замовленнями.
-            {% endif %}
+        <div class="menu">
+            <h2>📋 Анкета</h2>
+            <a href="/big_list">Великі округи</a>
+            <a href="/small_list">Малі округи</a>
+            <a href="/elders_list">Старші</a>
+            <a href="/subscribers">Підписники</a>
+        </div>
+        <div>
+            <h1>Особистий кабінет</h1>
+            <div class="role-box">
+                Ваша роль: <strong>{{ role | capitalize }}</strong><br />
+                {% if role == 'admin' %}
+                    🔐 Ви маєте повний доступ до системи.
+                {% elif role == 'operator' %}
+                    🛠️ Ви можете працювати з підписниками та замовленнями.
+                {% endif %}
+            </div>
         </div>
     </div>
 </body>
 </html>
+
