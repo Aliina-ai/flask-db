@@ -9,7 +9,7 @@ def get_conn():
     return psycopg2.connect(DATABASE_URL, sslmode='require')
 
 def init_db():
-    conn = sqlite3.connect(DB_NAME)
+    conn = psycopg2.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS responses (
