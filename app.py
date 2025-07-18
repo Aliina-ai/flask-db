@@ -174,12 +174,6 @@ def subscribers_by_district(district):
 
     return render_template('subscribers_list.html', district=district, subscribers=filtered_subscribers)
 
-@app.route('/district1_list')
-def district1_list():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    return render_template('district1_list.html', district1_data=district1_data)
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # ← отримує порт від Render
