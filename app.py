@@ -21,6 +21,9 @@ def save_big_data(data):
     with open(BIG_DATA_FILE, 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=2)
 
+with open("data_big.json", "w", encoding="utf-8") as f:
+    json.dump(big_data, f, ensure_ascii=False, indent=4)
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
