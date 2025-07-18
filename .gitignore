@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders
+env/
+venv/
+.venv/
+
+# Flask instance folder
+instance/
+
+# SQLite database (на локальній машині)
+*.sqlite3
+*.db
+*.sqlite
+
+# Файли бази на persistent disk (Render)
+data/
+data/*
+/data/
+!/data/.keep  # Якщо хочеш створити порожню папку
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# VSCode settings (опціонально)
+.vscode/
+
+# Python test cache
+.pytest_cache/
+.tox/
+
+# GitHub-specific
+*.swp
+*.swo
