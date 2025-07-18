@@ -2,21 +2,20 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Малі округи — Список анкет</title>
+    <title>Список малих округів</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #eef3f8;
-            color: #333;
+            background-color: #f0f4f8;
             margin: 20px;
         }
-        h1 {
-            color: #1a3c5a;
+        h2 {
+            color: #003366;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: #fff;
+            background-color: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         th, td {
@@ -25,33 +24,34 @@
             text-align: center;
         }
         th {
-            background-color: #1a3c5a;
+            background-color: #003366;
             color: white;
         }
         tr:nth-child(even) {
-            background-color: #f2f6fa;
+            background-color: #f9f9f9;
+        }
+        .button-group {
+            margin-top: 20px;
         }
         .btn {
-            display: inline-block;
-            padding: 8px 16px;
-            margin-bottom: 10px;
-            background-color: #1a3c5a;
+            background-color: #003366;
             color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
             text-decoration: none;
-            border-radius: 4px;
         }
         .btn:hover {
-            background-color: #0f2c43;
+            background-color: #005299;
         }
     </style>
 </head>
 <body>
-    <h1>📋 Список анкет — Малі округи</h1>
 
-    <a href="{{ url_for('add_small') }}" class="btn">➕ Додати анкету</a>
-    <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
+    <h2>📋 Список анкет малих округів</h2>
 
-    {% if small_data %}
     <table>
         <thead>
             <tr>
@@ -67,23 +67,32 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in small_data %}
-            <tr>
-                <td>{{ item.big_district }}</td>
-                <td>{{ item.district }}</td>
-                <td>{{ item.last_name }}</td>
-                <td>{{ item.first_name }}</td>
-                <td>{{ item.middle_name }}</td>
-                <td>{{ item.address }}</td>
-                <td>{{ item.phone }}</td>
-                <td>{{ item.birth_date }}</td>
-                <td>{{ item.location }}</td>
-            </tr>
-            {% endfor %}
+            {% if small_data %}
+                {% for entry in small_data %}
+                    <tr>
+                        <td>{{ entry.big_district }}</td>
+                        <td>{{ entry.district }}</td>
+                        <td>{{ entry.last_name }}</td>
+                        <td>{{ entry.first_name }}</td>
+                        <td>{{ entry.middle_name }}</td>
+                        <td>{{ entry.address }}</td>
+                        <td>{{ entry.phone }}</td>
+                        <td>{{ entry.birth_date }}</td>
+                        <td>{{ entry.location }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="9">Записів поки немає</td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
-    {% else %}
-    <p>Немає збережених анкет.</p>
-    {% endif %}
+
+    <div class="button-group">
+        <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
+        <a href="{{ url_for('add_small') }}" class="btn">➕ Додати запис</a>
+    </div>
+
 </body>
 </html>
