@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <title>Додати Старшого</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef3f7;
+            padding: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #003366;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #005299;
+        }
+        .btn-back {
+            background-color: #777;
+            margin-left: 10px;
+        }
+    </style>
+
+    <script>
+        function updateBigDistrict() {
+            const district = parseInt(document.getElementById("district").value);
+            let bigDistrict = "";
+
+            if (district >= 1 && district <= 7) bigDistrict = "1";
+            else if (district >= 8 && district <= 14) bigDistrict = "2";
+            else if (district >= 15 && district <= 19) bigDistrict = "3";
+            else if (district >= 20 && district <= 28) bigDistrict = "4";
+            else if (district >= 29 && district <= 35) bigDistrict = "5";
+            else if (district >= 36 && district <= 42) bigDistrict = "6";
+            else bigDistrict = "—";
+
+            document.getElementById("big_district").value = bigDistrict;
+        }
+    </script>
+</head>
+<body>
+
+    <h2>➕ Додати Старшого</h2>
+
+    <form method="POST" action="{{ url_for('add_elder') }}">
+        <label for="district">Округ (1-42):</label>
+        <select name="district" id="district" onchange="updateBigDistrict()" required>
+            <option value="">-- Оберіть округ --</option>
+            {% for i in range(1, 43) %}
+                <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="big_district">Великий округ (автоматично):</label>
+        <input type="text" id="big_district" name="big_district" readonly required>
+
+        <label for="location">Локація:</label>
+        <select name="location" required>
+            <option value="">-- Оберіть локацію --</option>
+            {% for i in range(1, 21) %}
+                <option value="Л{{ i }}">Л{{ i }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="last_name">Прізвище:</label>
+        <input type="text" name="last_name" required>
+
+        <label for="first_name">Ім'я:</label>
+        <input type="text" name="first_name" required>
+
+        <label for="middle_name">По батькові:</label>
+        <input type="text" name="middle_name">
+
+        <label for="address">Адреса:</label>
+        <input type="text" name="address">
+
+        <label for="birth_date">Дата народження:</label>
+        <input type="date" name="birth_date">
+
+        <label for="subscribers_count">Кількість підписників:</label>
+        <input type="number" name="subscribers_count" min="0" required>
+
+        <label for="newspapers_count">Кількість газет:</label>
+        <input type="number" name="newspapers_count" min="0" required>
+
+        <button type="submit" class="btn">💾 Зберегти</button>
+        <a href="{{ url_for('elders_list') }}" class="btn btn-back">⬅️ Назад</a>
+    </form>
+
+</body>
+</html>
