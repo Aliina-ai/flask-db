@@ -1,9 +1,11 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template
 import sqlite3
 import os
 
 app = Flask(__name__)
-DB_PATH = os.getenv("DB_PATH", "data/db.sqlite")
+
+# Отримаємо шлях до бази з середовища, або за замовчуванням в /data
+DB_PATH = os.getenv("DB_PATH", "/data/db.sqlite")
 
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -29,4 +31,5 @@ def index():
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5000)
+
     
