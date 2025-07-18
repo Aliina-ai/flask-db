@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Підписники – Округ 1</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { background-color: #0077cc; color: white; }
+        a.button { display: inline-block; margin-top: 10px; padding: 8px 12px; background: #ccc; text-decoration: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h2>Підписники – Округ 1</h2>
+    
+    <a href="{{ url_for('subscribers_menu') }}" class="button">Назад до округів</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Округ</th>
+                <th>Виборча дільниця</th>
+                <th>Прізвище</th>
+                <th>Ім'я</th>
+                <th>По батькові</th>
+                <th>Дата народження</th>
+                <th>Вулиця</th>
+                <th>Будинок</th>
+                <th>Квартира</th>
+                <th>Номер телефону</th>
+                <th>Старший</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in subscribers_1 %}
+            <tr>
+                <td>{{ s['district'] }}</td>
+                <td>{{ s['polling_station'] }}</td>
+                <td>{{ s['last_name'] }}</td>
+                <td>{{ s['first_name'] }}</td>
+                <td>{{ s['middle_name'] }}</td>
+                <td>{{ s['dob'] }}</td>
+                <td>{{ s['street'] }}</td>
+                <td>{{ s['house'] }}</td>
+                <td>{{ s['apartment'] }}</td>
+                <td>{{ s['phone'] }}</td>
+                <td>{{ s['senior'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
