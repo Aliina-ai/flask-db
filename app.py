@@ -53,21 +53,18 @@ def add_big():
         phone = request.form.get('phone')
         pickup_points = request.form.get('pickup_points')  # рядок з локаціями
 
-        new_id = bigs[-1][0] + 1 if bigs else 1
+        big_data.append({
+            'district_number': district_number,
+            'last_name': last_name,
+            'first_name': first_name,
+            'middle_name': middle_name,
+            'phone': phone,
+            'pickup_points': pickup_points
+        })
 
-        bigs.append([
-            new_id,
-            district,
-            last_name,
-            first_name,
-            middle_name,
-            phone,
-            pickup_points
-        ])
+        return redirect(url_for('big_list'))  # після збереження — назад у таблицю
 
-        return redirect(url_for('big_list'))
-
-    return render_template('add_big.html')  # тут можна залишити той же шаблон або перейменувати в add_big.html
+    return render_template('add_big.html')
 
 
 if __name__ == '__main__':
