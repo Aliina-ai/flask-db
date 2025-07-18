@@ -40,7 +40,8 @@ def logout():
 def big_list():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('big_list.html')
+
+    return render_template('big_list.html', data=big_data)
 
 @app.route('/add_big', methods=['GET', 'POST'])
 def add_big():
