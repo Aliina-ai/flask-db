@@ -164,16 +164,6 @@ def subscribers():
         return redirect(url_for('login'))
     return render_template('subscribers.html')
 
-@app.route('/subscribers/<int:district>')
-def subscribers_by_district(district):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    # Фільтруємо підписників за округом
-    filtered_subscribers = [s for s in subscribers_data if int(s['district']) == district]
-
-    return render_template('subscribers_list.html', district=district, subscribers=filtered_subscribers)
-
 @app.route('/district1_list')
 def district1_list():
     if 'username' not in session:
