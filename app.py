@@ -8,6 +8,7 @@ app.secret_key = 'your-secret-key'  # 🔐 Заміни на свій
 big_data = []
 small_data = []
 elders_data = []
+subscribers_data = []
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -155,6 +156,22 @@ def add_elder():
         return redirect(url_for('elders_list'))
 
     return render_template('add_elder.html')
+
+@app.route('/subscribers')
+def subscribers():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('subscribers.html')
+
+@app.route('/subscribers/<int:district>')
+def subscribers_by_district(district):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # Фільтруємо підписників за округом
+    filtered_subscribers = [s for s in subscribers_data if int(s['district']) == district]
+
+    return render_template('subscribers_list.html', district=district, subscribers=filtered_subscribers)
 
 
 if __name__ == '__main__':
