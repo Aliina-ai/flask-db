@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Малі округи — Список анкет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef3f8;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            color: #1a3c5a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #1a3c5a;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f6fa;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-bottom: 10px;
+            background-color: #1a3c5a;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            background-color: #0f2c43;
+        }
+    </style>
+</head>
+<body>
+    <h1>📋 Список анкет — Малі округи</h1>
+
+    <a href="{{ url_for('add_small') }}" class="btn">➕ Додати анкету</a>
+    <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
+
+    {% if small_data %}
+    <table>
+        <thead>
+            <tr>
+                <th>Великий округ</th>
+                <th>Округ</th>
+                <th>Прізвище</th>
+                <th>Імʼя</th>
+                <th>По батькові</th>
+                <th>Адреса</th>
+                <th>Телефон</th>
+                <th>Дата народження</th>
+                <th>Локація</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in small_data %}
+            <tr>
+                <td>{{ item.big_district }}</td>
+                <td>{{ item.district }}</td>
+                <td>{{ item.last_name }}</td>
+                <td>{{ item.first_name }}</td>
+                <td>{{ item.middle_name }}</td>
+                <td>{{ item.address }}</td>
+                <td>{{ item.phone }}</td>
+                <td>{{ item.birth_date }}</td>
+                <td>{{ item.location }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Немає збережених анкет.</p>
+    {% endif %}
+</body>
+</html>
