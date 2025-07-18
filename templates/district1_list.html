@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <title>Список округу 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            padding: 20px;
+        }
+        h2 {
+            color: #003366;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #003366;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #005299;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="{{ url_for('subscribers_by_district', district=1) }}" class="btn">⬅️ Назад до Підписників округу 1</a>
+
+    <h2>📋 Список округу 1</h2>
+
+    {% if district1_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Округ</th>
+                    <th>Виборча дільниця</th>
+                    <th>Прізвище</th>
+                    <th>Ім'я</th>
+                    <th>По батькові</th>
+                    <th>Дата народження</th>
+                    <th>Вулиця</th>
+                    <th>Будинок</th>
+                    <th>Квартира</th>
+                    <th>Номер телефону</th>
+                    <th>Старший</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in district1_data %}
+                    <tr>
+                        <td>{{ person.district }}</td>
+                        <td>{{ person.polling_station }}</td>
+                        <td>{{ person.last_name }}</td>
+                        <td>{{ person.first_name }}</td>
+                        <td>{{ person.middle_name }}</td>
+                        <td>{{ person.birth_date }}</td>
+                        <td>{{ person.street }}</td>
+                        <td>{{ person.house }}</td>
+                        <td>{{ person.apartment }}</td>
+                        <td>{{ person.phone }}</td>
+                        <td>{{ person.elder }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Записів поки немає.</p>
+    {% endif %}
+
+</body>
+</html>
