@@ -1,14 +1,25 @@
 from flask import Flask, render_template, request, redirect, session, url_for
 from users import users
 import os
+import json
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # 🔐 Заміни на свій
 
-big_data = []
+BIG_DATA_FILE = 'data_big.json'
 small_data = []
 elders_data = []
 subscribers_data = []
+
+def load_big_data():
+    if not os.path.exists(BIG_DATA_FILE):
+        return []
+    with open(BIG_DATA_FILE, 'r', encoding='utf-8') as file:
+        return json.load(file)
+
+def save_big_data(data):
+    with open(BIG_DATA_FILE, 'w', encoding='utf-8') as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -44,7 +55,8 @@ def big_list():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    return render_template('big_list.html', data=big_data)
+    data = load_big_data()
+    return render_template('big_list.html', data=data)
 
 @app.route('/add_big', methods=['GET', 'POST'])
 def add_big():
@@ -57,9 +69,10 @@ def add_big():
         first_name = request.form.get('first_name')
         middle_name = request.form.get('middle_name')
         phone = request.form.get('phone')
-        pickup_points = request.form.get('pickup_points')  # рядок з локаціями
+        pickup_points = request.form.get('pickup_points')
 
-        big_data.append({
+        data = load_big_data()
+        data.append({
             'district_number': district,
             'last_name': last_name,
             'first_name': first_name,
@@ -67,8 +80,9 @@ def add_big():
             'phone': phone,
             'pickup_points': pickup_points
         })
+        save_big_data(data)
 
-        return redirect(url_for('big_list'))  # після збереження — назад у таблицю
+        return redirect(url_for('big_list'))
 
     return render_template('add_big.html')
 
