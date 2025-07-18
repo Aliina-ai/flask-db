@@ -1,47 +1,129 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Додати великий округ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5faff;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button, .back-link {
+            padding: 10px 15px;
+            background-color: #3399ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-link {
+            background-color: #cccccc;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #267bd9;
+        }
+
+        .back-link:hover {
+            background-color: #aaa;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        #pickup_container div {
+            margin-bottom: 5px;
+        }
+
+        #pickup_container button {
+            margin-left: 10px;
+            background-color: #ff6666;
+        }
+
+        #pickup_container button:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
 <body>
-    <!-- Кнопка "Назад до списку великих округів" -->
-    <a href="{{ url_for('big_list') }}" style="display:inline-block; margin-bottom:20px; padding:10px 15px; background-color:#ccc; color:black; text-decoration:none; border-radius:5px;">← Назад до списку</a>
+    <div class="container">
 
-    <form method="POST">
-        <h2>Додати великий округ</h2>
+        <!-- Кнопка Назад -->
+        <a href="{{ url_for('big_list') }}" class="back-link">← Назад до списку</a>
 
-        Округ:
-        <select name="district_number" required>
-            <option value="" disabled selected>Оберіть округ</option>
-            {% for i in range(1, 7) %}
-                <option value="{{ i }}">Округ {{ i }}</option>
-            {% endfor %}
-        </select>
+        <form method="POST">
+            <h2>Додати великий округ</h2>
 
-        Прізвище:
-        <input type="text" name="last_name" required>
-
-        Імʼя:
-        <input type="text" name="first_name" required>
-
-        По батькові:
-        <input type="text" name="middle_name" required>
-
-        Телефон:
-        <input type="text" name="phone" required>
-
-        <label for="pickup_select">Оберіть локацію:</label>
-        <div class="flex-row">
-            <select id="pickup_select">
-                {% for i in range(1, 21) %}
-                    <option value="Л{{ i }}">Л{{ i }}</option>
+            Округ:
+            <select name="district_number" required>
+                <option value="" disabled selected>Оберіть округ</option>
+                {% for i in range(1, 7) %}
+                    <option value="{{ i }}">Округ {{ i }}</option>
                 {% endfor %}
             </select>
-            <button type="button" onclick="addPickup()">➕ Додати</button>
-        </div>
 
-        <div id="pickup_container"></div>
+            Прізвище:
+            <input type="text" name="last_name" required>
 
-        <!-- Приховане поле для передачі в Flask -->
-        <input type="hidden" name="pickup_points" id="pickup_points_input">
+            Імʼя:
+            <input type="text" name="first_name" required>
 
-        <input type="submit" value="Зберегти">
-    </form>
+            По батькові:
+            <input type="text" name="middle_name" required>
+
+            Телефон:
+            <input type="text" name="phone" required>
+
+            <label for="pickup_select">Оберіть локацію (Л1–Л20):</label>
+            <div class="flex-row">
+                <select id="pickup_select">
+                    {% for i in range(1, 21) %}
+                        <option value="Л{{ i }}">Л{{ i }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" onclick="addPickup()">➕ Додати</button>
+            </div>
+
+            <div id="pickup_container"></div>
+
+            <!-- Приховане поле для передачі локацій -->
+            <input type="hidden" name="pickup_points" id="pickup_points_input">
+
+            <button type="submit">Зберегти</button>
+        </form>
+    </div>
 
     <script>
         let selectedPickups = [];
@@ -75,3 +157,4 @@
         }
     </script>
 </body>
+</html>
