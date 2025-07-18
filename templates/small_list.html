@@ -50,7 +50,12 @@
 </head>
 <body>
 
-    <h2>📋 Список анкет малих округів</h2>
+    <div class="button-group">
+        <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
+        <a href="{{ url_for('add_small') }}" class="btn">➕ Додати запис</a>
+    </div>
+
+    <h2>📋 Список малих округів</h2>
 
     <table>
         <thead>
@@ -88,11 +93,6 @@
             {% endif %}
         </tbody>
     </table>
-
-    <div class="button-group">
-        <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
-        <a href="{{ url_for('add_small') }}" class="btn">➕ Додати запис</a>
-    </div>
 
 </body>
 </html>
