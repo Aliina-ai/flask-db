@@ -180,11 +180,14 @@ def subscribers_list_1():
         return redirect(url_for('login'))
     return render_template('subscribers_list_1.html', subscribers_1=subscribers_1)
 
-@app.route('/add_subscriber_1', methods=['GET', 'POST'])
-def add_subscriber_1():
-    if 'username' not in session:
-        return redirect(url_for('login'))
+@app.route('/subscribers_list_1')
+@login_required
+def subscribers_list_1():
+    return render_template('subscribers_list_1.html', subscribers=subscribers_1)
 
+@app.route('/add_subscriber_1', methods=['GET', 'POST'])
+@login_required
+def add_subscriber_1():
     if request.method == 'POST':
         last_name = request.form.get('last_name')
         first_name = request.form.get('first_name')
@@ -196,12 +199,13 @@ def add_subscriber_1():
         phone = request.form.get('phone')
         senior_id = request.form.get('senior')
 
-        polling_station = get_polling_station(house)
+        # Знаходимо ім'я старшого по id
         senior_name = next((f"{e['last_name']} {e['first_name']}" for e in elders if str(e['id']) == senior_id), "Невідомо")
 
+        # Округ завжди 1
         subscribers_1.append({
             'district': 1,
-            'polling_station': polling_station,
+            'polling_station': '',  # тут можна додати логіку виборчої дільниці
             'last_name': last_name,
             'first_name': first_name,
             'middle_name': middle_name,
