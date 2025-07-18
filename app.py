@@ -5,6 +5,8 @@ import os
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # 🔐 Заміни на свій
 
+big_data = []
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
