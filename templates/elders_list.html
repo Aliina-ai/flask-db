@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Список Старших</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 20px;
+        }
+        h2 {
+            color: #003366;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #003366;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #003366;
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #005299;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📋 Список Старших</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Великий округ</th>
+                <th>Округ</th>
+                <th>Локація</th>
+                <th>Прізвище</th>
+                <th>Ім'я</th>
+                <th>По батькові</th>
+                <th>Адреса</th>
+                <th>Дата народження</th>
+                <th>Кількість підписників</th>
+                <th>Кількість газет</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if elders_data %}
+                {% for elder in elders_data %}
+                    <tr>
+                        <td>{{ elder.big_district }}</td>
+                        <td>{{ elder.district }}</td>
+                        <td>{{ elder.location }}</td>
+                        <td>{{ elder.last_name }}</td>
+                        <td>{{ elder.first_name }}</td>
+                        <td>{{ elder.middle_name }}</td>
+                        <td>{{ elder.address }}</td>
+                        <td>{{ elder.birth_date }}</td>
+                        <td>{{ elder.subscribers_count }}</td>
+                        <td>{{ elder.newspapers_count }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="10">Записів поки немає</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <div class="button-group">
+        <a href="{{ url_for('add_elder') }}" class="btn">➕ Додати старшого</a>
+        <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
+    </div>
+
+</body>
+</html>
