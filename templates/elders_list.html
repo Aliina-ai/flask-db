@@ -50,6 +50,11 @@
 </head>
 <body>
 
+    <div class="button-group">
+        <a href="{{ url_for('add_elder') }}" class="btn">➕ Додати старшого</a>
+        <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
+    </div>
+
     <h2>📋 Список Старших</h2>
 
     <table>
@@ -90,11 +95,6 @@
             {% endif %}
         </tbody>
     </table>
-
-    <div class="button-group">
-        <a href="{{ url_for('add_elder') }}" class="btn">➕ Додати старшого</a>
-        <a href="{{ url_for('dashboard') }}" class="btn">⬅️ Назад</a>
-    </div>
 
 </body>
 </html>
