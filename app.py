@@ -7,6 +7,7 @@ app.secret_key = 'your-secret-key'  # 🔐 Заміни на свій
 
 big_data = []
 small_data = []
+elders_data = []
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -114,6 +115,46 @@ def add_small():
         return redirect(url_for('small_list'))
 
     return render_template('add_small.html')
+
+@app.route('/elders_list')
+def elders_list():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('elders_list.html', elders_data=elders_data)
+
+@app.route('/add_elder', methods=['GET', 'POST'])
+def add_elder():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        district = request.form.get('district')
+        big_district = request.form.get('big_district')
+        location = request.form.get('location')
+        last_name = request.form.get('last_name')
+        first_name = request.form.get('first_name')
+        middle_name = request.form.get('middle_name')
+        address = request.form.get('address')
+        birth_date = request.form.get('birth_date')
+        subscribers_count = request.form.get('subscribers_count')
+        newspapers_count = request.form.get('newspapers_count')
+
+        elders_data.append({
+            'district': district,
+            'big_district': big_district,
+            'location': location,
+            'last_name': last_name,
+            'first_name': first_name,
+            'middle_name': middle_name,
+            'address': address,
+            'birth_date': birth_date,
+            'subscribers_count': subscribers_count,
+            'newspapers_count': newspapers_count
+        })
+
+        return redirect(url_for('elders_list'))
+
+    return render_template('add_elder.html')
 
 
 if __name__ == '__main__':
