@@ -6,6 +6,7 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # 🔐 Заміни на свій
 
 big_data = []
+small_data = []
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -68,6 +69,51 @@ def add_big():
         return redirect(url_for('big_list'))  # після збереження — назад у таблицю
 
     return render_template('add_big.html')
+
+# Сторінка зі списком анкет малих округів
+@app.route('/small_list')
+def small_list():
+    return render_template('small_list.html', small_data=small_data)
+
+# Додавання нової анкети
+@app.route('/add_small', methods=['GET', 'POST'])
+def add_small():
+    if request.method == 'POST':
+        district = int(request.form['district'])
+
+        # Автоматичне визначення великого округу
+        if 1 <= district <= 7:
+            big_district = 1
+        elif 8 <= district <= 14:
+            big_district = 2
+        elif 15 <= district <= 19:
+            big_district = 3
+        elif 20 <= district <= 28:
+            big_district = 4
+        elif 29 <= district <= 35:
+            big_district = 5
+        elif 36 <= district <= 42:
+            big_district = 6
+        else:
+            big_district = "Невідомо"
+
+        # Створюємо словник анкети
+        new_entry = {
+            'big_district': big_district,
+            'district': district,
+            'last_name': request.form['last_name'],
+            'first_name': request.form['first_name'],
+            'middle_name': request.form['middle_name'],
+            'address': request.form['address'],
+            'phone': request.form['phone'],
+            'birth_date': request.form['birth_date'],
+            'location': request.form['location']
+        }
+
+        small_data.append(new_entry)
+        return redirect(url_for('small_list'))
+
+    return render_template('add_small.html')
 
 
 if __name__ == '__main__':
