@@ -9,6 +9,7 @@ big_data = []
 small_data = []
 elders_data = []
 subscribers_data = []
+district1_data = []
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -172,6 +173,12 @@ def subscribers_by_district(district):
     filtered_subscribers = [s for s in subscribers_data if int(s['district']) == district]
 
     return render_template('subscribers_list.html', district=district, subscribers=filtered_subscribers)
+
+@app.route('/district1_list')
+def district1_list():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('district1_list.html', district1_data=district1_data)
 
 
 if __name__ == '__main__':
