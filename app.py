@@ -57,7 +57,7 @@ def add_big():
         pickup_points = request.form.get('pickup_points')  # рядок з локаціями
 
         big_data.append({
-            'district_number': district_number,
+            'district_number': district,
             'last_name': last_name,
             'first_name': first_name,
             'middle_name': middle_name,
