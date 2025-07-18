@@ -47,6 +47,7 @@
     <div class="buttons-container">
         {% for i in range(1, 43) %}
             <a href="{{ url_for('subscribers_by_district', district=i) }}" class="btn">Округ {{ i }}</a>
+            <a href="{{ url_for('okrug_1') }}">Округ 1</a>
         {% endfor %}
     </div>
 
