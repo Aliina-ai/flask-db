@@ -34,6 +34,14 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+@app.route('/big_list')
+def big_list():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    return render_template('big_list.html', bigs=bigs)
+
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # ← отримує порт від Render
     app.run(host='0.0.0.0', port=port)
