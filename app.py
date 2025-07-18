@@ -40,6 +40,36 @@ def big_list():
         return redirect(url_for('login'))
     return render_template('big_list.html')
 
+@app.route('/add_big', methods=['GET', 'POST'])
+def add_big():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        district = request.form.get('district_number')
+        last_name = request.form.get('last_name')
+        first_name = request.form.get('first_name')
+        middle_name = request.form.get('middle_name')
+        phone = request.form.get('phone')
+        pickup_points = request.form.get('pickup_points')  # рядок з локаціями
+
+        new_id = bigs[-1][0] + 1 if bigs else 1
+
+        bigs.append([
+            new_id,
+            district,
+            last_name,
+            first_name,
+            middle_name,
+            phone,
+            pickup_points
+        ])
+
+        return redirect(url_for('big_list'))
+
+    return render_template('add_big.html')  # тут можна залишити той же шаблон або перейменувати в add_big.html
+
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # ← отримує порт від Render
     app.run(host='0.0.0.0', port=port)
