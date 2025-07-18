@@ -38,9 +38,7 @@ def logout():
 def big_list():
     if 'username' not in session:
         return redirect(url_for('login'))
-
-    return render_template('big_list.html', bigs=bigs)
-
+    return render_template('big_list.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # ← отримує порт від Render
