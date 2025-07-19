@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session, flash
 import sqlite3
 import os
+import random
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -53,6 +54,33 @@ def dashboard():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+@app.route('/regions-large')
+def regions_large():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # TODO: Підключити до бази і витягти дані
+    # Поки просто тестові записи
+    data = [
+        {
+            'okrug': '101',
+            'last_name': 'Шевченко',
+            'first_name': 'Іван',
+            'middle_name': 'Олексійович',
+            'phone': '+380501112233',
+            'location': 'Київ'
+        },
+        {
+            'okrug': '102',
+            'last_name': 'Ковальчук',
+            'first_name': 'Марія',
+            'middle_name': 'Петрівна',
+            'phone': '+380631234567',
+            'location': 'Львів'
+        }
+    ]
+    return render_template('regions_large.html', data=data)
 
 if __name__ == '__main__':
     init_db()
