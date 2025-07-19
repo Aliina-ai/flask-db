@@ -93,6 +93,31 @@ def regions_large():
     ]
     return render_template('regions_large.html', data=data)
 
+@app.route('/add-region-large', methods=['POST'])
+def add_region_large():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати записи.')
+        return redirect(url_for('regions_large'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('''
+        INSERT INTO regions_large (okrug, last_name, first_name, middle_name, phone, location)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ''', (
+        request.form['okrug'],
+        request.form['last_name'],
+        request.form['first_name'],
+        request.form['middle_name'],
+        request.form['phone'],
+        request.form['location']
+    ))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('regions_large'))
+
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
