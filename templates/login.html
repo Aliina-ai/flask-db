@@ -6,90 +6,67 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f2f4f7;
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
-
-        .login-container {
-            background-color: #ffffff;
-            padding: 40px 35px;
-            border-radius: 10px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-            width: 340px;
-            max-width: 90%;
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            width: 320px;
+        }
+        h2 {
             text-align: center;
-            border: 1px solid #dee2e6;
-        }
-
-        .login-container h2 {
-            margin-bottom: 20px;
             color: #333;
-            font-size: 20px;
+            margin-bottom: 24px;
         }
-
-        .login-container input[type="text"],
-        .login-container input[type="password"],
-        .login-container button {
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 15px;
+        }
+        input[type="text"], input[type="password"] {
             width: 100%;
-            padding: 11px 14px;
-            margin: 10px 0;
-            border-radius: 6px;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
             font-size: 14px;
-            box-sizing: border-box;
         }
-
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
-            border: 1px solid #c4c7cc;
-            background-color: #f9fafb;
-            color: #2d2d2d;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
-        .login-container input:focus {
-            outline: none;
-            border-color: #7b9acc;
-            background-color: #ffffff;
-        }
-
-        .login-container button {
-            background-color: #5c6f91;
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #003366;
             color: white;
             border: none;
+            border-radius: 4px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-
-        .login-container button:hover {
-            background-color: #4a5b74;
-        }
-
         .error {
-            color: #b00020;
-            background-color: #fde8ea;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            font-size: 13px;
+            color: red;
+            text-align: center;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Вхід в систему</h2>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="error">{{ messages[0] }}</div>
-            {% endif %}
-        {% endwith %}
+    <div class="login-box">
+        <h2>Вхід у систему</h2>
         <form method="POST">
-            <input type="text" name="login" placeholder="Логін" required>
-            <input type="password" name="password" placeholder="Пароль" required>
+            <label>Ім’я користувача</label>
+            <input type="text" name="username" required>
+            <label>Пароль</label>
+            <input type="password" name="password" required>
             <button type="submit">Увійти</button>
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
         </form>
     </div>
 </body>
