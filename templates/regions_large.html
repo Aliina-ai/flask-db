@@ -14,6 +14,44 @@
             color: #2b4f73;
             margin-bottom: 20px;
         }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .back-button {
+            background-color: #ccc;
+            border: none;
+            color: #333;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .add-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+        .add-form input {
+            margin: 6px;
+            padding: 8px;
+            width: 120px;
+            font-size: 13px;
+        }
+        .add-form button {
+            padding: 8px 14px;
+            background-color: #2b4f73;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -55,7 +93,20 @@
     </style>
 </head>
 <body>
-    <h2>Великі округи</h2>
+    <div class="top-bar">
+        <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
+
+        <form class="add-form" method="POST" action="{{ url_for('add_region_large') }}">
+            <input type="text" name="okrug" placeholder="Округ" required>
+            <input type="text" name="last_name" placeholder="Прізвище" required>
+            <input type="text" name="first_name" placeholder="Імʼя" required>
+            <input type="text" name="middle_name" placeholder="По батькові" required>
+            <input type="text" name="phone" placeholder="Телефон" required>
+            <input type="text" name="location" placeholder="Локація" required>
+            <button type="submit">Додати</button>
+        </form>
+    </div>
+
     <table>
         <thead>
             <tr>
