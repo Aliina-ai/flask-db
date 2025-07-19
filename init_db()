@@ -2,26 +2,29 @@ def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+    # Видаляємо застарілу таблицю (якщо існує)
+    c.execute("DROP TABLE IF EXISTS users")
+    # Створюємо потрібну структуру заново
     c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
+        CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            login TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            role TEXT NOT NULL CHECK(role IN ('admin', 'operator'))
+            name TEXT,
+            role TEXT,
+            login TEXT UNIQUE,
+            password TEXT
         )
     ''')
-
+    # Вставляємо користувачів
     users = [
-        ('alina', 'Alina#2024@adm', 'admin'),
-        ('natalia', 'Natalia!2024#adm', 'admin'),
-        ('gennadiy', 'Gennadiy_2024$op', 'operator'),
-        ('sergiy', 'Sergiy-2024@op', 'operator'),
+        ("Аліна", "admin", "alina", "Alina2024adm"),
+        ("Наталія", "admin", "natalia", "Natalia2024adm"),
+        ("Геннадій", "operator", "gennadiy", "Gennadiy2024op"),
+        ("Сергій", "operator", "sergiy", "Sergiy2024op"),
     ]
-
-    for login, password, role in users:
-        c.execute('SELECT * FROM users WHERE login = ?', (login,))
-        if not c.fetchone():
-            c.execute('INSERT INTO users (login, password, role) VALUES (?, ?, ?)', (login, password, role))
-
+    for name, role, login, pwd in users:
+        c.execute(
+            "INSERT OR IGNORE INTO users (name, role, login, password) VALUES (?, ?, ?, ?)",
+            (name, role, login, pwd)
+        )
     conn.commit()
     conn.close()
