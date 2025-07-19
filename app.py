@@ -9,7 +9,7 @@ DB_PATH = os.getenv("DB_PATH", "/data/auth.db")
 # Користувачі
 USERS = {
     'Аліна':     {'password': 'Gk47fBq2', 'role': 'admin'},
-    'нАталія':   {'password': 'qF92KsLm', 'role': 'admin'},
+    'Наталія':   {'password': 'qF92KsLm', 'role': 'admin'},
     'Сергій':    {'password': 'xP74gVt1', 'role': 'operator'},
     'Геннадій':  {'password': 'zT38mWc9', 'role': 'operator'},
 }
