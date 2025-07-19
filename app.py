@@ -101,6 +101,10 @@ def add_region_large():
         flash('Лише адміністратор може додавати записи.')
         return redirect(url_for('regions_large'))
 
+    # Отримуємо кілька локацій і зберігаємо їх у вигляді рядка через кому
+    locations = request.form.getlist('location')
+    location_str = ', '.join(locations)
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''
@@ -112,7 +116,7 @@ def add_region_large():
         request.form['first_name'],
         request.form['middle_name'],
         request.form['phone'],
-        request.form['location']
+        location_str
     ))
     conn.commit()
     conn.close()
