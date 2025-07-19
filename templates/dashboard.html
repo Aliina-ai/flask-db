@@ -2,11 +2,85 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Панель</title>
+    <title>Панель керування</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f7f9fb;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #2b4f73;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .container {
+            padding: 40px 60px;
+        }
+        .welcome {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .role-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .menu a {
+            display: block;
+            text-align: center;
+            background-color: #ffffff;
+            border: 2px solid #2b4f73;
+            color: #2b4f73;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 25px 15px;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .menu a:hover {
+            background-color: #2b4f73;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h2>Вітаю, {{ username }}!</h2>
-    <p>Ваша роль: {{ role }}</p>
-    <a href="{{ url_for('logout') }}">Вийти</a>
+    <div class="navbar">
+        <h1>Панель керування</h1>
+        <a href="{{ url_for('logout') }}">Вийти</a>
+    </div>
+
+    <div class="container">
+        <div class="welcome">Вітаю, {{ username }}!</div>
+        <div class="role-info">Ваша роль: <strong>{{ role }}</strong></div>
+
+        <div class="menu">
+            <a href="/regions-large">Великі округи</a>
+            <a href="/regions">Округи</a>
+            <a href="/activists">Активісти</a>
+            <a href="/followers">Підписники</a>
+        </div>
+    </div>
 </body>
 </html>
