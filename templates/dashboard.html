@@ -2,140 +2,86 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Великі округи</title>
+    <title>Панель керування</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f7f9fb;
             margin: 0;
-            padding: 30px;
         }
-        h2 {
-            color: #2b4f73;
-            margin-bottom: 20px;
-        }
-        .top-bar {
+        .navbar {
+            background-color: #2b4f73;
+            color: white;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .navbar h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .container {
+            padding: 40px 60px;
+        }
+        .welcome {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .role-info {
+            font-size: 14px;
+            color: #666;
             margin-bottom: 30px;
         }
-        .back-button {
-            background-color: #ccc;
-            border: none;
-            color: #333;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 14px;
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .menu a {
+            display: block;
+            text-align: center;
+            background-color: #ffffff;
+            border: 2px solid #2b4f73;
+            color: #2b4f73;
             text-decoration: none;
-        }
-        .add-form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            flex-grow: 1;
-            margin-left: 20px;
-        }
-        .add-form input {
-            margin: 6px;
-            padding: 8px;
-            width: 120px;
-            font-size: 13px;
-        }
-        .add-form button {
-            padding: 8px 14px;
-            background-color: #2b4f73;
-            color: white;
-            border: none;
-            border-radius: 4px;
             font-weight: bold;
-            cursor: pointer;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
+            padding: 25px 15px;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px 15px;
-            text-align: left;
-            font-size: 14px;
-        }
-        th {
+        .menu a:hover {
             background-color: #2b4f73;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f5f9;
-        }
-        .actions {
-            text-align: center;
-        }
-        .action-btn {
-            padding: 6px 10px;
-            margin: 0 3px;
-            font-size: 13px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .edit-btn {
-            background-color: #4caf50;
-            color: white;
-        }
-        .delete-btn {
-            background-color: #e53935;
             color: white;
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
-
-        <form class="add-form" method="POST" action="{{ url_for('add_region_large') }}">
-            <input type="text" name="okrug" placeholder="Округ" required>
-            <input type="text" name="last_name" placeholder="Прізвище" required>
-            <input type="text" name="first_name" placeholder="Імʼя" required>
-            <input type="text" name="middle_name" placeholder="По батькові" required>
-            <input type="text" name="phone" placeholder="Телефон" required>
-            <input type="text" name="location" placeholder="Локація" required>
-            <button type="submit">Додати</button>
-        </form>
+    <div class="navbar">
+        <h1>Панель керування</h1>
+        <a href="{{ url_for('logout') }}">Вийти</a>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Округ</th>
-                <th>Прізвище</th>
-                <th>Ім'я</th>
-                <th>По батькові</th>
-                <th>Телефон</th>
-                <th>Локація</th>
-                <th>Дії</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                <td>{{ row.okrug }}</td>
-                <td>{{ row.last_name }}</td>
-                <td>{{ row.first_name }}</td>
-                <td>{{ row.middle_name }}</td>
-                <td>{{ row.phone }}</td>
-                <td>{{ row.location }}</td>
-                <td class="actions">
-                    <button class="action-btn edit-btn">Редагувати</button>
-                    <button class="action-btn delete-btn">Видалити</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="welcome">Вітаю, {{ username }}!</div>
+        <div class="role-info">Ваша роль: <strong>{{ role }}</strong></div>
+
+        <div class="menu">
+            <a href="/regions-large">Великі округи</a>
+            <a href="/regions">Округи</a>
+            <a href="/activists">Активісти</a>
+            <a href="/followers">Підписники</a>
+        </div>
+    </div>
 </body>
 </html>
 
