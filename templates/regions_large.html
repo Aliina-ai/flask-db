@@ -93,19 +93,26 @@
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
+    <form class="add-form" method="POST" action="{{ url_for('add_region_large') }}">
+    <select name="okrug" required>
+        <option value="">Оберіть округ</option>
+        {% for i in range(1, 7) %}
+            <option value="Округ {{ i }}">Округ {{ i }}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="last_name" placeholder="Прізвище" required>
+    <input type="text" name="first_name" placeholder="Імʼя" required>
+    <input type="text" name="middle_name" placeholder="По батькові" required>
+    <input type="text" name="phone" placeholder="Телефон" required>
 
-        <form class="add-form" method="POST" action="{{ url_for('add_region_large') }}">
-            <input type="text" name="okrug" placeholder="Округ" required>
-            <input type="text" name="last_name" placeholder="Прізвище" required>
-            <input type="text" name="first_name" placeholder="Імʼя" required>
-            <input type="text" name="middle_name" placeholder="По батькові" required>
-            <input type="text" name="phone" placeholder="Телефон" required>
-            <input type="text" name="location" placeholder="Локація" required>
-            <button type="submit">Додати</button>
-        </form>
-    </div>
+    <select name="location" multiple size="5" required>
+        {% for i in range(1, 21) %}
+            <option value="Л{{ i }}">Л{{ i }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Додати</button>
+</form>
 
     <table>
         <thead>
