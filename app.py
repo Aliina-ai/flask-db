@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, url_for, redirect, session, flash
 import sqlite3
 import os
-import random
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-DB_PATH = os.getenv("DB_PATH", "/data/auth.db")
+DB_PATH = os.getenv("DB_PATH", "/data/db.sqlite")
 
 # Користувачі
 USERS = {
@@ -14,15 +13,30 @@ USERS = {
     'Сергій':    {'password': 'xP74gVt1', 'role': 'operator'},
     'Геннадій':  {'password': 'zT38mWc9', 'role': 'operator'},
 }
+
 def init_db():
-    db_path = os.getenv("DB_PATH", "/data/db.sqlite")
-    os.makedirs(os.path.dirname(db_path), exist_ok=True)
-    conn = sqlite3.connect(db_path)
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+
+    # Таблиця entries (залишаю, якщо ти її ще використовуєш)
     c.execute('''
         CREATE TABLE IF NOT EXISTS entries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             content TEXT
+        )
+    ''')
+
+    # Таблиця regions_large
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS regions_large (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            okrug TEXT,
+            last_name TEXT,
+            first_name TEXT,
+            middle_name TEXT,
+            phone TEXT,
+            location TEXT
         )
     ''')
     conn.commit()
@@ -60,25 +74,22 @@ def regions_large():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # TODO: Підключити до бази і витягти дані
-    # Поки просто тестові записи
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM regions_large")
+    rows = c.fetchall()
+    conn.close()
+
     data = [
         {
-            'okrug': '101',
-            'last_name': 'Шевченко',
-            'first_name': 'Іван',
-            'middle_name': 'Олексійович',
-            'phone': '+380501112233',
-            'location': 'Київ'
-        },
-        {
-            'okrug': '102',
-            'last_name': 'Ковальчук',
-            'first_name': 'Марія',
-            'middle_name': 'Петрівна',
-            'phone': '+380631234567',
-            'location': 'Львів'
+            'okrug': row[1],
+            'last_name': row[2],
+            'first_name': row[3],
+            'middle_name': row[4],
+            'phone': row[5],
+            'location': row[6]
         }
+        for row in rows
     ]
     return render_template('regions_large.html', data=data)
 
@@ -86,3 +97,4 @@ if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
