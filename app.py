@@ -13,6 +13,19 @@ USERS = {
     'Сергій':    {'password': 'xP74gVt1', 'role': 'operator'},
     'Геннадій':  {'password': 'zT38mWc9', 'role': 'operator'},
 }
+def init_db():
+    db_path = os.getenv("DB_PATH", "/data/db.sqlite")
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS entries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            content TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -43,4 +56,4 @@ def logout():
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
