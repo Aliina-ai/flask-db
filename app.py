@@ -223,20 +223,34 @@ def regions():
 # Add form:
 @app.route('/regions/add', methods=['GET','POST'])
 def add_region():
-    if 'username' not in session or session.get('role')!='admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Недостатньо прав')
         return redirect(url_for('regions'))
-    if request.method=='POST':
-        num=int(request.form['region_num'])
-        conn=sqlite3.connect(DB_PATH); c=conn.cursor()
-        c.execute('INSERT INTO regions (region_num,last_name,first_name,middle_name,address,phone,birth_date,location) VALUES (?,?,?,?,?,?,?,?)',(
-            num,request.form['last_name'],request.form['first_name'],
-            request.form['middle_name'],request.form['address'],
-            request.form['phone'],request.form['birth_date'],
+
+    if request.method == 'POST':
+        num = int(request.form['okrug_num'])  # відповідність полю name="okrug_num"
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO regions (
+                big_okrug, region_num, last_name, first_name, middle_name,
+                address, phone, birth_date, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            ((num - 1) // 7 + 1),  # big_okrug
+            num,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['address'],
+            request.form['phone'],
+            request.form['birthday'],         # правильне ім’я!
             request.form['location']
         ))
-        conn.commit(); conn.close()
+        conn.commit()
+        conn.close()
         return redirect(url_for('regions'))
+
     return render_template('add_edit_region.html', edit=False)
 
 # Edit version:
