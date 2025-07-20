@@ -155,7 +155,6 @@ def edit_region_large(region_id):
 
     # Передаємо у форму
     region = {
-        'id': row[0],
         'okrug': row[1],
         'last_name': row[2],
         'first_name': row[3],
