@@ -71,6 +71,7 @@ def regions_large():
 
     data = [
         {
+            'id': row[0],
             'okrug': row[1],
             'last_name': row[2],
             'first_name': row[3],
