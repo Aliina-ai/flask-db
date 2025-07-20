@@ -7,77 +7,105 @@
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f7f9fb;
-            padding: 40px;
+            margin: 0;
+            padding: 0;
         }
-        h2 {
-            color: #2b4f73;
-            margin-bottom: 20px;
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         form {
             background-color: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: 8px;
-            max-width: 700px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            width: 420px;
+        }
+        h2 {
+            text-align: center;
+            color: #2b4f73;
+            margin-bottom: 30px;
         }
         label {
             display: block;
             margin-top: 15px;
             font-weight: 600;
         }
-        select, input {
+        input, select {
             width: 100%;
             padding: 10px;
             margin-top: 6px;
-            border-radius: 4px;
             border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
         }
-        select[multiple] {
-            height: 120px;
+        .location-box {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 160px;
+            overflow-y: auto;
+            background-color: #fefefe;
+        }
+        .location-box label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: normal;
         }
         button {
+            width: 100%;
             margin-top: 25px;
-            padding: 12px 24px;
+            padding: 12px;
             background-color: #2b4f73;
             color: white;
             border: none;
             border-radius: 4px;
             font-weight: bold;
+            font-size: 15px;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h2>Додати великий округ</h2>
-    <form method="POST">
-        <label>Округ</label>
-        <select name="okrug" required>
-            <option value="">Оберіть округ</option>
-            {% for i in range(1, 7) %}
-                <option value="Округ {{ i }}">Округ {{ i }}</option>
-            {% endfor %}
-        </select>
+    <div class="wrapper">
+        <form method="POST">
+            <h2>Додати великий округ</h2>
 
-        <label>Прізвище</label>
-        <input type="text" name="last_name" required>
+            <label for="okrug">Округ</label>
+            <select name="okrug" required>
+                <option value="">Оберіть округ</option>
+                {% for i in range(1, 7) %}
+                    <option value="Округ {{ i }}">Округ {{ i }}</option>
+                {% endfor %}
+            </select>
 
-        <label>Імʼя</label>
-        <input type="text" name="first_name" required>
+            <label for="last_name">Прізвище</label>
+            <input type="text" name="last_name" required>
 
-        <label>По батькові</label>
-        <input type="text" name="middle_name" required>
+            <label for="first_name">Імʼя</label>
+            <input type="text" name="first_name" required>
 
-        <label>Телефон</label>
-        <input type="text" name="phone" required>
+            <label for="middle_name">По батькові</label>
+            <input type="text" name="middle_name" required>
 
-        <label>Локації (можна вибрати кілька)</label>
-        <select name="location" multiple required>
-            {% for i in range(1, 21) %}
-                <option value="Л{{ i }}">Л{{ i }}</option>
-            {% endfor %}
-        </select>
+            <label for="phone">Телефон</label>
+            <input type="text" name="phone" required>
 
-        <button type="submit">Зберегти</button>
-    </form>
+            <label for="location">Локації (оберіть одну або кілька)</label>
+            <div class="location-box">
+                {% for i in range(1, 21) %}
+                    <label>
+                        <input type="checkbox" name="location" value="Л{{ i }}"> Л{{ i }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit">Зберегти</button>
+        </form>
+    </div>
 </body>
 </html>
+
