@@ -19,7 +19,7 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Таблиця entries (залишаю, якщо ти її ще використовуєш)
+    # Таблиця entries (опціонально)
     c.execute('''
         CREATE TABLE IF NOT EXISTS entries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -93,6 +93,7 @@ def regions_large():
     ]
     return render_template('regions_large.html', data=data)
 
+# POST-запит з форми
 @app.route('/add-region-large', methods=['POST'])
 def add_region_large():
     if 'username' not in session:
@@ -101,7 +102,6 @@ def add_region_large():
         flash('Лише адміністратор може додавати записи.')
         return redirect(url_for('regions_large'))
 
-    # Отримуємо кілька локацій і зберігаємо їх у вигляді рядка через кому
     locations = request.form.getlist('location')
     location_str = ', '.join(locations)
 
@@ -122,40 +122,20 @@ def add_region_large():
     conn.close()
     return redirect(url_for('regions_large'))
 
+# GET-форма для додавання
 @app.route('/regions-large/add', methods=['GET', 'POST'])
-def add_region_large():
+def add_region_large_form():
     if 'username' not in session:
         return redirect(url_for('login'))
     if session.get('role') != 'admin':
         flash('Лише адміністратор може додавати записи.')
         return redirect(url_for('regions_large'))
 
-    if request.method == 'POST':
-        locations = request.form.getlist('location')
-        location_str = ', '.join(locations)
-
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute('''
-            INSERT INTO regions_large (okrug, last_name, first_name, middle_name, phone, location)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (
-            request.form['okrug'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['phone'],
-            location_str
-        ))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('regions_large'))
-
     return render_template('add_region_large.html')
-
 
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
