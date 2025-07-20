@@ -124,7 +124,10 @@
                     <a href="{{ url_for('edit_region_large', region_id=row['id']) }}">
                         <button class="action-btn edit-btn">Редагувати</button>
                     </a>
-                        <button class="action-btn delete-btn">Видалити</button>
+                        <form method="POST" action="{{ url_for('delete_region_large', region_id=row['id']) }}"
+                             style="display:inline;" onsubmit="return confirm('Ви впевнені, що хочете видалити цей запис?');">
+                           <button class="action-btn delete-btn" type="submit">Видалити</button>
+                        </form>
                 </td>
             </tr>
             {% endfor %}
