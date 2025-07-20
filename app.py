@@ -6,7 +6,6 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 DB_PATH = os.getenv("DB_PATH", "/data/db.sqlite")
 
-# Користувачі
 USERS = {
     'Аліна':     {'password': 'Gk47fBq2', 'role': 'admin'},
     'Наталія':   {'password': 'qF92KsLm', 'role': 'admin'},
@@ -19,15 +18,6 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Таблиця entries (опціонально)
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS entries (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            content TEXT
-        )
-    ''')
-
-    # Таблиця regions_large
     c.execute('''
         CREATE TABLE IF NOT EXISTS regions_large (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,7 +39,6 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = USERS.get(username)
-
         if user and user['password'] == password:
             session['username'] = username
             session['role'] = user['role']
@@ -93,8 +82,7 @@ def regions_large():
     ]
     return render_template('regions_large.html', data=data)
 
-# POST-запит з форми
-@app.route('/add-region-large', methods=['POST'])
+@app.route('/regions-large/add', methods=['GET', 'POST'])
 def add_region_large():
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -102,33 +90,25 @@ def add_region_large():
         flash('Лише адміністратор може додавати записи.')
         return redirect(url_for('regions_large'))
 
-    locations = request.form.getlist('location')
-    location_str = ', '.join(locations)
+    if request.method == 'POST':
+        locations = request.form.getlist('location')
+        location_str = ', '.join(locations)
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('''
-        INSERT INTO regions_large (okrug, last_name, first_name, middle_name, phone, location)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ''', (
-        request.form['okrug'],
-        request.form['last_name'],
-        request.form['first_name'],
-        request.form['middle_name'],
-        request.form['phone'],
-        location_str
-    ))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('regions_large'))
-
-# GET-форма для додавання
-@app.route('/regions-large/add', methods=['GET', 'POST'])
-def add_region_large_form():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати записи.')
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO regions_large (okrug, last_name, first_name, middle_name, phone, location)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (
+            request.form['okrug'],
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['phone'],
+            location_str
+        ))
+        conn.commit()
+        conn.close()
         return redirect(url_for('regions_large'))
 
     return render_template('add_region_large.html')
