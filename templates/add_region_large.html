@@ -71,7 +71,7 @@
 </head>
 <body>
     <div class="wrapper">
-        <form method="POST" action="{{ url_for('edit_region_large', region_id=region.id) if edit else request.path }}">
+        <form method="POST" action="{{ url_for('edit_region_large', region_id=region['id']) if edit else request.path }}">
             <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} великий округ</h2>
 
             <label for="okrug">Округ</label>
