@@ -82,7 +82,7 @@ def regions_large():
     ]
     return render_template('regions_large.html', data=data)
 
-@app.route('/regions-large/add', methods=['GET', 'POST'])
+@app.route('/add-region-large', methods=['GET', 'POST'])
 def add_region_large():
     if 'username' not in session:
         return redirect(url_for('login'))
