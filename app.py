@@ -165,6 +165,23 @@ def edit_region_large(region_id):
     }
 
     return render_template('add_region_large.html', edit=True, region=region)
+    
+ @app.route('/regions-large/delete/<int:region_id>', methods=['POST'])
+def delete_region_large(region_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти записи.')
+        return redirect(url_for('regions_large'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions_large WHERE id = ?', (region_id,))
+    conn.commit()
+    conn.close()
+    flash('Запис успішно видалено.')
+    return redirect(url_for('regions_large'))
+
 
 if __name__ == '__main__':
     init_db()
