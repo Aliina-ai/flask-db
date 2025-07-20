@@ -121,8 +121,10 @@
                 <td>{{ row.phone }}</td>
                 <td>{{ row.location }}</td>
                 <td class="actions">
-                    <button class="action-btn edit-btn">Редагувати</button>
-                    <button class="action-btn delete-btn">Видалити</button>
+                    <a href="{{ url_for('edit_region_large', region_id=row.id) }}">
+                        <button class="action-btn edit-btn">Редагувати</button>
+                    </a>
+                        <button class="action-btn delete-btn">Видалити</button>
                 </td>
             </tr>
             {% endfor %}
