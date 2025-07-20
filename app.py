@@ -30,7 +30,7 @@ def init_db():
         ''')
 
         c.execute('''
-            CREATE TABLE regions (
+            CREATE TABLE IF NOT EXISTS regions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 big_okrug INTEGER,
                 region_num INTEGER,
@@ -41,7 +41,6 @@ def init_db():
                 phone TEXT,
                 birth_date TEXT,
                 location TEXT
-
             )
         ''')
 
@@ -204,7 +203,9 @@ def regions():
     data = []
     for r in rows:
         num = r[1]
-        big = ( (num-1)//7 ) + 1
+        if num is None:
+            num = 1
+        big = ((num - 1) // 7) + 1
         data.append({
             'id': r[0],
             'big_okrug': big,
@@ -279,6 +280,3 @@ if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
-
-
