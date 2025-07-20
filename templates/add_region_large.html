@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
@@ -42,18 +42,16 @@
             font-size: 14px;
             box-sizing: border-box;
         }
-        .location-box {
+        /* Нові стилі для мультивибору локацій */
+        select[multiple] {
+            height: 140px; /* приблизно як твій box */
+            background-color: #fefefe;
             border: 1px solid #ccc;
             border-radius: 4px;
-            padding: 10px;
-            max-height: 160px;
+            padding: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
             overflow-y: auto;
-            background-color: #fefefe;
-        }
-        .location-box label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: normal;
         }
         button {
             width: 100%;
@@ -72,10 +70,11 @@
 <body>
     <div class="wrapper">
         <form method="POST">
+
             <h2>Додати великий округ</h2>
 
             <label for="okrug">Округ</label>
-            <select name="okrug" required>
+            <select name="okrug" id="okrug" required>
                 <option value="">Оберіть округ</option>
                 {% for i in range(1, 7) %}
                     <option value="Округ {{ i }}">Округ {{ i }}</option>
@@ -83,25 +82,23 @@
             </select>
 
             <label for="last_name">Прізвище</label>
-            <input type="text" name="last_name" required>
+            <input type="text" name="last_name" id="last_name" required>
 
             <label for="first_name">Імʼя</label>
-            <input type="text" name="first_name" required>
+            <input type="text" name="first_name" id="first_name" required>
 
             <label for="middle_name">По батькові</label>
-            <input type="text" name="middle_name" required>
+            <input type="text" name="middle_name" id="middle_name" required>
 
             <label for="phone">Телефон</label>
-            <input type="text" name="phone" required>
+            <input type="text" name="phone" id="phone" required>
 
-            <label for="location">Локації (оберіть одну або кілька)</label>
-            <div class="location-box">
+            <label for="locations">Локації (оберіть одну або кілька)</label>
+            <select name="locations[]" id="locations" multiple size="10" required>
                 {% for i in range(1, 21) %}
-                    <label>
-                        <input type="checkbox" name="location" value="Л{{ i }}"> Л{{ i }}
-                    </label>
+                    <option value="Л{{ i }}">Л{{ i }}</option>
                 {% endfor %}
-            </div>
+            </select>
 
             <button type="submit">Зберегти</button>
         </form>
