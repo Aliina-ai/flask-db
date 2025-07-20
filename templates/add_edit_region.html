@@ -85,7 +85,8 @@
 <body>
   <div class="wrapper">
     <a href="{{ url_for('regions') }}" class="back">← Повернутися</a>
-    <form method="POST" action="{% if edit %}{{ url_for('edit_okrug', okrug_id=region['id']) }}{% else %}{{ request.path }}{% endif %}">
+    <form method="POST" action="{% if edit %}{{ url_for('edit_region', id=region['id']) }}{% else %}{{ request.path }}{% endif %}">
+
       <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} округ</h2>
 
       <label>Великий округ</label>
