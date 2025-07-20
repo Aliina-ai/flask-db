@@ -11,22 +11,27 @@
             padding: 0;
         }
         .wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        form {
+            max-width: 500px;
+            margin: 40px auto;
             background-color: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            width: 420px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 14px;
+            background-color: #ccc;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
         }
         h2 {
             text-align: center;
             color: #2b4f73;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
@@ -42,18 +47,8 @@
             font-size: 14px;
             box-sizing: border-box;
         }
-        .location-box {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
-            max-height: 160px;
-            overflow-y: auto;
-            background-color: #fefefe;
-        }
-        .location-box label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: normal;
+        select[multiple] {
+            height: 150px;
         }
         button {
             width: 100%;
@@ -71,48 +66,46 @@
 </head>
 <body>
     <div class="wrapper">
-        {% if edit %}
-            <form method="POST" action="{{ url_for('edit_region_large', region_id=region.get('id', 0)) }}">
-        {% else %}
-            <form method="POST" action="{{ request.path }}">
-        {% endif %}
+        <a href="{{ url_for('regions_large') }}" class="back-button">← Повернутися</a>
+
+        <form method="POST" action="{% if edit %}{{ url_for('edit_region_large', region_id=region.get('id', 0)) }}{% else %}{{ request.path }}{% endif %}">
             <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} великий округ</h2>
 
             <label for="okrug">Округ</label>
             <select name="okrug" required>
                 <option value="">Оберіть округ</option>
                 {% for i in range(1, 7) %}
-                    <option value="Округ {{ i }}" {% if edit and region.okrug == 'Округ ' ~ i %}selected{% endif %}>
+                    <option value="Округ {{ i }}" {% if edit and region['okrug'] == 'Округ ' ~ i %}selected{% endif %}>
                         Округ {{ i }}
                     </option>
                 {% endfor %}
             </select>
 
             <label for="last_name">Прізвище</label>
-            <input type="text" name="last_name" value="{{ region.last_name if edit else '' }}" required>
+            <input type="text" name="last_name" value="{{ region['last_name'] if edit else '' }}" required>
 
             <label for="first_name">Імʼя</label>
-            <input type="text" name="first_name" value="{{ region.first_name if edit else '' }}" required>
+            <input type="text" name="first_name" value="{{ region['first_name'] if edit else '' }}" required>
 
             <label for="middle_name">По батькові</label>
-            <input type="text" name="middle_name" value="{{ region.middle_name if edit else '' }}" required>
+            <input type="text" name="middle_name" value="{{ region['middle_name'] if edit else '' }}" required>
 
             <label for="phone">Телефон</label>
-            <input type="text" name="phone" value="{{ region.phone if edit else '' }}" required>
+            <input type="text" name="phone" value="{{ region['phone'] if edit else '' }}" required>
 
-            <label for="location">Локації (оберіть одну або кілька)</label>
-            <div class="location-box">
+            <label for="location">Локації (можна обрати кілька)</label>
+            <select name="location" multiple required>
                 {% for i in range(1, 21) %}
-                    <label>
-                        <input type="checkbox" name="location" value="Л{{ i }}"
-                        {% if edit and ('Л' ~ i) in region.location %}checked{% endif %}>
+                    <option value="Л{{ i }}"
+                        {% if edit and 'Л' ~ i in region['location'] %}selected{% endif %}>
                         Л{{ i }}
-                    </label>
+                    </option>
                 {% endfor %}
-            </div>
+            </select>
 
             <button type="submit">{% if edit %}Зберегти зміни{% else %}Додати{% endif %}</button>
         </form>
     </div>
 </body>
 </html>
+
