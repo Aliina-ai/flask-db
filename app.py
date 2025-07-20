@@ -30,18 +30,20 @@ def init_db():
         ''')
 
         c.execute('''
-            CREATE TABLE IF NOT EXISTS okrugs (
+            CREATE TABLE regions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                okrug_num INTEGER,
+                big_okrug INTEGER,
+                region_num INTEGER,
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
                 address TEXT,
                 phone TEXT,
-                birthday TEXT,
+                birth_date TEXT,
                 location TEXT
-             )
-         ''')
+
+            )
+        ''')
 
         conn.commit()
 
