@@ -113,6 +113,59 @@ def add_region_large():
 
     return render_template('add_region_large.html')
 
+@app.route('/regions-large/edit/<int:region_id>', methods=['GET', 'POST'])
+def edit_region_large(region_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати записи.')
+        return redirect(url_for('regions_large'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        locations = request.form.getlist('location')
+        location_str = ', '.join(locations)
+        c.execute('''
+            UPDATE regions_large SET
+                okrug = ?, last_name = ?, first_name = ?, middle_name = ?, phone = ?, location = ?
+            WHERE id = ?
+        ''', (
+            request.form['okrug'],
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['phone'],
+            location_str,
+            region_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('regions_large'))
+
+    # GET — показати форму з наявними даними
+    c.execute('SELECT * FROM regions_large WHERE id = ?', (region_id,))
+    row = c.fetchone()
+    conn.close()
+
+    if not row:
+        flash('Запис не знайдено.')
+        return redirect(url_for('regions_large'))
+
+    # Передаємо у форму
+    region = {
+        'id': row[0],
+        'okrug': row[1],
+        'last_name': row[2],
+        'first_name': row[3],
+        'middle_name': row[4],
+        'phone': row[5],
+        'location': row[6].split(', ')
+    }
+
+    return render_template('add_region_large.html', edit=True, region=region)
+
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
