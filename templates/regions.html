@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Округи</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      margin: 0;
+      padding: 30px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #fff;
+      background: #2b4f73;
+    }
+    .btn.back {
+      background: #ccc;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+    th {
+      background: #2b4f73;
+      color: #fff;
+    }
+    tr:hover {
+      background: #f1f5f9;
+    }
+    .action-btn {
+      padding: 6px 10px;
+      margin: 0 2px;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .edit {
+      background: #4caf50;
+    }
+    .del {
+      background: #e53935;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="{{ url_for('dashboard') }}" class="btn back">← Повернутися</a>
+    <a href="{{ url_for('add_region') }}" class="btn">+ Додати округ</a>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Великий округ</th>
+        <th>№ округу</th>
+        <th>Прізвище</th>
+        <th>Ім’я</th>
+        <th>По батькові</th>
+        <th>Адреса</th>
+        <th>Телефон</th>
+        <th>Дата нар.</th>
+        <th>Локація</th>
+        <th>Дії</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in data %}
+      <tr>
+        <td>{{ r.big_okrug }}</td>
+        <td>{{ r.region_num }}</td>
+        <td>{{ r.last_name }}</td>
+        <td>{{ r.first_name }}</td>
+        <td>{{ r.middle_name }}</td>
+        <td>{{ r.address }}</td>
+        <td>{{ r.phone }}</td>
+        <td>{{ r.birth_date }}</td>
+        <td>{{ r.location }}</td>
+        <td>
+          <a href="{{ url_for('edit_region', id=r.id) }}">
+            <button class="action-btn edit">Редагувати</button>
+          </a>
+          <form method="POST" action="{{ url_for('delete_region', id=r.id) }}" style="display:inline;" onsubmit="return confirm('Видалити?');">
+            <button class="action-btn del" type="submit">Видалити</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
+
