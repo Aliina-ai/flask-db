@@ -1,8 +1,8 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Додати великий округ</title>
+    <title>{% if edit %}Редагувати{% else %}Додати{% endif %} великий округ</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -42,16 +42,18 @@
             font-size: 14px;
             box-sizing: border-box;
         }
-        /* Нові стилі для мультивибору локацій */
-        select[multiple] {
-            height: 140px; /* приблизно як твій box */
-            background-color: #fefefe;
+        .location-box {
             border: 1px solid #ccc;
             border-radius: 4px;
-            padding: 8px;
-            font-size: 14px;
-            box-sizing: border-box;
+            padding: 10px;
+            max-height: 160px;
             overflow-y: auto;
+            background-color: #fefefe;
+        }
+        .location-box label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: normal;
         }
         button {
             width: 100%;
@@ -69,40 +71,44 @@
 </head>
 <body>
     <div class="wrapper">
-        <form method="POST">
-
-            <h2>Додати великий округ</h2>
+        <form method="POST" action="{{ url_for('edit_region_large', region_id=region.id) if edit else request.path }}">
+            <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} великий округ</h2>
 
             <label for="okrug">Округ</label>
-            <select name="okrug" id="okrug" required>
+            <select name="okrug" required>
                 <option value="">Оберіть округ</option>
                 {% for i in range(1, 7) %}
-                    <option value="Округ {{ i }}">Округ {{ i }}</option>
+                    <option value="Округ {{ i }}" {% if edit and region.okrug == 'Округ ' ~ i %}selected{% endif %}>
+                        Округ {{ i }}
+                    </option>
                 {% endfor %}
             </select>
 
             <label for="last_name">Прізвище</label>
-            <input type="text" name="last_name" id="last_name" required>
+            <input type="text" name="last_name" value="{{ region.last_name if edit else '' }}" required>
 
             <label for="first_name">Імʼя</label>
-            <input type="text" name="first_name" id="first_name" required>
+            <input type="text" name="first_name" value="{{ region.first_name if edit else '' }}" required>
 
             <label for="middle_name">По батькові</label>
-            <input type="text" name="middle_name" id="middle_name" required>
+            <input type="text" name="middle_name" value="{{ region.middle_name if edit else '' }}" required>
 
             <label for="phone">Телефон</label>
-            <input type="text" name="phone" id="phone" required>
+            <input type="text" name="phone" value="{{ region.phone if edit else '' }}" required>
 
-            <label for="locations">Локації (оберіть одну або кілька)</label>
-            <select name="locations[]" id="locations" multiple size="10" required>
+            <label for="location">Локації (оберіть одну або кілька)</label>
+            <div class="location-box">
                 {% for i in range(1, 21) %}
-                    <option value="Л{{ i }}">Л{{ i }}</option>
+                    <label>
+                        <input type="checkbox" name="location" value="Л{{ i }}"
+                        {% if edit and ('Л' ~ i) in region.location %}checked{% endif %}>
+                        Л{{ i }}
+                    </label>
                 {% endfor %}
-            </select>
+            </div>
 
-            <button type="submit">Зберегти</button>
+            <button type="submit">{% if edit %}Зберегти зміни{% else %}Додати{% endif %}</button>
         </form>
     </div>
 </body>
 </html>
-
