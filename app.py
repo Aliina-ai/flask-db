@@ -15,22 +15,20 @@ USERS = {
 
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS regions_large (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            okrug TEXT,
-            last_name TEXT,
-            first_name TEXT,
-            middle_name TEXT,
-            phone TEXT,
-            location TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions_large (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                phone TEXT,
+                location TEXT
+            )
+        ''')
+        conn.commit()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -63,11 +61,10 @@ def regions_large():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT * FROM regions_large")
-    rows = c.fetchall()
-    conn.close()
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM regions_large")
+        rows = c.fetchall()
 
     data = [
         {
@@ -95,21 +92,20 @@ def add_region_large():
         locations = request.form.getlist('location')
         location_str = ', '.join(locations)
 
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute('''
-            INSERT INTO regions_large (okrug, last_name, first_name, middle_name, phone, location)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (
-            request.form['okrug'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['phone'],
-            location_str
-        ))
-        conn.commit()
-        conn.close()
+        with sqlite3.connect(DB_PATH) as conn:
+            c = conn.cursor()
+            c.execute('''
+                INSERT INTO regions_large (okrug, last_name, first_name, middle_name, phone, location)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                request.form['okrug'],
+                request.form['last_name'],
+                request.form['first_name'],
+                request.form['middle_name'],
+                request.form['phone'],
+                location_str
+            ))
+            conn.commit()
         return redirect(url_for('regions_large'))
 
     return render_template('add_region_large.html')
@@ -122,33 +118,31 @@ def edit_region_large(region_id):
         flash('Лише адміністратор може редагувати записи.')
         return redirect(url_for('regions_large'))
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
 
-    if request.method == 'POST':
-        locations = request.form.getlist('location')
-        location_str = ', '.join(locations)
-        c.execute('''
-            UPDATE regions_large SET
-                okrug = ?, last_name = ?, first_name = ?, middle_name = ?, phone = ?, location = ?
-            WHERE id = ?
-        ''', (
-            request.form['okrug'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['phone'],
-            location_str,
-            region_id
-        ))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('regions_large'))
+        if request.method == 'POST':
+            locations = request.form.getlist('location')
+            location_str = ', '.join(locations)
+            c.execute('''
+                UPDATE regions_large SET
+                    okrug = ?, last_name = ?, first_name = ?, middle_name = ?, phone = ?, location = ?
+                WHERE id = ?
+            ''', (
+                request.form['okrug'],
+                request.form['last_name'],
+                request.form['first_name'],
+                request.form['middle_name'],
+                request.form['phone'],
+                location_str,
+                region_id
+            ))
+            conn.commit()
+            return redirect(url_for('regions_large'))
 
-    # GET — показати форму з наявними даними
-    c.execute('SELECT * FROM regions_large WHERE id = ?', (region_id,))
-    row = c.fetchone()
-    conn.close()
+        # GET — показати форму з наявними даними
+        c.execute('SELECT * FROM regions_large WHERE id = ?', (region_id,))
+        row = c.fetchone()
 
     if not row:
         flash('Запис не знайдено.')
@@ -161,12 +155,12 @@ def edit_region_large(region_id):
         'first_name': row[3],
         'middle_name': row[4],
         'phone': row[5],
-        'location': row[6].split(', ')
+        'location': row[6].split(', ') if row[6] else []
     }
 
     return render_template('add_region_large.html', edit=True, region=region)
-    
- @app.route('/regions-large/delete/<int:region_id>', methods=['POST'])
+
+@app.route('/regions-large/delete/<int:region_id>', methods=['POST'])
 def delete_region_large(region_id):
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -174,18 +168,17 @@ def delete_region_large(region_id):
         flash('Лише адміністратор може видаляти записи.')
         return redirect(url_for('regions_large'))
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('DELETE FROM regions_large WHERE id = ?', (region_id,))
-    conn.commit()
-    conn.close()
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute('DELETE FROM regions_large WHERE id = ?', (region_id,))
+        conn.commit()
     flash('Запис успішно видалено.')
     return redirect(url_for('regions_large'))
-
 
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
 
