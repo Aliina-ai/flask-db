@@ -1,82 +1,84 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Округи</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f7f9fb;
-      margin: 0;
       padding: 30px;
     }
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      text-decoration: none;
-      color: #fff;
-      background: #2b4f73;
-    }
-    .btn.back {
-      background: #ccc;
-      color: #333;
-    }
-    table {
+    .table {
       width: 100%;
       border-collapse: collapse;
       background: #fff;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
     th, td {
-      padding: 12px;
-      text-align: left;
       border: 1px solid #ddd;
+      padding: 10px;
       font-size: 14px;
+      text-align: left;
     }
     th {
       background: #2b4f73;
       color: #fff;
     }
-    tr:hover {
-      background: #f1f5f9;
+    .actions {
+      text-align: center;
     }
     .action-btn {
       padding: 6px 10px;
-      margin: 0 2px;
+      margin: 2px;
       border: none;
       border-radius: 4px;
-      font-size: 13px;
       cursor: pointer;
+    }
+    .edit-btn {
+      background: #4caf50;
       color: #fff;
     }
-    .edit {
-      background: #4caf50;
-    }
-    .del {
+    .delete-btn {
       background: #e53935;
+      color: #fff;
+    }
+    .top-bar {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .back {
+      background: #ccc;
+      color: #333;
+    }
+    .add {
+      background: #2b4f73;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <div class="top">
+
+  <div class="top-bar">
     <a href="{{ url_for('dashboard') }}" class="btn back">← Повернутися</a>
-    <a href="{{ url_for('add_region') }}" class="btn">+ Додати округ</a>
+    <a href="{{ url_for('add_region') }}" class="btn add">+ Додати округ</a>
   </div>
 
-  <table>
+  <table class="table">
     <thead>
       <tr>
         <th>Великий округ</th>
-        <th>№ округу</th>
+        <th>Назва округу</th>
         <th>Прізвище</th>
-        <th>Ім’я</th>
+        <th>Ім'я</th>
         <th>По батькові</th>
         <th>Адреса</th>
         <th>Телефон</th>
@@ -86,29 +88,32 @@
       </tr>
     </thead>
     <tbody>
-      {% for r in data %}
+      {% for row in data %}
       <tr>
-        <td>{{ r.big_okrug }}</td>
-        <td>{{ r.region_num }}</td>
-        <td>{{ r.last_name }}</td>
-        <td>{{ r.first_name }}</td>
-        <td>{{ r.middle_name }}</td>
-        <td>{{ r.address }}</td>
-        <td>{{ r.phone }}</td>
-        <td>{{ r.birth_date }}</td>
-        <td>{{ r.location }}</td>
-        <td>
-          <a href="{{ url_for('edit_region', id=r.id) }}">
-            <button class="action-btn edit">Редагувати</button>
+        <td>{{ row.large_okrug }}</td>
+        <td>{{ row.district_name }}</td>
+        <td>{{ row.last_name }}</td>
+        <td>{{ row.first_name }}</td>
+        <td>{{ row.middle_name }}</td>
+        <td>{{ row.address }}</td>
+        <td>{{ row.phone }}</td>
+        <td>{{ row.birth_date }}</td>
+        <td>{{ row.location }}</td>
+        <td class="actions">
+          <a href="{{ url_for('edit_region', region_id=row.id) }}">
+            <button class="action-btn edit-btn">Редагувати</button>
           </a>
-          <form method="POST" action="{{ url_for('delete_region', id=r.id) }}" style="display:inline;" onsubmit="return confirm('Видалити?');">
-            <button class="action-btn del" type="submit">Видалити</button>
+          <form method="POST" action="{{ url_for('delete_region', region_id=row.id) }}" 
+                onsubmit="return confirm('Видалити?');" style="display:inline">
+            <button type="submit" class="action-btn delete-btn">Видалити</button>
           </form>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+
 </body>
 </html>
+
 
