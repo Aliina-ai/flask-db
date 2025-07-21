@@ -13,10 +13,12 @@ USERS = {
     'Геннадій':  {'password': 'zT38mWc9', 'role': 'operator'},
 }
 
+
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
         c = conn.cursor()
+
         c.execute('''
             CREATE TABLE IF NOT EXISTS regions_large (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,27 +43,28 @@ def init_db():
                 phone TEXT,
                 birth_date TEXT,
                 location TEXT
-             )
-         ''')
-         c.execute('''
-             CREATE TABLE IF NOT EXISTS activists (
-                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                 large_okrug TEXT,
-                 okrug TEXT,
-                 last_name TEXT,
-                 first_name TEXT,
-                 middle_name TEXT,
-                 address TEXT,
-                 phone TEXT,
-                 birth_date TEXT,
-                 subscribers_count INTEGER,
-                 newspapers_count INTEGER,
-                 location TEXT
-              )
-          ''')
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS activists (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                large_okrug TEXT,
+                okrug TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                address TEXT,
+                phone TEXT,
+                birth_date TEXT,
+                subscribers_count INTEGER,
+                newspapers_count INTEGER,
+                location TEXT
+            )
+        ''')
 
         conn.commit()
-        
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -78,17 +81,21 @@ def login():
             error = 'Невірне ім’я або пароль'
     return render_template('login.html', error=error)
 
+
 @app.route('/dashboard')
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('dashboard.html', username=session['username'], role=session['role'])
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
+
+# ---------- REGIONS LARGE ----------
 @app.route('/regions-large')
 def regions_large():
     if 'username' not in session:
@@ -99,25 +106,22 @@ def regions_large():
         c.execute("SELECT * FROM regions_large")
         rows = c.fetchall()
 
-    data = [
-        {
-            'id': row[0],
-            'okrug': row[1],
-            'last_name': row[2],
-            'first_name': row[3],
-            'middle_name': row[4],
-            'phone': row[5],
-            'location': row[6]
-        }
-        for row in rows
-    ]
+    data = [{
+        'id': row[0],
+        'okrug': row[1],
+        'last_name': row[2],
+        'first_name': row[3],
+        'middle_name': row[4],
+        'phone': row[5],
+        'location': row[6]
+    } for row in rows]
+
     return render_template('regions_large.html', data=data)
+
 
 @app.route('/add-region-large', methods=['GET', 'POST'])
 def add_region_large():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може додавати записи.')
         return redirect(url_for('regions_large'))
 
@@ -143,11 +147,10 @@ def add_region_large():
 
     return render_template('add_region_large.html')
 
+
 @app.route('/regions-large/edit/<int:region_id>', methods=['GET', 'POST'])
 def edit_region_large(region_id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може редагувати записи.')
         return redirect(url_for('regions_large'))
 
@@ -157,6 +160,7 @@ def edit_region_large(region_id):
         if request.method == 'POST':
             locations = request.form.getlist('location')
             location_str = ', '.join(locations)
+
             c.execute('''
                 UPDATE regions_large SET
                     okrug = ?, last_name = ?, first_name = ?, middle_name = ?, phone = ?, location = ?
@@ -173,7 +177,6 @@ def edit_region_large(region_id):
             conn.commit()
             return redirect(url_for('regions_large'))
 
-        # GET — показати форму з наявними даними
         c.execute('SELECT * FROM regions_large WHERE id = ?', (region_id,))
         row = c.fetchone()
 
@@ -181,7 +184,6 @@ def edit_region_large(region_id):
         flash('Запис не знайдено.')
         return redirect(url_for('regions_large'))
 
-    # Передаємо у форму
     region = {
         'okrug': row[1],
         'last_name': row[2],
@@ -193,11 +195,10 @@ def edit_region_large(region_id):
 
     return render_template('add_region_large.html', edit=True, region=region)
 
+
 @app.route('/regions-large/delete/<int:region_id>', methods=['POST'])
 def delete_region_large(region_id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може видаляти записи.')
         return redirect(url_for('regions_large'))
 
@@ -205,50 +206,56 @@ def delete_region_large(region_id):
         c = conn.cursor()
         c.execute('DELETE FROM regions_large WHERE id = ?', (region_id,))
         conn.commit()
+
     flash('Запис успішно видалено.')
     return redirect(url_for('regions_large'))
 
+
+# ---------- REGIONS ----------
 @app.route('/regions')
 def regions():
     if 'username' not in session:
         return redirect(url_for('login'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("SELECT * FROM regions")
     rows = c.fetchall()
     conn.close()
+
     data = [{
         'id': row[0], 'large_okrug': row[1], 'district_name': row[2],
         'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
         'address': row[6], 'phone': row[7], 'birth_date': row[8], 'location': row[9]
     } for row in rows]
+
     return render_template('regions.html', data=data)
 
-# Add form:
-@app.route('/regions/add', methods=['GET','POST'])
+
+@app.route('/regions/add', methods=['GET', 'POST'])
 def add_region():
     if 'username' not in session or session.get('role') != 'admin':
         flash('Недостатньо прав')
         return redirect(url_for('regions'))
 
     if request.method == 'POST':
-        num = int(request.form['okrug_num'])  # відповідність полю name="okrug_num"
+        num = int(request.form['okrug_num'])
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute('''
             INSERT INTO regions (
-                big_okrug, region_num, last_name, first_name, middle_name,
+                large_okrug, district_name, last_name, first_name, middle_name,
                 address, phone, birth_date, location
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            ((num - 1) // 7 + 1),  # big_okrug
+            ((num - 1) // 7 + 1),
             num,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
             request.form['address'],
             request.form['phone'],
-            request.form['birthday'],         # правильне ім’я!
+            request.form['birthday'],
             request.form['location']
         ))
         conn.commit()
@@ -257,21 +264,23 @@ def add_region():
 
     return render_template('add_edit_region.html', edit=False)
 
-# Edit version:
-@app.route('/regions/edit/<int:region_id>', methods=['GET','POST'])
+
+@app.route('/regions/edit/<int:region_id>', methods=['GET', 'POST'])
 def edit_region(region_id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role')!='admin':
-        flash('Лише адміністратор може редагувати.'); return redirect(url_for('regions'))
-    conn=sqlite3.connect(DB_PATH); c=conn.cursor()
-    if request.method=='POST':
-        locs=request.form.getlist('location'); loc=', '.join(locs)
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('regions'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        loc = ', '.join(request.form.getlist('location'))
         c.execute('''
             UPDATE regions SET large_okrug=?, district_name=?, last_name=?, first_name=?,
                 middle_name=?, address=?, phone=?, birth_date=?, location=?
             WHERE id=?
-        ''',(
+        ''', (
             request.form['large_okrug'],
             request.form['district_name'],
             request.form['last_name'],
@@ -283,29 +292,43 @@ def edit_region(region_id):
             loc,
             region_id
         ))
-        conn.commit(); conn.close(); return redirect(url_for('regions'))
-    c.execute('SELECT * FROM regions WHERE id=?',(region_id,))
-    row=c.fetchone(); conn.close()
-    if not row: flash('Не знайдено.'); return redirect(url_for('regions'))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('regions'))
+
+    c.execute('SELECT * FROM regions WHERE id=?', (region_id,))
+    row = c.fetchone()
+    conn.close()
+
+    if not row:
+        flash('Не знайдено.')
+        return redirect(url_for('regions'))
+
     region = {
-        'id':row[0],'large_okrug':row[1],'district_name':row[2],
-        'last_name':row[3],'first_name':row[4],'middle_name':row[5],
-        'address':row[6],'phone':row[7],'birth_date':row[8],'location':row[9].split(', ')
+        'id': row[0], 'large_okrug': row[1], 'district_name': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'address': row[6], 'phone': row[7], 'birth_date': row[8], 'location': row[9].split(', ')
     }
+
     return render_template('add_region.html', edit=True, region=region)
 
-# Delete
+
 @app.route('/regions/delete/<int:region_id>', methods=['POST'])
 def delete_region(region_id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role')!='admin':
-        flash('Лише адміністратор може видаляти.'); return redirect(url_for('regions'))
-    conn=sqlite3.connect(DB_PATH); c=conn.cursor()
-    c.execute('DELETE FROM regions WHERE id=?',(region_id,))
-    conn.commit(); conn.close(); flash('Видалено.')
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти.')
+        return redirect(url_for('regions'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions WHERE id = ?', (region_id,))
+    conn.commit()
+    conn.close()
+    flash('Видалено.')
     return redirect(url_for('regions'))
 
+
+# ---------- ACTIVISTS ----------
 @app.route('/activists')
 def activists():
     if 'username' not in session:
@@ -333,12 +356,11 @@ def activists():
     } for row in rows]
 
     return render_template('activists.html', data=data)
-    
-    @app.route('/activists/add', methods=['GET', 'POST'])
+
+
+@app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може додавати.')
         return redirect(url_for('activists'))
 
@@ -364,16 +386,16 @@ def add_activist():
             request.form['newspapers_count'],
             request.form['location']
         ))
-        conn.commit(); conn.close()
+        conn.commit()
+        conn.close()
         return redirect(url_for('activists'))
 
     return render_template('add_activist.html')
-    
-    @app.route('/activists/edit/<int:activist_id>', methods=['GET', 'POST'])
+
+
+@app.route('/activists/edit/<int:activist_id>', methods=['GET', 'POST'])
 def edit_activist(activist_id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може редагувати.')
         return redirect(url_for('activists'))
 
@@ -401,11 +423,13 @@ def edit_activist(activist_id):
             request.form['location'],
             activist_id
         ))
-        conn.commit(); conn.close()
+        conn.commit()
+        conn.close()
         return redirect(url_for('activists'))
 
     c.execute('SELECT * FROM activists WHERE id = ?', (activist_id,))
-    row = c.fetchone(); conn.close()
+    row = c.fetchone()
+    conn.close()
 
     if not row:
         flash('Активіста не знайдено.')
@@ -428,22 +452,25 @@ def edit_activist(activist_id):
 
     return render_template('add_activist.html', edit=True, activist=activist)
 
+
 @app.route('/activists/delete/<int:activist_id>', methods=['POST'])
 def delete_activist(activist_id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може видаляти.')
         return redirect(url_for('activists'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('DELETE FROM activists WHERE id = ?', (activist_id,))
-    conn.commit(); conn.close()
+    conn.commit()
+    conn.close()
     flash('Запис успішно видалено.')
     return redirect(url_for('activists'))
 
+
+# ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
