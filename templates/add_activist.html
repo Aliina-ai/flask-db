@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if edit %}Редагувати{% else %}Додати{% endif %} активіста</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f7f9fb;
+            margin: 0;
+            padding: 0;
+        }
+        .wrapper {
+            max-width: 650px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 14px;
+            background-color: #ccc;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        h2 {
+            text-align: center;
+            color: #2b4f73;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            background-color: #2b4f73;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <a href="{{ url_for('activists') }}" class="back-button">← Повернутися</a>
+        <form method="POST" action="{% if edit %}{{ url_for('edit_activist', activist_id=activist.get('id', 0)) }}{% else %}{{ request.path }}{% endif %}">
+            <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} активіста</h2>
+
+            <label>Великий округ</label>
+            <select name="large_okrug" required>
+                <option value="">Оберіть</option>
+                {% for i in range(1, 7) %}
+                    <option value="Округ {{ i }}" {% if edit and activist['large_okrug'] == 'Округ ' ~ i %}selected{% endif %}>Округ {{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Округ</label>
+            <input type="text" name="okrug" value="{{ activist['okrug'] if edit else '' }}" required>
+
+            <label>Прізвище</label>
+            <input type="text" name="last_name" value="{{ activist['last_name'] if edit else '' }}" required>
+
+            <label>Імʼя</label>
+            <input type="text" name="first_name" value="{{ activist['first_name'] if edit else '' }}" required>
+
+            <label>По батькові</label>
+            <input type="text" name="middle_name" value="{{ activist['middle_name'] if edit else '' }}" required>
+
+            <label>Адреса</label>
+            <input type="text" name="address" value="{{ activist['address'] if edit else '' }}" required>
+
+            <label>Телефон</label>
+            <input type="text" name="phone" value="{{ activist['phone'] if edit else '' }}" required>
+
+            <label>Дата народження</label>
+            <input type="date" name="birth_date" value="{{ activist['birth_date'] if edit else '' }}" required>
+
+            <label>Кількість підписників</label>
+            <input type="number" name="subscribers_count" value="{{ activist['subscribers_count'] if edit else '' }}" required>
+
+            <label>Кількість газет</label>
+            <input type="number" name="newspapers_count" value="{{ activist['newspapers_count'] if edit else '' }}" required>
+
+            <label>Локація</label>
+            <select name="location" required>
+                <option value="">Оберіть локацію</option>
+                {% for i in range(1, 21) %}
+                    <option value="Л{{ i }}" {% if edit and activist['location'] == 'Л' ~ i %}selected{% endif %}>Л{{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">{% if edit %}Зберегти зміни{% else %}Додати активіста{% endif %}</button>
+        </form>
+    </div>
+</body>
+</html>
