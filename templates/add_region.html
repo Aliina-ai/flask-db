@@ -47,9 +47,6 @@
             font-size: 14px;
             box-sizing: border-box;
         }
-        select[multiple] {
-            height: 150px;
-        }
         button {
             width: 100%;
             margin-top: 25px;
@@ -102,10 +99,11 @@
             <label for="birth_date">Дата народження</label>
             <input type="date" name="birth_date" value="{{ region['birth_date'] if edit else '' }}" required>
 
-            <label for="location">Локації (можна обрати кілька)</label>
-            <select name="location" multiple required>
+            <label for="location">Локація</label>
+            <select name="location" required>
+                <option value="">Оберіть локацію</option>
                 {% for i in range(1, 21) %}
-                    <option value="Л{{ i }}" {% if edit and 'Л' ~ i in region['location'] %}selected{% endif %}>
+                    <option value="Л{{ i }}" {% if edit and region['location'][0] == 'Л' ~ i %}selected{% endif %}>
                         Л{{ i }}
                     </option>
                 {% endfor %}
