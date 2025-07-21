@@ -467,17 +467,6 @@ def delete_activist(activist_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('activists'))
 
-@app.route('/subscribers')
-def subscribers():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    return render_template('subscribers.html')
-    
-@app.route('/followers')
-def followers_alias():
-    return redirect(url_for('subscribers'))
-
-
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
