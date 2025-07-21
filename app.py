@@ -43,8 +43,25 @@ def init_db():
                 location TEXT
              )
          ''')
+         c.execute('''
+             CREATE TABLE IF NOT EXISTS activists (
+                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 large_okrug TEXT,
+                 okrug TEXT,
+                 last_name TEXT,
+                 first_name TEXT,
+                 middle_name TEXT,
+                 address TEXT,
+                 phone TEXT,
+                 birth_date TEXT,
+                 subscribers_count INTEGER,
+                 newspapers_count INTEGER,
+                 location TEXT
+              )
+          ''')
 
         conn.commit()
+        
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -288,6 +305,143 @@ def delete_region(region_id):
     c.execute('DELETE FROM regions WHERE id=?',(region_id,))
     conn.commit(); conn.close(); flash('Видалено.')
     return redirect(url_for('regions'))
+
+@app.route('/activists')
+def activists():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM activists")
+    rows = c.fetchall()
+    conn.close()
+
+    data = [{
+        'id': row[0],
+        'large_okrug': row[1],
+        'okrug': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'subscribers_count': row[9],
+        'newspapers_count': row[10],
+        'location': row[11]
+    } for row in rows]
+
+    return render_template('activists.html', data=data)
+    
+    @app.route('/activists/add', methods=['GET', 'POST'])
+def add_activist():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('activists'))
+
+    if request.method == 'POST':
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO activists (
+                large_okrug, okrug, last_name, first_name, middle_name,
+                address, phone, birth_date, subscribers_count,
+                newspapers_count, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            request.form['large_okrug'],
+            request.form['okrug'],
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['address'],
+            request.form['phone'],
+            request.form['birth_date'],
+            request.form['subscribers_count'],
+            request.form['newspapers_count'],
+            request.form['location']
+        ))
+        conn.commit(); conn.close()
+        return redirect(url_for('activists'))
+
+    return render_template('add_activist.html')
+    
+    @app.route('/activists/edit/<int:activist_id>', methods=['GET', 'POST'])
+def edit_activist(activist_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('activists'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        c.execute('''
+            UPDATE activists SET
+                large_okrug = ?, okrug = ?, last_name = ?, first_name = ?,
+                middle_name = ?, address = ?, phone = ?, birth_date = ?,
+                subscribers_count = ?, newspapers_count = ?, location = ?
+            WHERE id = ?
+        ''', (
+            request.form['large_okrug'],
+            request.form['okrug'],
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['address'],
+            request.form['phone'],
+            request.form['birth_date'],
+            request.form['subscribers_count'],
+            request.form['newspapers_count'],
+            request.form['location'],
+            activist_id
+        ))
+        conn.commit(); conn.close()
+        return redirect(url_for('activists'))
+
+    c.execute('SELECT * FROM activists WHERE id = ?', (activist_id,))
+    row = c.fetchone(); conn.close()
+
+    if not row:
+        flash('Активіста не знайдено.')
+        return redirect(url_for('activists'))
+
+    activist = {
+        'id': row[0],
+        'large_okrug': row[1],
+        'okrug': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'subscribers_count': row[9],
+        'newspapers_count': row[10],
+        'location': row[11]
+    }
+
+    return render_template('add_activist.html', edit=True, activist=activist)
+
+@app.route('/activists/delete/<int:activist_id>', methods=['POST'])
+def delete_activist(activist_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти.')
+        return redirect(url_for('activists'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM activists WHERE id = ?', (activist_id,))
+    conn.commit(); conn.close()
+    flash('Запис успішно видалено.')
+    return redirect(url_for('activists'))
 
 if __name__ == '__main__':
     init_db()
