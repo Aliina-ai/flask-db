@@ -32,8 +32,8 @@ def init_db():
         c.execute('''
             CREATE TABLE IF NOT EXISTS regions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                big_okrug INTEGER,
-                region_num INTEGER,
+                large_okrug TEXT,
+                district_name TEXT,
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
@@ -41,8 +41,8 @@ def init_db():
                 phone TEXT,
                 birth_date TEXT,
                 location TEXT
-            )
-        ''')
+             )
+         ''')
 
         conn.commit()
 
