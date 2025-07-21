@@ -200,24 +200,11 @@ def regions():
     c.execute("SELECT * FROM regions")
     rows = c.fetchall()
     conn.close()
-    data = []
-    for r in rows:
-        num = r[1]
-        if num is None:
-            num = 1
-        big = ((num - 1) // 7) + 1
-        data.append({
-            'id': r[0],
-            'big_okrug': big,
-            'region_num': num,
-            'last_name': r[2],
-            'first_name': r[3],
-            'middle_name': r[4],
-            'address': r[5],
-            'phone': r[6],
-            'birth_date': r[7],
-            'location': r[8]
-        })
+    data = [{
+        'id': row[0], 'large_okrug': row[1], 'district_name': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'address': row[6], 'phone': row[7], 'birth_date': row[8], 'location': row[9]
+    } for row in rows]
     return render_template('regions.html', data=data)
 
 # Add form:
