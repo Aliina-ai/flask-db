@@ -62,6 +62,21 @@ def init_db():
                 location TEXT
             )
         ''')
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS subscribers (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                polling_station TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
 
         conn.commit()
 
@@ -473,37 +488,38 @@ def subscribers():
         return redirect(url_for('login'))
     return render_template('subscribers.html')
 
-@app.route('/subscribers/<int:okrug>')
-def subscribers_by_okrug(okrug):
+@app.route('/subscribers')
+def subscribers():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('subscribers.html')
+
+@app.route('/subscribers/<int:okrug_id>')
+def subscribers_okrug(okrug_id):
     if 'username' not in session:
         return redirect(url_for('login'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''
-        SELECT district, polling_station, last_name, first_name, middle_name,
-               street, building, apartment, phone, activist
-        FROM subscribers
-        WHERE okrug = ?
-    ''', (okrug,))
+    c.execute("SELECT * FROM subscribers WHERE okrug = ?", (okrug_id,))
     rows = c.fetchall()
     conn.close()
 
     data = [{
-        'district': row[0],
-        'polling_station': row[1],
-        'last_name': row[2],
-        'first_name': row[3],
-        'middle_name': row[4],
-        'street': row[5],
-        'building': row[6],
-        'apartment': row[7],
-        'phone': row[8],
-        'activist': row[9]
+        'id': row[0],
+        'okrug': row[1],
+        'polling_station': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'street': row[6],
+        'building': row[7],
+        'apartment': row[8],
+        'phone': row[9],
+        'activist': row[10]
     } for row in rows]
 
-    return render_template('subscribers_list.html', okrug=okrug, data=data)
-
+    return render_template('subscribers_okrug.html', data=data, okrug=okrug_id)
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
