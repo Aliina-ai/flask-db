@@ -488,6 +488,7 @@ def subscribers():
         return redirect(url_for('login'))
     return render_template('subscribers.html')
 
+# ---------- SUBSCRIBERS ----------
 @app.route('/subscribers')
 def subscribers():
     if 'username' not in session:
@@ -520,6 +521,7 @@ def subscribers_okrug(okrug_id):
     } for row in rows]
 
     return render_template('subscribers_okrug.html', data=data, okrug=okrug_id)
+
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
