@@ -490,13 +490,13 @@ def subscribers():
 
 # ---------- SUBSCRIBERS ----------
 @app.route('/subscribers')
-def subscribers_home():
+def subscribers():
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('subscribers_home.html')
 
 
-@app.route('/subscribers/okrug/<int:okrug_id>')
+@app.route('/subscribers_home/okrug/<int:okrug_id>')
 def subscribers_okrug(okrug_id):
     if 'username' not in session:
         return redirect(url_for('login'))
