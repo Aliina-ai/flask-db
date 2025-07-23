@@ -515,8 +515,8 @@ def show_region_subscribers(okrug_id):
     } for row in rows]
 
     return render_template('regions_generic.html', data=data, okrug_id=okrug_id)
-
-
+    for i in range(1, 43):
+    app.add_url_rule(f'/regions{i}', f'regions{i}', lambda i=i: render_okrug_subscribers(i))
 
 
 # ---------- APP LAUNCH ----------
