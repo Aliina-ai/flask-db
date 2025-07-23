@@ -490,16 +490,15 @@ def subscribers_home():
     return render_template('subscribers_home.html')
 
 
-@app.route('/subscribers_home/okrug/<int:okrug_id>')
-def subscribers_okrug(okrug_id):
+@app.route('/regions/<int:okrug_id>')
+def show_region_subscribers(okrug_id):
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT * FROM subscribers WHERE okrug = ?", (okrug_id,))
-    rows = c.fetchall()
-    conn.close()
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM subscribers WHERE okrug = ?", (okrug_id,))
+        rows = c.fetchall()
 
     data = [{
         'id': row[0],
@@ -515,7 +514,8 @@ def subscribers_okrug(okrug_id):
         'activist': row[10]
     } for row in rows]
 
-    return render_template('subscribers_okrug.html', data=data, okrug=okrug_id)
+    return render_template('regions_generic.html', data=data, okrug_id=okrug_id)
+
 
 
 
