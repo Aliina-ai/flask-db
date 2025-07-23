@@ -489,7 +489,7 @@ def subscribers():
     return render_template('subscribers.html')
 
 # ---------- SUBSCRIBERS ----------
-@app.route('/subscribers')
+@app.route('/subscribers_home')
 def subscribers():
     if 'username' not in session:
         return redirect(url_for('login'))
