@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Додати підписника — Округ 1</title>
+    <title>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -54,45 +54,39 @@
         }
 
         .back-button {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 8px 14px;
-            background-color: #ccc;
-            color: #333;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 14px;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: transparent;
+            color: #2b4f73;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
         }
     </style>
 
     <script>
         function updatePollingStation() {
-            const street = document.getElementById("street").value.trim();
-            const house = document.getElementById("building").value.trim();
+            const street = document.getElementById("street").value;
+            const house = document.getElementById("building").value;
             let polling = "";
 
-            const complexHouseNumbers = ["77/43"];
             const num = parseInt(house);
-            const isNumeric = !isNaN(num);
+            const complexHouseNumbers = ["77/43"];
 
             if (street === "вул. Гайок") {
-                if (
-                    complexHouseNumbers.includes(house) ||
-                    (isNumeric && (
-                        (num >= 1 && num <= 4) ||
-                        (num >= 139 && num <= 177) ||
-                        [181, 182, 183, 184, 185, 214, 215].includes(num) ||
-                        (num >= 228 && num <= 270)
-                    ))
-                ) {
+                if ((num >= 1 && num <= 4) || complexHouseNumbers.includes(house) ||
+                    [139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,
+                     160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,181,182,183,
+                     184,185,214,215,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,
+                     244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,
+                     264,265,266,267,268,269,270].includes(num)) {
                     polling = "321097";
-                } else if (
-                    isNumeric &&
-                    ([5,6,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,
-                      107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,
-                      123,124,125,126,127,128,129,130,180,219,220,221,222,223,224,225,
-                      226,227,399,400,401,402,403].includes(num))
-                ) {
+                } else if ([5,6,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,
+                            109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,
+                            127,128,129,130,180,219,220,221,222,223,224,225,226,227,399,400,401,402,
+                            403].includes(num)) {
                     polling = "321098";
                 }
             }
@@ -103,6 +97,8 @@
         function goBack() {
             window.history.back();
         }
+
+        window.onload = updatePollingStation;
     </script>
 </head>
 <body>
@@ -110,32 +106,32 @@
 <div class="container">
     <button class="back-button" onclick="goBack()">← Повернутися</button>
 
-    <h2>Додати підписника — Округ 1</h2>
+    <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</h2>
 
-    <form method="post" action="/add_subscriber1">
+    <form method="post">
         <label>Округ</label>
         <input type="text" name="okrug" value="1" readonly>
 
         <label>Виборча дільниця</label>
-        <input type="text" name="polling_station" id="polling_station" readonly>
+        <input type="text" name="polling_station" id="polling_station" value="{{ subscriber.polling_station if edit else '' }}" readonly>
 
         <label>Прізвище</label>
-        <input type="text" name="last_name" required>
+        <input type="text" name="last_name" value="{{ subscriber.last_name if edit else '' }}" required>
 
         <label>Ім’я</label>
-        <input type="text" name="first_name" required>
+        <input type="text" name="first_name" value="{{ subscriber.first_name if edit else '' }}" required>
 
         <label>По батькові</label>
-        <input type="text" name="middle_name">
+        <input type="text" name="middle_name" value="{{ subscriber.middle_name if edit else '' }}">
 
         <label>Вулиця</label>
-        <input list="streets" name="street" id="street" onchange="updatePollingStation()">
+        <input list="streets" name="street" id="street" value="{{ subscriber.street if edit else '' }}" onchange="updatePollingStation()">
         <datalist id="streets">
             <option value="вул. Гайок">
         </datalist>
 
         <label>Будинок</label>
-        <input list="buildings" name="building" id="building" onchange="updatePollingStation()">
+        <input list="buildings" name="building" id="building" value="{{ subscriber.building if edit else '' }}" onchange="updatePollingStation()">
         <datalist id="buildings">
             {% for number in buildings %}
                 <option value="{{ number }}">
@@ -143,13 +139,13 @@
         </datalist>
 
         <label>Квартира</label>
-        <input type="text" name="apartment">
+        <input type="text" name="apartment" value="{{ subscriber.apartment if edit else '' }}">
 
         <label>Телефон</label>
-        <input type="text" name="phone">
+        <input type="text" name="phone" value="{{ subscriber.phone if edit else '' }}">
 
         <label>Активіст</label>
-        <input list="activists" name="activist">
+        <input list="activists" name="activist" value="{{ subscriber.activist if edit else '' }}">
         <datalist id="activists">
             {% for activist in activists %}
                 <option value="{{ activist }}">
