@@ -519,6 +519,41 @@ def render_okrug_subscribers(okrug_id):
 def regions1():
     return render_okrug_subscribers(1)
 
+@app.route('/subscribers/add1', methods=['GET', 'POST'])
+def add_subscriber1():
+    return handle_subscriber_form(1)
+
+def handle_subscriber_form(okrug_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash("Лише адміністратор може додавати підписників.")
+        return redirect(url_for('show_region_subscribers', okrug_id=okrug_id))
+
+    if request.method == 'POST':
+        with sqlite3.connect(DB_PATH) as conn:
+            c = conn.cursor()
+            c.execute('''
+                INSERT INTO subscribers (
+                    okrug, polling_station, last_name, first_name, middle_name,
+                    street, building, apartment, phone, activist
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                okrug_id,
+                request.form['polling_station'],
+                request.form['last_name'],
+                request.form['first_name'],
+                request.form['middle_name'],
+                request.form['street'],
+                request.form['building'],
+                request.form['apartment'],
+                request.form['phone'],
+                request.form['activist']
+            ))
+            conn.commit()
+        return redirect(url_for('show_region_subscribers', okrug_id=okrug_id))
+
+    return render_template('add_subscriber.html', okrug_id=okrug_id)
+
+
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
