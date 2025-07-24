@@ -519,6 +519,13 @@ def render_okrug_subscribers(okrug_id):
 def regions1():
     return render_okrug_subscribers(1)
 
+@app.route('/subscribers/delete/<int:id>', methods=['POST'])
+def delete_subscriber(id):
+    subscriber = Subscriber.query.get_or_404(id)
+    db.session.delete(subscriber)
+    db.session.commit()
+    return redirect('/subscribers')
+
 @app.route('/add_subscriber1', methods=['GET', 'POST'])
 def add_subscriber1():
     if 'username' not in session:
