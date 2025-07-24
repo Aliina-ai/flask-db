@@ -616,19 +616,19 @@ def edit_subscriber1(subscriber_id):
     conn.close()
 
     buildings = (
-    list(range(1, 5)) +
-    [5, 6, "77/43"] +
-    list(range(89, 131)) +
-    list(range(139, 178)) +
-    [180, 181, 182, 183, 184, 185, 214, 215] +
-    list(range(219, 228)) +
-    list(range(228, 271)) +
-    [399, 400, 401, 402, 403]
-)
+       list(range(1, 5)) +
+       [5, 6, "77/43"] +
+       list(range(89, 131)) +
+       list(range(139, 178)) +
+       [180, 181, 182, 183, 184, 185, 214, 215] +
+       list(range(219, 228)) +
+       list(range(228, 271)) +
+       [399, 400, 401, 402, 403]
+     )
 
-buildings = sorted(set(str(b) for b in buildings))
+     buildings = sorted(set(str(b) for b in buildings))
 
-return render_template('add_subscriber1.html', buildings=buildings, activists=activists, subscriber=subscriber, edit=True)
+     return render_template('add_subscriber1.html', buildings=buildings, activists=activists, subscriber=subscriber, edit=True)
 
 @app.route('/subscribers/delete/<int:sub_id>', methods=['POST'])
 def delete_subscriber(sub_id):
