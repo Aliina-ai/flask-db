@@ -634,19 +634,20 @@ def edit_subscriber1(subscriber_id):
 
     return render_template('add_subscriber1.html', buildings=sorted(set(buildings)), activists=activists, subscriber=subscriber, edit=True)
 
-@app.route('/subscribers1/delete/<int:subscriber_id>', methods=['POST'])
-def delete_subscriber1(subscriber_id):
+@app.route('/subscribers/delete/<int:sub_id>', methods=['POST'])
+def delete_subscriber(sub_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash("Лише адміністратор може видаляти підписників.")
-        return redirect(url_for('regions1'))
+        flash('Недостатньо прав для видалення.')
+        return redirect(url_for('subscribers_home'))
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("DELETE FROM subscribers WHERE id = ?", (sub_id,))
+        conn.commit()
+    flash('Підписника успішно видалено.')
+    # Повертаємося до відповідного округу
+    # Якщо знаєте округ, можете редіректити: `url_for('regions1')` або загальний `subscribers_home`
+    return redirect(request.referrer or url_for('subscribers_home'))
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('DELETE FROM subscribers WHERE id=?', (subscriber_id,))
-    conn.commit()
-    conn.close()
-    flash("Підписника видалено.")
-    return redirect(url_for('regions1'))
 
 
 # ---------- APP LAUNCH ----------
