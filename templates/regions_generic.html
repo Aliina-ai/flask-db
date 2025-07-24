@@ -75,7 +75,7 @@
 <body>
 
     <a href="/subscribers" class="back-button">← Повернутися</a>
-    <a href="{{ url_for('add_subscriber' + str(okrug_id)) }}" class="button">➕ Додати підписника</a>
+    <a href="{{ url_for('add_subscriber' ~ okrug_id) }}" class="button">➕ Додати підписника</a>
     
     <h2>Підписники — Округ {{ okrug }}</h2>
 
