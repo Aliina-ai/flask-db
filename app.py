@@ -563,7 +563,11 @@ def add_subscriber1():
         conn.close()
         return redirect(url_for('regions1'))  # Повернення до перегляду округу
 
-    return render_template('add_subscriber1.html', buildings=sorted(set(buildings)), activists=activists)
+    return render_template(
+    'add_subscriber1.html',
+    buildings=sorted(set(buildings), key=lambda x: str(x)),
+    activists=activists
+)
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
