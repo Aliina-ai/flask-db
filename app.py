@@ -490,8 +490,7 @@ def subscribers_home():
     return render_template('subscribers_home.html')
 
 
-@app.route('/regions/<int:okrug_id>')
-def show_region_subscribers(okrug_id):
+def render_okrug_subscribers(okrug_id):
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -515,6 +514,10 @@ def show_region_subscribers(okrug_id):
     } for row in rows]
 
     return render_template('regions_generic.html', data=data, okrug_id=okrug_id)
+
+@app.route('/regions1')
+def regions1():
+    return render_okrug_subscribers(1)
 
 
 # ---------- APP LAUNCH ----------
