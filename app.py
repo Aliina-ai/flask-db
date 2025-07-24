@@ -553,7 +553,51 @@ def handle_subscriber_form(okrug_id):
 
     return render_template('add_subscriber.html', okrug_id=okrug_id)
 
+@app.route('/add_subscriber1', methods=['GET', 'POST'])
+def add_subscriber1():
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
+    # Визначаємо перелік будинків для округу 1
+    buildings = list(range(1, 5)) + [5, 6] + list(range(77/43, 131)) + list(range(139, 178)) + \
+                [180, 181, 182, 183, 184, 185] + [214, 215] + list(range(219, 228)) + \
+                list(range(228, 271)) + [399, 400, 401, 402, 403]
+
+    # Отримуємо унікальних активістів округу 1
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT DISTINCT last_name || ' ' || first_name || ' ' || middle_name FROM activists WHERE okrug = 1")
+    activists = [row[0] for row in c.fetchall()]
+    conn.close()
+
+    if request.method == 'POST':
+        okrug = 1
+        polling_station = request.form['polling_station']
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        street = request.form['street']
+        building = request.form['building']
+        apartment = request.form['apartment']
+        phone = request.form['phone']
+        activist = request.form['activist']
+
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO subscribers (
+                okrug, polling_station, last_name, first_name, middle_name,
+                street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            okrug, polling_station, last_name, first_name, middle_name,
+            street, building, apartment, phone, activist
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('regions1'))  # Повернення до перегляду округу
+
+    return render_template('add_subscriber1.html', buildings=sorted(set(buildings)), activists=activists)
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
