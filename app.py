@@ -525,7 +525,7 @@ def add_subscriber1():
         return redirect(url_for('login'))
 
     # Визначаємо перелік будинків для округу 1
-    buildings = list(range(1, 5)) + [5, 6] + list(range(77/43, 131)) + list(range(139, 178)) + \
+    buildings = list(range(1, 5)) + [5, 6] + list(range("77/43", 131)) + list(range(139, 178)) + \
                 [180, 181, 182, 183, 184, 185] + [214, 215] + list(range(219, 228)) + \
                 list(range(228, 271)) + [399, 400, 401, 402, 403]
 
