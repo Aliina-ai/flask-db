@@ -71,7 +71,8 @@
     <table>
         <thead>
             <tr>
-                <th>ДВК</th>
+                <th>Округ</th>
+                <th>Виборча дільниця</th>
                 <th>Прізвище</th>
                 <th>Ім'я</th>
                 <th>По батькові</th>
@@ -86,6 +87,7 @@
         <tbody>
             {% for row in data %}
                 <tr>
+                    <td>{{ row.regions }}</td>
                     <td>{{ row.polling_station }}</td>
                     <td>{{ row.last_name }}</td>
                     <td>{{ row.first_name }}</td>
