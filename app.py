@@ -520,7 +520,7 @@ def regions1():
     return render_okrug_subscribers(1)
 
 @app.route('/add_edit_subscriber1.html', methods=['GET', 'POST'])
-def add_edit_subscriber1.html():
+def add_edit_subscriber1():
     if 'username' not in session:
         return redirect(url_for('login'))
 
