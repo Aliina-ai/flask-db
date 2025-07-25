@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</title>
+    <title>{{ 'Редагувати' if edit else 'Додати' }} підписника — Округ 1</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -97,8 +97,6 @@
         function goBack() {
             window.history.back();
         }
-
-        window.onload = updatePollingStation;
     </script>
 </head>
 <body>
@@ -106,32 +104,32 @@
 <div class="container">
     <button class="back-button" onclick="goBack()">← Повернутися</button>
 
-    <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</h2>
+    <h2>{{ 'Редагувати' if edit else 'Додати' }} підписника — Округ 1</h2>
 
     <form method="post">
         <label>Округ</label>
         <input type="text" name="okrug" value="1" readonly>
 
         <label>Виборча дільниця</label>
-        <input type="text" name="polling_station" id="polling_station" value="{{ subscriber.polling_station if edit else '' }}" readonly>
+        <input type="text" name="polling_station" id="polling_station" readonly value="{{ subscriber.polling_station if edit }}">
 
         <label>Прізвище</label>
-        <input type="text" name="last_name" value="{{ subscriber.last_name if edit else '' }}" required>
+        <input type="text" name="last_name" value="{{ subscriber.last_name if edit }}" required>
 
         <label>Ім’я</label>
-        <input type="text" name="first_name" value="{{ subscriber.first_name if edit else '' }}" required>
+        <input type="text" name="first_name" value="{{ subscriber.first_name if edit }}" required>
 
         <label>По батькові</label>
-        <input type="text" name="middle_name" value="{{ subscriber.middle_name if edit else '' }}">
+        <input type="text" name="middle_name" value="{{ subscriber.middle_name if edit }}">
 
         <label>Вулиця</label>
-        <input list="streets" name="street" id="street" value="{{ subscriber.street if edit else '' }}" onchange="updatePollingStation()">
+        <input list="streets" name="street" id="street" onchange="updatePollingStation()" value="{{ subscriber.street if edit }}">
         <datalist id="streets">
             <option value="вул. Гайок">
         </datalist>
 
         <label>Будинок</label>
-        <input list="buildings" name="building" id="building" value="{{ subscriber.building if edit else '' }}" onchange="updatePollingStation()">
+        <input list="buildings" name="building" id="building" onchange="updatePollingStation()" value="{{ subscriber.building if edit }}">
         <datalist id="buildings">
             {% for number in buildings %}
                 <option value="{{ number }}">
@@ -139,20 +137,20 @@
         </datalist>
 
         <label>Квартира</label>
-        <input type="text" name="apartment" value="{{ subscriber.apartment if edit else '' }}">
+        <input type="text" name="apartment" value="{{ subscriber.apartment if edit }}">
 
         <label>Телефон</label>
-        <input type="text" name="phone" value="{{ subscriber.phone if edit else '' }}">
+        <input type="text" name="phone" value="{{ subscriber.phone if edit }}">
 
         <label>Активіст</label>
-        <input list="activists" name="activist" value="{{ subscriber.activist if edit else '' }}">
+        <input list="activists" name="activist" value="{{ subscriber.activist if edit }}">
         <datalist id="activists">
             {% for activist in activists %}
                 <option value="{{ activist }}">
             {% endfor %}
         </datalist>
 
-        <button type="submit">Зберегти</button>
+        <button type="submit">{{ 'Зберегти зміни' if edit else 'Зберегти' }}</button>
     </form>
 </div>
 
