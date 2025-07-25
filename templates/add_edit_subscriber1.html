@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>{{ 'Редагувати' if edit else 'Додати' }} підписника — Округ 1</title>
+    <title>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -104,20 +104,20 @@
 <div class="container">
     <button class="back-button" onclick="goBack()">← Повернутися</button>
 
-    <h2>{{ 'Редагувати' if edit else 'Додати' }} підписника — Округ 1</h2>
+    <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</h2>
 
     <form method="post">
         <label>Округ</label>
         <input type="text" name="okrug" value="1" readonly>
 
         <label>Виборча дільниця</label>
-        <input type="text" name="polling_station" id="polling_station" readonly value="{{ subscriber.polling_station if edit }}">
+        <input type="text" name="polling_station" id="polling_station" value="{{ subscriber.polling_station if edit }}" readonly>
 
         <label>Прізвище</label>
-        <input type="text" name="last_name" value="{{ subscriber.last_name if edit }}" required>
+        <input type="text" name="last_name" required value="{{ subscriber.last_name if edit }}">
 
         <label>Ім’я</label>
-        <input type="text" name="first_name" value="{{ subscriber.first_name if edit }}" required>
+        <input type="text" name="first_name" required value="{{ subscriber.first_name if edit }}">
 
         <label>По батькові</label>
         <input type="text" name="middle_name" value="{{ subscriber.middle_name if edit }}">
@@ -150,10 +150,9 @@
             {% endfor %}
         </datalist>
 
-        <button type="submit">{{ 'Зберегти зміни' if edit else 'Зберегти' }}</button>
+        <button type="submit">Зберегти</button>
     </form>
 </div>
 
 </body>
 </html>
-
