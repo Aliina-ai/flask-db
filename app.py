@@ -627,13 +627,13 @@ def edit_subscriber1(subscriber_id):
         'activist': row[10]
     }
 
-return render_template(
-    'add_edit_subscriber1.html',
-    edit=False,
-    okrug_id=1,
-    buildings=sorted(set(buildings), key=lambda x: str(x)),
-    activists=activists
-)
+    return render_template(
+        'add_edit_subscriber1.html',
+         edit=False,
+         okrug_id=1,
+         buildings=sorted(set(buildings), key=lambda x: str(x)),
+         activists=activists
+     )
 
 
 
