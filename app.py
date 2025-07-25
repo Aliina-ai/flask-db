@@ -571,31 +571,71 @@ def add_subscriber1():
 
 @app.route('/subscribers1/edit/<int:subscriber_id>', methods=['GET', 'POST'])
 def edit_subscriber1(subscriber_id):
-    subscriber = Subscriber.query.get(subscriber_id)
-    if not subscriber:
-        return "Subscriber not found", 404
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('regions1'))
 
-    activists = Activist.query.all()  # або як ти отримуєш список активістів
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+
+        if request.method == 'POST':
+            c.execute('''
+                UPDATE subscribers SET
+                    polling_station=?, last_name=?, first_name=?, middle_name=?,
+                    street=?, building=?, apartment=?, phone=?, activist=?
+                WHERE id=?
+            ''', (
+                request.form['polling_station'],
+                request.form['last_name'],
+                request.form['first_name'],
+                request.form['middle_name'],
+                request.form['street'],
+                request.form['building'],
+                request.form['apartment'],
+                request.form['phone'],
+                request.form['activist'],
+                subscriber_id
+            ))
+            conn.commit()
+            return redirect(url_for('regions1'))
+
+        c.execute("SELECT * FROM subscribers WHERE id = ?", (subscriber_id,))
+        row = c.fetchone()
+
+    if not row:
+        flash("Підписника не знайдено.")
+        return redirect(url_for('regions1'))
+
+    # Повторно отримаємо активістів
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT DISTINCT last_name || ' ' || first_name || ' ' || middle_name FROM activists WHERE okrug = 1")
+        activists = [r[0] for r in c.fetchall()]
 
     buildings = (
-        list(range(1, 5)) +
-        [5, 6, "77/43"] +
-        list(range(89, 131)) +
-        list(range(139, 178)) +
+        list(range(1, 5)) + [5, 6, "77/43"] +
+        list(range(89, 131)) + list(range(139, 178)) +
         [180, 181, 182, 183, 184, 185, 214, 215] +
-        list(range(219, 228)) +
-        list(range(228, 271)) +
+        list(range(219, 228)) + list(range(228, 271)) +
         [399, 400, 401, 402, 403]
     )
-    buildings = sorted(set(str(b) for b in buildings))
+
+    subscriber = {
+        'id': row[0], 'polling_station': row[2], 'last_name': row[3],
+        'first_name': row[4], 'middle_name': row[5], 'street': row[6],
+        'building': row[7], 'apartment': row[8], 'phone': row[9],
+        'activist': row[10]
+    }
 
     return render_template(
-        'add_subscriber1.html',
-        buildings=buildings,
-        activists=activists,
+        'add_edit_subscriber1.html',
+        edit=True,
         subscriber=subscriber,
-        edit=True
+        okrug_id=1,
+        buildings=sorted(set(buildings), key=lambda x: str(x)),
+        activists=activists
     )
+
 
 @app.route('/subscribers/delete/<int:sub_id>', methods=['POST'])
 def delete_subscriber(sub_id):
