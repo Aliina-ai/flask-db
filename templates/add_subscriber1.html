@@ -1,9 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
-    <title>Test Page</title>
+    <meta charset="UTF-8">
+    <title>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f7fa;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        h2 {
+            color: #2b4f73;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input, select, datalist {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #2b4f73;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #466788;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: transparent;
+            color: #2b4f73;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+
+    <script>
+        function updatePollingStation() {
+            const street = document.getElementById("street").value;
+            const house = document.getElementById("building").value;
+            let polling = "";
+
+            const num = parseInt(house);
+            const complexHouseNumbers = ["77/43"];
+
+            if (street === "вул. Гайок") {
+                if ((num >= 1 && num <= 4) || complexHouseNumbers.includes(house) ||
+                    [139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,
+                     160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,181,182,183,
+                     184,185,214,215,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,
+                     244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,
+                     264,265,266,267,268,269,270].includes(num)) {
+                    polling = "321097";
+                } else if ([5,6,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,
+                            109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,
+                            127,128,129,130,180,219,220,221,222,223,224,225,226,227,399,400,401,402,
+                            403].includes(num)) {
+                    polling = "321098";
+                }
+            }
+
+            document.getElementById("polling_station").value = polling;
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        window.onload = updatePollingStation;
+    </script>
 </head>
 <body>
-    <h1>This is the add_subscriber1.html template!</h1>
+
+<div class="container">
+    <button class="back-button" onclick="goBack()">← Повернутися</button>
+
+    <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} підписника — Округ 1</h2>
+
+    <form method="post">
+        <label>Округ</label>
+        <input type="text" name="okrug" value="1" readonly>
+
+        <label>Виборча дільниця</label>
+        <input type="text" name="polling_station" id="polling_station" value="{{ subscriber.polling_station if edit else '' }}" readonly>
+
+        <label>Прізвище</label>
+        <input type="text" name="last_name" value="{{ subscriber.last_name if edit else '' }}" required>
+
+        <label>Ім’я</label>
+        <input type="text" name="first_name" value="{{ subscriber.first_name if edit else '' }}" required>
+
+        <label>По батькові</label>
+        <input type="text" name="middle_name" value="{{ subscriber.middle_name if edit else '' }}">
+
+        <label>Вулиця</label>
+        <input list="streets" name="street" id="street" value="{{ subscriber.street if edit else '' }}" onchange="updatePollingStation()">
+        <datalist id="streets">
+            <option value="вул. Гайок">
+        </datalist>
+
+        <label>Будинок</label>
+        <input list="buildings" name="building" id="building" value="{{ subscriber.building if edit else '' }}" onchange="updatePollingStation()">
+        <datalist id="buildings">
+            {% for number in buildings %}
+                <option value="{{ number }}">
+            {% endfor %}
+        </datalist>
+
+        <label>Квартира</label>
+        <input type="text" name="apartment" value="{{ subscriber.apartment if edit else '' }}">
+
+        <label>Телефон</label>
+        <input type="text" name="phone" value="{{ subscriber.phone if edit else '' }}">
+
+        <label>Активіст</label>
+        <input list="activists" name="activist" value="{{ subscriber.activist if edit else '' }}">
+        <datalist id="activists">
+            {% for activist in activists %}
+                <option value="{{ activist }}">
+            {% endfor %}
+        </datalist>
+
+        <button type="submit">💾 Зберегти</button>
+    </form>
+</div>
+
 </body>
 </html>
