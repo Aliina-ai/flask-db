@@ -519,8 +519,8 @@ def render_okrug_subscribers(okrug_id):
 def regions1():
     return render_okrug_subscribers(1)
 
-@app.route('/add_subscriber1', methods=['GET', 'POST'])
-def add_subscriber1():
+@app.route('/add_edit_subscriber1.html', methods=['GET', 'POST'])
+def add_edit_subscriber1.html():
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -627,14 +627,14 @@ def edit_subscriber1(subscriber_id):
         'activist': row[10]
     }
 
-    return render_template(
-        'add_edit_subscriber1.html',
-        edit=True,
-        subscriber=subscriber,
-        okrug_id=1,
-        buildings=sorted(set(buildings), key=lambda x: str(x)),
-        activists=activists
-    )
+return render_template(
+    'add_edit_subscriber1.html',
+    edit=False,
+    okrug_id=1,
+    buildings=sorted(set(buildings), key=lambda x: str(x)),
+    activists=activists
+)
+
 
 
 @app.route('/subscribers/delete/<int:sub_id>', methods=['POST'])
