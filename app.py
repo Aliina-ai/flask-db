@@ -651,6 +651,77 @@ def delete_subscriber(sub_id):
     # Якщо знаєте округ, можете редіректити: `url_for('regions1')` або загальний `subscribers_home`
     return redirect(request.referrer or url_for('subscribers_home'))
 
+@app.route('/add_subscriber2', methods=['GET', 'POST'])
+def add_subscriber2():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    buildings_map = {
+        'Волонтерська': {
+            '321100': list(range(12, 30)),
+            '321102': [1, '1А', 3, 9]
+        },
+        'Івана Пулюя': {
+            '321100': list(range(1, 31)) + ['32', '32А']
+        },
+        'Січневого прориву': {
+            '321100': [29, 31, 35] + ['43', '43Б', '45', '45А'] +
+                      [47, '49', '49А', 51, 53, 55, 57, 59, 61]
+        },
+        'Сквирське шосе': {
+            '321102': list(range(221, 224)) + list(range(228, 267))
+        }
+    }
+
+    all_buildings = sorted({str(b) for addr in buildings_map.values() for b_list in addr.values() for b in b_list})
+    all_streets = list(buildings_map.keys())
+
+    # Отримуємо список активістів округу 2
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT DISTINCT last_name || ' ' || first_name || ' ' || middle_name FROM activists WHERE okrug = 2")
+    activists = [row[0] for row in c.fetchall()]
+    conn.close()
+
+    if request.method == 'POST':
+        okrug = 2
+        street = request.form['street']
+        building = request.form['building']
+
+        polling_station = ''
+        for ps, b_list in buildings_map.get(street, {}).items():
+            if building in map(str, b_list):
+                polling_station = ps
+                break
+
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        apartment = request.form['apartment']
+        phone = request.form['phone']
+        activist = request.form['activist']
+
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO subscribers (
+                okrug, polling_station, last_name, first_name, middle_name,
+                street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            okrug, polling_station, last_name, first_name, middle_name,
+            street, building, apartment, phone, activist
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('regions2'))
+
+    return render_template(
+        'add_subscriber2.html',
+        streets=all_streets,
+        buildings=all_buildings,
+        activists=activists
+    )
 
 
 # ---------- APP LAUNCH ----------
