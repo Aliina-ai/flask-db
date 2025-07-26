@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Округ 1 – Підписники</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f7f9fb;
+            margin: 0;
+            padding: 30px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .back-btn {
+            background-color: #ccc;
+            color: #333;
+        }
+        .add-btn {
+            background-color: #2b4f73;
+            color: white;
+        }
+        .search-box {
+            margin-bottom: 15px;
+            max-width: 400px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            background-color: #2b4f73;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+        .filter {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .filter input {
+            padding: 5px;
+            margin-left: 8px;
+        }
+        .actions button {
+            margin-right: 5px;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .edit-btn {
+            background-color: #4caf50;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #e53935;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="/subscribers" class="btn back-btn">← Повернутися</a>
+        <a href="/subscribers/add/1" class="btn add-btn">+ Додати підписника</a>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Пошук...">
+    </div>
+
+    <table id="subscribersTable">
+        <thead>
+            <tr>
+                <th>Округ</th>
+                <th>Виборча дільниця</th>
+                <th>Прізвище</th>
+                <th>Імʼя</th>
+                <th>По батькові</th>
+                <th>Дата народження</th>
+                <th>Вулиця</th>
+                <th>Будинок</th>
+                <th>Квартира</th>
+                <th>Телефон</th>
+                <th>Активіст</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+      
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('keyup', function () {
+            const filter = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('#subscribersTable tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
+
+</body>
+</html>
