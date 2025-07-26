@@ -489,6 +489,39 @@ def subscribers_home():
         return redirect(url_for('login'))
     return render_template('subscribers_home.html')
 
+@app.route('/regions1')
+def regions1():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # Підключення до бази та витяг записів підписників для округу 1
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM subscribers WHERE okrug = 1")
+    rows = c.fetchall()
+    conn.close()
+
+    data = [
+        {
+            'id': row[0],
+            'okrug': row[1],
+            'polling_station': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
+        }
+        for row in rows
+    ]
+
+    return render_template('regions1.html', data=data)
+
+
 
 
 # ---------- APP LAUNCH ----------
