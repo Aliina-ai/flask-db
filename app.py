@@ -521,8 +521,8 @@ def regions1():
 
     return render_template('regions1.html', data=data)
 
-@app.route('/subscribers/add/<int:okrug_id>', methods=['GET', 'POST'])
-def add_subscriber(okrug_id):
+@app.route('/subscribers/add/1', methods=['GET', 'POST'])
+def add_subscriber_okrug1():
     if 'username' not in session:
         return redirect(url_for('login'))
     if session.get('role') != 'admin':
@@ -557,7 +557,7 @@ def add_subscriber(okrug_id):
                 apartment, phone, activist
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            okrug_id,
+            1,  # Жорстко: Округ 1
             polling_station,
             request.form['last_name'],
             request.form['first_name'],
@@ -575,12 +575,10 @@ def add_subscriber(okrug_id):
         return redirect(url_for('regions1'))
 
     streets = ['вул. Гайок']
-    return render_template('add_subscriber.html',
-                           okrug=okrug_id,
+    return render_template('add_subscriber1.html',
+                           okrug=1,
                            streets=streets,
                            activists=activists)
-
-
 
 
 # ---------- APP LAUNCH ----------
