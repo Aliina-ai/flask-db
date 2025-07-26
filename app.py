@@ -54,6 +54,7 @@ def init_db():
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
+                birth_date TEXT
                 address TEXT,
                 phone TEXT,
                 birth_date TEXT,
