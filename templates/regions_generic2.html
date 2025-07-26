@@ -8,6 +8,7 @@
             font-family: 'Segoe UI', sans-serif;
             background-color: #f4f7fa;
             padding: 30px;
+            margin: 0;
         }
 
         .header-buttons {
@@ -21,16 +22,17 @@
         .button {
             background-color: #2b4f73;
             color: white;
-            padding: 8px 16px;
+            padding: 10px 18px;
             text-decoration: none;
             border-radius: 5px;
             font-size: 14px;
+            font-weight: bold;
         }
 
         h2 {
             color: #2b4f73;
             text-align: center;
-            margin-bottom: 30px;
+            margin: 20px 0 30px;
         }
 
         table {
@@ -52,14 +54,14 @@
         }
 
         .action-buttons form {
-            display: inline;
+            display: inline-block;
         }
 
         .action-buttons button {
             background-color: #2b4f73;
             color: white;
             border: none;
-            padding: 6px 10px;
+            padding: 6px 12px;
             margin: 2px;
             border-radius: 4px;
             cursor: pointer;
@@ -110,9 +112,9 @@
                     <td>{{ row.activist }}</td>
                     <td class="action-buttons">
                         <form action="{{ url_for('edit_subscriber2', subscriber_id=row.id) }}" method="get">
-                        <button type="submit">Редагувати</button>
+                            <button type="submit">Редагувати</button>
                         </form>
-                        <form action="/subscribers/delete/{{ row.id }}" method="post">
+                        <form action="{{ url_for('delete_subscriber', sub_id=row.id) }}" method="post">
                             <button type="submit" onclick="return confirm('Ви впевнені?')">Видалити</button>
                         </form>
                     </td>
