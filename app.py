@@ -72,7 +72,6 @@ def init_db():
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
-                birth_date TEXT,
                 street TEXT,
                 building TEXT,
                 apartment TEXT,
@@ -435,7 +434,6 @@ def edit_activist(activist_id):
             request.form['middle_name'],
             request.form['address'],
             request.form['phone'],
-            request.form['birth_date'],
             request.form['subscribers_count'],
             request.form['newspapers_count'],
             request.form['location'],
@@ -462,7 +460,6 @@ def edit_activist(activist_id):
         'middle_name': row[5],
         'address': row[6],
         'phone': row[7],
-        'birth_date': row[8],
         'subscribers_count': row[9],
         'newspapers_count': row[10],
         'location': row[11]
