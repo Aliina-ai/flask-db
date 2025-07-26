@@ -490,58 +490,6 @@ def subscribers_home():
     return render_template('subscribers_home.html')
 
 
-def render_okrug_subscribers(okrug_id):
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("SELECT * FROM subscribers WHERE okrug = ?", (okrug_id,))
-        rows = c.fetchall()
-
-    data = [{
-        'id': row[0],
-        'okrug': row[1],
-        'polling_station': row[2],
-        'last_name': row[3],
-        'first_name': row[4],
-        'middle_name': row[5],
-        'street': row[6],
-        'building': row[7],
-        'apartment': row[8],
-        'phone': row[9],
-        'activist': row[10]
-    } for row in rows]
-
-    return render_template('regions_generic.html', data=data, okrug_id=okrug_id)
-
-@app.route('/regions1')
-def regions1():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    okrug_id = 1
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("SELECT * FROM subscribers WHERE okrug = ?", (okrug_id,))
-        rows = c.fetchall()
-
-    data = [{
-        'id': row[0],
-        'okrug': row[1],
-        'polling_station': row[2],
-        'last_name': row[3],
-        'first_name': row[4],
-        'middle_name': row[5],
-        'street': row[6],
-        'building': row[7],
-        'apartment': row[8],
-        'phone': row[9],
-        'activist': row[10]
-    } for row in rows]
-
-    return render_template('regions_generic1.html', data=data, okrug=okrug_id)
-
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
