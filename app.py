@@ -521,6 +521,65 @@ def regions1():
 
     return render_template('regions1.html', data=data)
 
+@app.route('/subscribers/add/<int:okrug_id>', methods=['GET', 'POST'])
+def add_subscriber(okrug_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати підписників.')
+        return redirect(url_for('regions1'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT id, last_name, first_name FROM activists")
+    activists = c.fetchall()
+    conn.close()
+
+    if request.method == 'POST':
+        building = request.form.get('building', '')
+        polling_station = ''
+
+        try:
+            n = int(building)
+            if 1 <= n <= 4 or 77 <= n <= 177 or 181 <= n <= 185 or 214 <= n <= 215 or 228 <= n <= 270:
+                polling_station = '321097'
+            elif 5 <= n <= 6 or 89 <= n <= 130 or n == 180 or 219 <= n <= 227 or 399 <= n <= 403:
+                polling_station = '321098'
+        except ValueError:
+            polling_station = ''
+
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO subscribers (
+                okrug, polling_station, last_name, first_name,
+                middle_name, birth_date, street, building,
+                apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            okrug_id,
+            polling_station,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            request.form['street'],
+            building,
+            request.form.get('apartment'),
+            request.form['phone'],
+            request.form.get('activist_manual') or request.form.get('activist_select')
+        ))
+        conn.commit()
+        conn.close()
+        flash('Підписника успішно додано.')
+        return redirect(url_for('regions1'))
+
+    streets = ['вул. Гайок']
+    return render_template('add_subscriber.html',
+                           okrug=okrug_id,
+                           streets=streets,
+                           activists=activists)
+
 
 
 
