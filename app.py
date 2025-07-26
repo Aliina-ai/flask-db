@@ -72,6 +72,7 @@ def init_db():
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
+                birth_date TEXT,
                 street TEXT,
                 building TEXT,
                 apartment TEXT,
@@ -79,9 +80,6 @@ def init_db():
                 activist TEXT
             )
         ''')
-
-        conn.commit()
-
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -536,9 +534,9 @@ def add_subscriber_okrug1():
     conn.close()
 
     if request.method == 'POST':
+        # Отримання та визначення ВД
         building = request.form.get('building', '')
         polling_station = ''
-
         try:
             n = int(building)
             if 1 <= n <= 4 or 77 <= n <= 177 or 181 <= n <= 185 or 214 <= n <= 215 or 228 <= n <= 270:
@@ -548,38 +546,41 @@ def add_subscriber_okrug1():
         except ValueError:
             polling_station = ''
 
+        # Збереження у базу
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute('''
-            INSERT INTO subscribers (
-                okrug, polling_station, last_name, first_name,
-                middle_name, birth_date, street, building,
-                apartment, phone, activist
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO subscribers (
+            okrug, polling_station, last_name, first_name,
+            middle_name, birth_date, street, building,
+            apartment, phone, activist
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            1,  # Жорстко: Округ 1
-            polling_station,
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['birth_date'],
-            request.form['street'],
-            building,
-            request.form.get('apartment'),
-            request.form['phone'],
-            request.form.get('activist_manual') or request.form.get('activist_select')
+          1,
+          polling_station,
+          request.form['last_name'],
+          request.form['first_name'],
+          request.form['middle_name'],
+          request.form['birth_date'],
+          request.form['street'],
+          building,
+          request.form.get('apartment'),
+          request.form['phone'],
+          request.form.get('activist_manual') or request.form.get('activist_select')
         ))
         conn.commit()
         conn.close()
+
         flash('Підписника успішно додано.')
         return redirect(url_for('regions1'))
 
+    # GET-запит
     streets = ['вул. Гайок']
     return render_template('add_subscriber1.html',
                            okrug=1,
                            streets=streets,
                            activists=activists)
-
+ 
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
