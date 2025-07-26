@@ -63,6 +63,7 @@ def init_db():
                 location TEXT
             )
         ''')
+        
         c.execute('''
             CREATE TABLE IF NOT EXISTS subscribers (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,6 +72,7 @@ def init_db():
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
+                birth_date TEXT,
                 street TEXT,
                 building TEXT,
                 apartment TEXT,
