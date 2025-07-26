@@ -569,6 +569,33 @@ def add_edit_subscriber1():
     activists=activists
 )
 
+@app.route('/regions2')
+def regions2():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    okrug_id = 2
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM subscribers WHERE okrug = ?", (okrug_id,))
+        rows = c.fetchall()
+
+    data = [{
+        'id': row[0],
+        'okrug': row[1],
+        'polling_station': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'street': row[6],
+        'building': row[7],
+        'apartment': row[8],
+        'phone': row[9],
+        'activist': row[10]
+    } for row in rows]
+
+    return render_template('regions_generic.html', data=data, okrug_id=okrug_id, okrug=okrug_id)
+
 @app.route('/subscribers1/edit/<int:subscriber_id>', methods=['GET', 'POST'])
 def edit_subscriber1(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
