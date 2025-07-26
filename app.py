@@ -594,7 +594,8 @@ def regions2():
         'activist': row[10]
     } for row in rows]
 
-    return render_template('regions_generic.html', data=data, okrug_id=okrug_id, okrug=okrug_id)
+    return render_template('regions_generic2.html', data=data, okrug=okrug_id)
+
 
 @app.route('/subscribers1/edit/<int:subscriber_id>', methods=['GET', 'POST'])
 def edit_subscriber1(subscriber_id):
