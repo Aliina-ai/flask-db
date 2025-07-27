@@ -517,6 +517,58 @@ def regions1():
     } for r in rows]
 
     return render_template('region1.html', data=data, search=search)
+
+@app.route('/regions1/add', methods=['GET', 'POST'])
+def add_region1():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('region1'))
+
+    # Жорстко округ = 1
+    okrug = 1
+    # Список дільниць (приклад)
+    districts = {
+        'ВД 321097': "1–4, 77/43, 139–177, 181–185, 214–215, 228–270",
+        'ВД 321098': "5–6, 89–130, 180, 219–227, 399–403"
+    }
+
+    # Вибір активістів: з таблиці activists
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT id, last_name, first_name FROM activists")
+    activists = c.fetchall()
+    conn.close()
+
+    if request.method == 'POST':
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO regions1 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            okrug,
+            request.form['district'],
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            request.form['street'],
+            request.form['building'],
+            request.form['apartment'],
+            request.form['phone'],
+            request.form['activist']
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region1'))
+
+    return render_template('add_region1.html',
+                           okrug=okrug,
+                           districts=districts,
+                           activists=activists)
+
  
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
