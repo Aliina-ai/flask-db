@@ -709,7 +709,7 @@ def region2():
         return redirect(url_for('login'))
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT * FROM regions1 WHERE okrug = ?", (2,))
+    c.execute("SELECT * FROM regions2")
     rows = c.fetchall()
     conn.close()
     data = [{
@@ -720,6 +720,101 @@ def region2():
     } for r in rows]
     return render_template('region2.html', data=data)
 
+@app.route('/regions2/add', methods=['GET', 'POST'])
+def add_region2():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('region2'))
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    if request.method == 'POST':
+        building = request.form['building']
+        district = get_district_by_building2(building)
+        c.execute('''
+            INSERT INTO regions2 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            2, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            'вул. Волонтерська', 'вул.Івана Пулюя', 'вул.Січневого прориву', 'вул.Сквирське шосе'
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region2'))
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+    return render_template('add_region2.html', buildings=expand_buildings2(), activists=acts)
+
+@app.route('/regions2/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region2(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region2'))
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    if request.method == 'POST':
+        building = request.form['building']
+        district = get_district_by_building2(building)
+        c.execute('''
+            UPDATE regions2 SET
+                last_name=?, first_name=?, middle_name=?, birth_date=?,
+                street=?, building=?, apartment=?, phone=?, activist=?, district=?
+            WHERE id=?
+        ''', (
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            request.form['street'],
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            district,
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region2'))
+
+    c.execute("SELECT * FROM regions2 WHERE id=?", (subscriber_id,))
+    row = c.fetchone()
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    subscriber = {
+        'id': row[0], 'okrug': row[1], 'district': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
+    }
+
+    return render_template('edit_region2.html', subscriber=subscriber, buildings=expand_buildings2(), activists=acts)
+
+@app.route('/delete_region2/<int:subscriber_id>', methods=['POST'])
+def delete_region2(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти.')
+        return redirect(url_for('region2'))
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions2 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+    flash('Підписника видалено.')
+    return redirect(url_for('region2'))
 
  
 # ---------- APP LAUNCH ----------
