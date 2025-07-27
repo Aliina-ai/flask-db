@@ -64,10 +64,10 @@ def init_db():
         ''')
         
         c.execute('''
-            CREATE TABLE IF NOT EXISTS subscribers (
+            CREATE TABLE IF NOT EXISTS regions1 (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 okrug INTEGER,
-                polling_station TEXT,
+                district TEXT,
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
@@ -79,6 +79,9 @@ def init_db():
                 activist TEXT
             )
         ''')
+
+         conn.commit()
+         conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
