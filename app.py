@@ -520,39 +520,65 @@ def regions1():
 
 @app.route('/regions1/add', methods=['GET', 'POST'])
 def add_region1():
-    if 'username' not in session or session.get('role')!='admin':
+    if 'username' not in session or session.get('role') != 'admin':
         flash('Недостатньо прав')
         return redirect(url_for('region1'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    if request.method=='POST':
+
+    if request.method == 'POST':
+        # визначаємо ВД по введеному або вибраному будинку
+        b = request.form.get('building_manual') or request.form.get('building_select')
+        district = get_district_by_building(b)
+
         c.execute('''
-          INSERT INTO regions1 (
-            okrug, district, last_name, first_name, middle_name,
-            birth_date, street, building, apartment, phone, activist
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''',(
-          1,
-          request.form['district'],
-          request.form['last_name'],
-          request.form['first_name'],
-          request.form['middle_name'],
-          request.form['birth_date'],
-          request.form['street'],
-          request.form['building'],
-          request.form['apartment'],
-          request.form['phone'],
-          request.form['activist']
+            INSERT INTO regions1 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            1,
+            district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            'Гайок',
+            b,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form.get('activist_manual') or request.form['activist_select']
         ))
         conn.commit()
         conn.close()
         return redirect(url_for('region1'))
 
-    # GET: передати список активістів для dropdown
     c.execute("SELECT id, last_name, first_name FROM activists")
-    acts = [{'id':r[0],'last_name':r[1],'first_name':r[2]} for r in c.fetchall()]
+    acts = [{'id': r[0], 'name': f"{r[1]} {r[2]}"} for r in c.fetchall()]
     conn.close()
     return render_template('add_region1.html', activists=acts)
+
+# Додай функцію в тому ж файлі:
+def get_district_by_building(bld):
+    ranges = {
+        '321097': ['1-4','77/43','139-177','181-185','214-215','228-270'],
+        '321098': ['5','6','89-130','180','219-227','399-403']
+    }
+    for d, segs in ranges.items():
+        for seg in segs:
+            if '-' in seg:
+                lo, hi = seg.split('-')
+                if lo.isdigit() and hi.isdigit():
+                    if int(lo) <= int(bld) <= int(hi):
+                        return d
+            elif seg.isdigit():
+                if int(seg) == int(bld):
+                    return d
+            else:
+                if bld == seg:
+                    return d
+    return ''  # якщо не знайдено
 
 
  
