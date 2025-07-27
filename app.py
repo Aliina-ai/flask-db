@@ -784,7 +784,7 @@ def edit_region2(subscriber_id):
             request.form['first_name'],
             request.form['middle_name'],
             request.form['birth_date'],
-            request.form['street']
+            request.form['street'],
             building,
             request.form.get('apartment', ''),
             request.form['phone'],
