@@ -741,7 +741,7 @@ def add_region2():
             request.form['first_name'],
             request.form['middle_name'],
             request.form['birth_date'],
-            'вул. Волонтерська', 'вул.Івана Пулюя', 'вул.Січневого прориву', 'вул.Сквирське шосе'
+            request.form['street']
             building,
             request.form.get('apartment', ''),
             request.form['phone'],
