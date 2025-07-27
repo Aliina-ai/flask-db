@@ -24,19 +24,7 @@
       margin-bottom: 20px;
     }
 
-    .top-bar-left a {
-      padding: 8px 14px;
-      background-color: #2b4f73;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: background-color 0.3s;
-    }
-
-    .top-bar-left a:hover {
-      background-color: #3b5f85;
-    }
-
+    .top-bar-left a,
     .top-bar-right a {
       padding: 8px 14px;
       background-color: #2b4f73;
@@ -46,6 +34,7 @@
       transition: background-color 0.3s;
     }
 
+    .top-bar-left a:hover,
     .top-bar-right a:hover {
       background-color: #3b5f85;
     }
@@ -86,27 +75,31 @@
       gap: 6px;
     }
 
-    .actions button {
+    a.edit-btn {
+      display: inline-block;
       padding: 6px 12px;
       font-size: 13px;
-      border: none;
       border-radius: 4px;
-      cursor: pointer;
+      background-color: #4caf50;
+      color: white;
+      text-align: center;
+      text-decoration: none;
       transition: background-color 0.2s;
     }
 
-    .edit-btn {
-      background-color: #4caf50;
-      color: white;
-    }
-
-    .edit-btn:hover {
+    a.edit-btn:hover {
       background-color: #45a043;
     }
 
     .delete-btn {
+      padding: 6px 12px;
+      font-size: 13px;
       background-color: #e53935;
       color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
 
     .delete-btn:hover {
@@ -172,9 +165,7 @@
           <td>{{ row.phone }}</td>
           <td>{{ row.activist }}</td>
           <td class="actions">
-            <a href="{{ url_for('edit_region1', subscriber_id=row.id) }}">
-              <button class="edit-btn">Редагувати</button>
-            </a>
+            <a href="{{ url_for('edit_region1', subscriber_id=row.id) }}" class="edit-btn">Редагувати</a>
             <form method="POST" action="{{ url_for('delete_region1', subscriber_id=row.id) }}" style="display:inline;">
               <button type="submit" class="delete-btn">Видалити</button>
             </form>
@@ -192,3 +183,4 @@
 
 </body>
 </html>
+
