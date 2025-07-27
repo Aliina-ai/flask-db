@@ -125,6 +125,14 @@ def get_district_by_building(bld):
         return "321098"
     return "Невідомо"
 
+def get_streets_region2():
+    return [
+        'вул. Волонтерська',
+        'вул. Івана Пулюя',
+        'вул. Січневого прориву',
+        'вул. Сквирське шосе'
+    ]
+
 def expand_buildings2():
     buildings = []
 
