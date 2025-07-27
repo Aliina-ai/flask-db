@@ -635,17 +635,20 @@ def edit_region1(subscriber_id):
 
     return render_template('edit_region1.html', subscriber=subscriber, buildings=expand_buildings(), activists=acts)
 
-@app.route('/delete_region1/<int:subscriber_id>', methods=['POST'])
+@app.route('/regions1/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region1(subscriber_id):
-    subscriber = Subscriber.query.get_or_404(subscriber_id)
-    
-    try:
-        db.session.delete(subscriber)
-        db.session.commit()
-        return redirect(url_for('subscribers_region1'))  # Підлаштуй до свого правильного роута
-    except Exception as e:
-        db.session.rollback()
-        return f"Помилка при видаленні: {str(e)}", 500
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти.')
+        return redirect(url_for('region1'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions1 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Підписника видалено.')
+    return redirect(url_for('region1'))
 
  
 # ---------- APP LAUNCH ----------
