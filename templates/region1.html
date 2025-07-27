@@ -106,7 +106,9 @@
                 <td>{{ row.phone }}</td>
                 <td>{{ row.activist }}</td>
                 <td class="actions">
-                    <a href="#"><button class="edit-btn">Редагувати</button></a>
+                    <a href="{{ url_for('edit_region1', subscriber_id=row.id) }}">
+                      <button class="action-btn edit-btn">Редагувати</button>
+                    </a>
                     <form action="#" method="POST" style="display:inline;">
                         <button type="submit" class="delete-btn">Видалити</button>
                     </form>
