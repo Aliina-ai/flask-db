@@ -103,9 +103,9 @@ def get_district_by_building(bld):
     except:
         return "Невідомо"
     if num in list(range(1,5)) + [77] + list(range(139,178)) + list(range(181,186)) + list(range(214,216)) + list(range(228,271)):
-        return "ВД 321097"
+        return "321097"
     if num in [5,6,180] + list(range(89,131)) + list(range(219,228)) + list(range(399,404)):
-        return "ВД 321098"
+        return "321098"
     return "Невідомо"
 
 
