@@ -80,8 +80,8 @@ def init_db():
             )
         ''')
 
-         conn.commit()
-         conn.close()
+        conn.commit()
+        conn.close()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
