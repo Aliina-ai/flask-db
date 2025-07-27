@@ -749,7 +749,7 @@ def add_region2():
             request.form['first_name'],
             request.form['middle_name'],
             request.form['birth_date'],
-            request.form['street']
+            street,
             building,
             request.form.get('apartment', ''),
             request.form['phone'],
