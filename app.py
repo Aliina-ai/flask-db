@@ -569,6 +569,72 @@ def add_region1():
     conn.close()
     return render_template('add_region1.html', buildings=expand_buildings(), activists=acts)
 
+@app.route('/regions1/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region1(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region1'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        building = request.form['building']
+        district = get_district_by_building(building)
+
+        c.execute('''
+            UPDATE regions1 SET
+                okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+                birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+            WHERE id = ?
+        ''', (
+            1,
+            district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            'вул. Гайок',
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region1'))
+
+    # GET
+    c.execute('SELECT * FROM regions1 WHERE id = ?', (subscriber_id,))
+    row = c.fetchone()
+
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region1'))
+
+    subscriber = {
+        'id': row[0],
+        'okrug': row[1],
+        'district': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'birth_date': row[6],
+        'street': row[7],
+        'building': row[8],
+        'apartment': row[9],
+        'phone': row[10],
+        'activist': row[11]
+    }
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    return render_template('edit_region1.html', subscriber=subscriber, buildings=expand_buildings(), activists=acts)
+
  
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
