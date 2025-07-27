@@ -142,7 +142,7 @@
 
   <div class="top-bar">
     <a href="{{ url_for('subscribers_home') }}" class="btn back">← Повернутися</a>
-    <a href="{{ url_for('add_region1') }}" class="btn add">+ Додати підписника</a>
+    <a href="{{ url_for('add_regions1') }}" class="btn add">+ Додати підписника</a>
   </div>
 
   <form method="GET" class="search">
@@ -182,10 +182,10 @@
         <td>{{ row.phone }}</td>
         <td>{{ row.activist }}</td>
         <td class="actions">
-          <a href="{{ url_for('edit_region1', region_id=row.id) }}">
+          <a href="{{ url_for('edit_regions1', regions_id=row.id) }}">
             <button type="button" class="action-btn edit-btn">Редагувати</button>
           </a>
-          <form method="POST" action="{{ url_for('delete_region1', region_id=row.id) }}" class="inline" onsubmit="return confirm('Видалити запис?');">
+          <form method="POST" action="{{ url_for('delete_regions1', region_id=row.id) }}" class="inline" onsubmit="return confirm('Видалити запис?');">
             <button type="submit" class="action-btn delete-btn">Видалити</button>
           </form>
         </td>
