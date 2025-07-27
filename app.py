@@ -489,101 +489,36 @@ def subscribers_home():
         return redirect(url_for('login'))
     return render_template('subscribers_home.html')
 
-@app.route('/regions1')
-def regions1():
+@app.route('/regions1', methods=['GET'])
+def region1():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # Підключення до бази та витяг записів підписників для округу 1
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT * FROM subscribers WHERE okrug = 1")
+
+    query = "SELECT * FROM regions1"
+    params = []
+
+    search = request.args.get('search', '').strip()
+    if search:
+        query += " WHERE last_name LIKE ? OR first_name LIKE ? OR activist LIKE ?"
+        like = f"%{search}%"
+        params.extend([like, like, like])
+
+    c.execute(query, params)
     rows = c.fetchall()
     conn.close()
 
-    data = [
-        {
-            'id': row[0],
-            'okrug': row[1],
-            'polling_station': row[2],
-            'last_name': row[3],
-            'first_name': row[4],
-            'middle_name': row[5],
-            'birth_date': row[6],
-            'street': row[7],
-            'building': row[8],
-            'apartment': row[9],
-            'phone': row[10],
-            'activist': row[11]
-        }
-        for row in rows
-    ]
+    data = [{
+        'id': r[0], 'okrug': r[1], 'district': r[2],
+        'last_name': r[3], 'first_name': r[4], 'middle_name': r[5],
+        'birth_date': r[6], 'street': r[7], 'building': r[8],
+        'apartment': r[9], 'phone': r[10], 'activist': r[11]
+    } for r in rows]
 
-    return render_template('regions1.html', data=data)
-
-@app.route('/subscribers/add/1', methods=['GET', 'POST'])
-def add_subscriber_okrug1():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    if session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати підписників.')
-        return redirect(url_for('regions1'))
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("SELECT id, last_name, first_name FROM activists")
-    activists = c.fetchall()
-    conn.close()
-
-    if request.method == 'POST':
-        # Отримання та визначення ВД
-        building = request.form.get('building', '')
-        polling_station = ''
-        try:
-            n = int(building)
-            if 1 <= n <= 4 or 77 <= n <= 177 or 181 <= n <= 185 or 214 <= n <= 215 or 228 <= n <= 270:
-                polling_station = '321097'
-            elif 5 <= n <= 6 or 89 <= n <= 130 or n == 180 or 219 <= n <= 227 or 399 <= n <= 403:
-                polling_station = '321098'
-        except ValueError:
-            polling_station = ''
-
-        # Збереження у базу
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute('''
-          INSERT INTO subscribers (
-            okrug, polling_station, last_name, first_name,
-            middle_name, birth_date, street, building,
-            apartment, phone, activist
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-          1,
-          polling_station,
-          request.form['last_name'],
-          request.form['first_name'],
-          request.form['middle_name'],
-          request.form['birth_date'],
-          request.form['street'],
-          building,
-          request.form.get('apartment'),
-          request.form['phone'],
-          request.form.get('activist_manual') or request.form.get('activist_select')
-        ))
-        conn.commit()
-        conn.close()
-
-        flash('Підписника успішно додано.')
-        return redirect(url_for('regions1'))
-
-    # GET-запит
-    streets = ['вул. Гайок']
-    return render_template('add_subscriber1.html',
-                           okrug=1,
-                           streets=streets,
-                           activists=activists)
+    return render_template('region1.html', data=data, search=search)
  
-
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
