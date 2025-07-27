@@ -2,30 +2,36 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Додати підписника — Округ 1</title>
+  <title>Додати підписника — Округ 1</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f7f9fb;
-      padding: 30px;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 40px;
     }
-
     .wrapper {
       max-width: 600px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
+      margin: auto;
+      background-color: #ffffff;
+      padding: 30px 40px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 25px;
+    }
     label {
       display: block;
-      margin-top: 15px;
+      margin-top: 16px;
       font-weight: 600;
+      font-size: 14px;
+      color: #333;
     }
-
-    input,
+    input[type="text"],
+    input[type="date"],
     select {
       width: 100%;
       padding: 10px;
@@ -33,95 +39,58 @@
       font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      box-sizing: border-box;
     }
-
+    .two-col {
+      display: flex;
+      gap: 10px;
+    }
+    .two-col input,
+    .two-col select {
+      flex: 1;
+    }
+    .or {
+      text-align: center;
+      margin: 10px 0;
+      color: #666;
+      font-size: 13px;
+    }
     button {
       width: 100%;
-      margin-top: 25px;
+      margin-top: 30px;
       padding: 12px;
-      background: #2b4f73;
-      color: #fff;
+      background-color: #2b4f73;
+      color: white;
       border: none;
       border-radius: 4px;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
-
+    button:hover {
+      background-color: #1f3e5a;
+    }
     .back {
       display: inline-block;
       margin-bottom: 20px;
       padding: 8px 14px;
-      background: #ccc;
+      background-color: #ccc;
       color: #333;
       text-decoration: none;
       border-radius: 4px;
       font-size: 14px;
     }
   </style>
-
-  <script>
-    const buildingMap = {
-      'ВД 321097': ['з 1 по 4', '77/43', 'з 139 по 177', 'з 181 по 185', 'з 214 по 215', 'з 228 по 270'],
-      'ВД 321098': ['5', '6', 'з 89 по 130', '180', 'з 219 по 227', 'з 399 по 403']
-    };
-
-    function updateDistrict() {
-      const street = document.getElementById('street').value;
-      const districtField = document.getElementById('district');
-
-      if (street === 'ВД 321097') {
-        districtField.value = '321097';
-      } else if (street === 'ВД 321098') {
-        districtField.value = '321098';
-      } else {
-        districtField.value = '';
-      }
-    }
-
-    function updateBuildings() {
-      const street = document.getElementById('street').value;
-      const choices = buildingMap[street] || [];
-      const select = document.getElementById('building');
-
-      select.innerHTML = '<option value="">Оберіть будинок</option>';
-      choices.forEach(opt => {
-        const o = document.createElement('option');
-        o.value = opt;
-        o.text = opt;
-        select.appendChild(o);
-      });
-    }
-  </script>
 </head>
-
 <body>
   <div class="wrapper">
     <a href="{{ url_for('region1') }}" class="back">← Повернутися</a>
+    <h2>Додати підписника — Округ 1</h2>
 
-    <form method="POST" action="{{ url_for('add_region1') }}">
-      <h2>Додати підписника — Округ 1</h2>
-
+    <form method="POST">
       <label>Округ</label>
       <input type="text" name="okrug" value="1" readonly>
-
-      <label>Вулиця</label>
-      <select id="street" name="street" onchange="updateDistrict(); updateBuildings();" required>
-        <option value="">Оберіть</option>
-        <option value="ВД 321097">ВД 321097 – вул. Гайок (з 1 по 270)</option>
-        <option value="ВД 321098">ВД 321098 – вул. Гайок (5,6,…399–403)</option>
-      </select>
-
-      <label>Виборча дільниця</label>
-      <input type="text" id="district" name="district" readonly>
-
-      <label>Будинок</label>
-      <select id="building" name="building" required>
-        <option value="">Оберіть будинок</option>
-      </select>
-
-      <label>Квартира</label>
-      <input type="text" name="apartment">
 
       <label>Прізвище</label>
       <input type="text" name="last_name" required>
@@ -138,13 +107,37 @@
       <label>Телефон</label>
       <input type="text" name="phone" required>
 
+      <label>Вулиця</label>
+      <input type="text" name="street" value="вул. Гайок" readonly>
+
+      <label>Обери будинок</label>
+      <select name="building_select">
+        <option value="">Оберіть будинок</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <!-- додай інші варіанти -->
+      </select>
+
+      <div class="or">— або введіть вручну —</div>
+      <input type="text" name="building_manual" placeholder="Наприклад 120">
+
+      <label>Квартира</label>
+      <input type="text" name="apartment">
+
       <label>Активіст</label>
-      <select name="activist" required>
-        <option value="">Оберіть</option>
+      <select name="activist_select">
+        <option value="">Оберіть зі списку</option>
         {% for a in activists %}
-          <option value="{{ a.id }}">{{ a.last_name }} {{ a.first_name }}</option>
+          <option value="{{ a.id }}">{{ a.name }}</option>
         {% endfor %}
       </select>
+
+      <div class="or">— або введіть вручну —</div>
+      <input type="text" name="activist_manual" placeholder="Ім’я Прізвище">
 
       <button type="submit">Додати підписника</button>
     </form>
