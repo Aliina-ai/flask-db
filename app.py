@@ -520,54 +520,40 @@ def regions1():
 
 @app.route('/regions1/add', methods=['GET', 'POST'])
 def add_region1():
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати.')
-        return redirect(url_for('regions1'))
-
-    # Жорстко округ = 1
-    okrug = 1
-    # Список дільниць (приклад)
-    districts = {
-        'ВД 321097': "1–4, 77/43, 139–177, 181–185, 214–215, 228–270",
-        'ВД 321098': "5–6, 89–130, 180, 219–227, 399–403"
-    }
-
-    # Вибір активістів: з таблиці activists
+    if 'username' not in session or session.get('role')!='admin':
+        flash('Недостатньо прав')
+        return redirect(url_for('region1'))
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT id, last_name, first_name FROM activists")
-    activists = c.fetchall()
-    conn.close()
-
-    if request.method == 'POST':
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
+    if request.method=='POST':
         c.execute('''
-            INSERT INTO regions1 (
-                okrug, district, last_name, first_name, middle_name,
-                birth_date, street, building, apartment, phone, activist
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            okrug,
-            request.form['district'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['birth_date'],
-            request.form['street'],
-            request.form['building'],
-            request.form['apartment'],
-            request.form['phone'],
-            request.form['activist']
+          INSERT INTO regions1 (
+            okrug, district, last_name, first_name, middle_name,
+            birth_date, street, building, apartment, phone, activist
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''',(
+          1,
+          request.form['district'],
+          request.form['last_name'],
+          request.form['first_name'],
+          request.form['middle_name'],
+          request.form['birth_date'],
+          request.form['street'],
+          request.form['building'],
+          request.form['apartment'],
+          request.form['phone'],
+          request.form['activist']
         ))
         conn.commit()
         conn.close()
-        return redirect(url_for('regions1'))
+        return redirect(url_for('region1'))
 
-    return render_template('add_region1.html',
-                           okrug=okrug,
-                           districts=districts,
-                           activists=activists)
+    # GET: передати список активістів для dropdown
+    c.execute("SELECT id, last_name, first_name FROM activists")
+    acts = [{'id':r[0],'last_name':r[1],'first_name':r[2]} for r in c.fetchall()]
+    conn.close()
+    return render_template('add_region1.html', activists=acts)
+
 
  
 # ---------- APP LAUNCH ----------
