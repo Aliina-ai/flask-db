@@ -516,13 +516,13 @@ def regions1():
         'apartment': r[9], 'phone': r[10], 'activist': r[11]
     } for r in rows]
 
-    return render_template('region1.html', data=data, search=search)
+    return render_template('regions1.html', data=data, search=search)
 
 @app.route('/regions1/add', methods=['GET', 'POST'])
 def add_region1():
     if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може додавати.')
-        return redirect(url_for('region1'))
+        return redirect(url_for('regions1'))
 
     # Жорстко округ = 1
     okrug = 1
@@ -562,9 +562,9 @@ def add_region1():
         ))
         conn.commit()
         conn.close()
-        return redirect(url_for('region1'))
+        return redirect(url_for('regions1'))
 
-    return render_template('add_region1.html',
+    return render_template('add_regions1.html',
                            okrug=okrug,
                            districts=districts,
                            activists=activists)
