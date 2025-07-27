@@ -125,6 +125,42 @@ def get_district_by_building(bld):
         return "321098"
     return "Невідомо"
 
+def expand_buildings2():
+    buildings = []
+
+    # вул. Волонтерська
+    buildings += [str(i) for i in range(12, 30)]  # 12–29
+    buildings += ['27А', '1А', '1', '3', '9']     # інші
+    # вул. Івана Пулюя
+    buildings += [str(i) for i in range(1, 31)]   # 1–30
+    buildings += ['32А', '32']
+    # вул. Січневого прориву
+    buildings += ['29', '31', '35']
+    buildings += ['43', '43А', '43Б', '45', '45А', '47']
+    buildings += ['49', '49А', '51', '53', '55', '57', '59', '61']
+    # вул. Сквирське шосе
+    buildings += [str(i) for i in range(221, 224)]  # 221–223
+    buildings += [str(i) for i in range(228, 267)]  # 228–266
+
+    return buildings
+
+def get_district_by_building2(building):
+    try:
+        base_num = int(''.join(filter(str.isdigit, building.split('/')[0])))
+    except:
+        return "Невідомо"
+
+    if building in ['1А', '1', '3', '9'] or base_num in range(221, 224) or base_num in range(228, 267):
+        return '321102'
+
+    if base_num in range(12, 30) or building in ['27А', '32', '32А',
+                                                 '29', '31', '35', '43', '43А', '43Б',
+                                                 '45', '45А', '47', '49', '49А',
+                                                 '51', '53', '55', '57', '59', '61'] or base_num in range(1, 31):
+        return '321100'
+
+    return 'Невідомо'
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
