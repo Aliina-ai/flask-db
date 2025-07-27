@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Додати підписника</title>
+  <title>Додати підписника — Округ 1</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -12,78 +12,85 @@
 
     .wrapper {
       max-width: 600px;
-      margin: 0 auto;
+      margin: 40px auto;
       background: #fff;
-      padding: 25px;
+      padding: 30px;
       border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      color: #2b4f73;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     label {
-      margin-top: 15px;
       display: block;
+      margin-top: 15px;
       font-weight: 600;
-      color: #333;
     }
 
     input,
     select {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+      padding: 10px;
+      margin-top: 6px;
+      font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 14px;
     }
 
     button {
+      width: 100%;
       margin-top: 25px;
-      padding: 10px;
+      padding: 12px;
       background: #2b4f73;
       color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background: #1e3e5a;
     }
 
     .back {
-      margin-bottom: 20px;
       display: inline-block;
-      padding: 8px 12px;
+      margin-bottom: 20px;
+      padding: 8px 14px;
       background: #ccc;
       color: #333;
-      border-radius: 4px;
       text-decoration: none;
+      border-radius: 4px;
       font-size: 14px;
-    }
-
-    .back:hover {
-      background: #bbb;
     }
   </style>
 
   <script>
-    function onDistrictChange() {
-      document.getElementById('street').value = 'вул. Гайок';
+    const buildingMap = {
+      'ВД 321097': ['з 1 по 4', '77/43', 'з 139 по 177', 'з 181 по 185', 'з 214 по 215', 'з 228 по 270'],
+      'ВД 321098': ['5', '6', 'з 89 по 130', '180', 'з 219 по 227', 'з 399 по 403']
+    };
+
+    function updateDistrict() {
+      const street = document.getElementById('street').value;
+      const districtField = document.getElementById('district');
+
+      if (street === 'ВД 321097') {
+        districtField.value = '321097';
+      } else if (street === 'ВД 321098') {
+        districtField.value = '321098';
+      } else {
+        districtField.value = '';
+      }
     }
 
-    function filterOptions(inputId, selectId) {
-      let input = document.getElementById(inputId).value.toLowerCase();
-      let select = document.getElementById(selectId);
-      for (let opt of select.options) {
-        opt.style.display = opt.value.toLowerCase().includes(input) || !input ? '' : 'none';
-      }
+    function updateBuildings() {
+      const street = document.getElementById('street').value;
+      const choices = buildingMap[street] || [];
+      const select = document.getElementById('building');
+
+      select.innerHTML = '<option value="">Оберіть будинок</option>';
+      choices.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.text = opt;
+        select.appendChild(o);
+      });
     }
   </script>
 </head>
@@ -91,61 +98,55 @@
 <body>
   <div class="wrapper">
     <a href="{{ url_for('region1') }}" class="back">← Повернутися</a>
-    <h2>Додати підписника — Округ {{ okrug }}</h2>
 
-    <form method="post">
+    <form method="POST" action="{{ url_for('add_region1') }}">
+      <h2>Додати підписника — Округ 1</h2>
+
       <label>Округ</label>
-      <input type="text" name="okrug" value="{{ okrug }}" readonly>
+      <input type="text" name="okrug" value="1" readonly>
 
-      <label>Виборча дільниця</label>
-      <select name="district" onchange="onDistrictChange()" required>
-        <option value="">Оберіть дільницю</option>
-        {% for key, rng in districts.items() %}
-          <option value="{{ key }}">{{ key }}: {{ rng }}</option>
-        {% endfor %}
+      <label>Вулиця</label>
+      <select id="street" name="street" onchange="updateDistrict(); updateBuildings();" required>
+        <option value="">Оберіть</option>
+        <option value="ВД 321097">ВД 321097 – вул. Гайок (з 1 по 270)</option>
+        <option value="ВД 321098">ВД 321098 – вул. Гайок (5,6,…399–403)</option>
       </select>
 
+      <label>Виборча дільниця</label>
+      <input type="text" id="district" name="district" readonly>
+
+      <label>Будинок</label>
+      <select id="building" name="building" required>
+        <option value="">Оберіть будинок</option>
+      </select>
+
+      <label>Квартира</label>
+      <input type="text" name="apartment">
+
       <label>Прізвище</label>
-      <input name="last_name" required>
+      <input type="text" name="last_name" required>
 
       <label>Ім’я</label>
-      <input name="first_name" required>
+      <input type="text" name="first_name" required>
 
       <label>По батькові</label>
-      <input name="middle_name" required>
+      <input type="text" name="middle_name" required>
 
       <label>Дата народження</label>
       <input type="date" name="birth_date" required>
 
-      <label>Вулиця</label>
-      <input id="street" name="street" readonly>
-
-      <label>Будинок</label>
-      <input id="building" name="building" list="bldlist" oninput="filterOptions('building','bldlist')" required>
-      <datalist id="bldlist">
-        <option value="1">
-        <option value="2">
-        <option value="5">
-        <option value="43">
-        <option value="77">
-        <option value="89">
-      </datalist>
-
-      <label>Квартира</label>
-      <input name="apartment" required>
-
       <label>Телефон</label>
-      <input name="phone" required>
+      <input type="text" name="phone" required>
 
       <label>Активіст</label>
-      <input id="actinp" name="activist" list="actlist">
-      <datalist id="actlist">
+      <select name="activist" required>
+        <option value="">Оберіть</option>
         {% for a in activists %}
-          <option value="{{ a[1] }} {{ a[2] }}"></option>
+          <option value="{{ a.id }}">{{ a.last_name }} {{ a.first_name }}</option>
         {% endfor %}
-      </datalist>
+      </select>
 
-      <button type="submit">Додати</button>
+      <button type="submit">Додати підписника</button>
     </form>
   </div>
 </body>
