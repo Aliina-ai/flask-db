@@ -635,6 +635,18 @@ def edit_region1(subscriber_id):
 
     return render_template('edit_region1.html', subscriber=subscriber, buildings=expand_buildings(), activists=acts)
 
+@app.route('/delete_region1/<int:subscriber_id>', methods=['POST'])
+def delete_region1(subscriber_id):
+    subscriber = Subscriber.query.get_or_404(subscriber_id)
+    
+    try:
+        db.session.delete(subscriber)
+        db.session.commit()
+        return redirect(url_for('subscribers_region1'))  # Підлаштуй до свого правильного роута
+    except Exception as e:
+        db.session.rollback()
+        return f"Помилка при видаленні: {str(e)}", 500
+
  
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
