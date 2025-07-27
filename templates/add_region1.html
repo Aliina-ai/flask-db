@@ -110,17 +110,13 @@
       <label>Вулиця</label>
       <input type="text" name="street" value="вул. Гайок" readonly>
 
-      <label>Обери будинок</label>
-      <select name="building_select">
-        <option value="">Оберіть будинок</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <!-- додай інші варіанти -->
-      </select>
+      <label>Будинок</label>
+      <input list="building-options" name="building" required>
+      <datalist id="building-options">
+          {% for b in buildings %}
+           <option value="{{ b }}">
+          {% endfor %}
+       </datalist>
 
       <div class="or">— або введіть вручну —</div>
       <input type="text" name="building_manual" placeholder="Наприклад 120">
@@ -129,16 +125,17 @@
       <input type="text" name="apartment">
 
       <label>Активіст</label>
-      <select name="activist_select">
-        <option value="">Оберіть зі списку</option>
-        {% for a in activists %}
-          <option value="{{ a.id }}">{{ a.name }}</option>
-        {% endfor %}
-      </select>
+      <input list="activist-options" name="activist" required>
+      <datalist id="activist-options">
+          {% for a in activists %}
+           <option value="{{ a.name }}">
+          {% endfor %}
+      </datalist>
 
       <div class="or">— або введіть вручну —</div>
       <input type="text" name="activist_manual" placeholder="Ім’я Прізвище">
 
+      <form method="POST" action="{{ url_for('add_region1') }}">
       <button type="submit">Додати підписника</button>
     </form>
   </div>
