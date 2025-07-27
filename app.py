@@ -488,7 +488,7 @@ def subscribers_home():
         return redirect(url_for('login'))
     return render_template('subscribers_home.html')
 
-@app.route('/regions1', methods=['GET'])
+@app.route('/regions1', endpoint='region1', methods=['GET'])
 def regions1():
     if 'username' not in session:
         return redirect(url_for('login'))
