@@ -564,7 +564,7 @@ def add_region1():
         conn.close()
         return redirect(url_for('regions1'))
 
-    return render_template('add_regions1.html',
+    return render_template('add_region1.html',
                            okrug=okrug,
                            districts=districts,
                            activists=activists)
