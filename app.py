@@ -650,6 +650,24 @@ def delete_region1(subscriber_id):
     flash('Підписника видалено.')
     return redirect(url_for('region1'))
 
+@app.route('/regions2')
+def region2():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM regions1 WHERE okrug = ?", (2,))
+    rows = c.fetchall()
+    conn.close()
+    data = [{
+        'id': r[0], 'okrug': r[1], 'district': r[2],
+        'last_name': r[3], 'first_name': r[4], 'middle_name': r[5],
+        'birth_date': r[6], 'street': r[7], 'building': r[8],
+        'apartment': r[9], 'phone': r[10], 'activist': r[11]
+    } for r in rows]
+    return render_template('region2.html', data=data)
+
+
  
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
