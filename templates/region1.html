@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Підписники — Округ 1</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      margin: 0;
+      padding: 30px;
+      color: #333;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .back {
+      background: #d1d5db;
+      color: #2b4f73;
+    }
+
+    .back:hover {
+      background: #2b4f73;
+      color: #fff;
+    }
+
+    .add {
+      background: #4caf50;
+      color: #fff;
+    }
+
+    .add:hover {
+      background: #3e9142;
+    }
+
+    .search {
+      margin-bottom: 20px;
+    }
+
+    .search input {
+      padding: 9px 12px;
+      width: 280px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .search button {
+      padding: 9px 14px;
+      margin-left: 8px;
+      background: #2b4f73;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .search button:hover {
+      background: #1e3754;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #2b4f73;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f1f5f9;
+    }
+
+    .actions {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      margin: 2px;
+      font-size: 13px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background: #4caf50;
+      color: #fff;
+    }
+
+    .edit-btn:hover {
+      background: #3e9142;
+    }
+
+    .delete-btn {
+      background: #e53935;
+      color: #fff;
+    }
+
+    .delete-btn:hover {
+      background: #c62828;
+    }
+
+    form.inline {
+      display: inline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="{{ url_for('subscribers_home') }}" class="btn back">← Повернутися</a>
+    <a href="{{ url_for('add_region1') }}" class="btn add">+ Додати підписника</a>
+  </div>
+
+  <form method="GET" class="search">
+    <input type="text" name="search" placeholder="Пошук..." value="{{ search }}">
+    <button type="submit">🔍</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Округ</th>
+        <th>Виборча дільниця</th>
+        <th>Прізвище</th>
+        <th>Ім’я</th>
+        <th>По батькові</th>
+        <th>Дата нар.</th>
+        <th>Вулиця</th>
+        <th>Будинок</th>
+        <th>Квартира</th>
+        <th>Телефон</th>
+        <th>Активіст</th>
+        <th>Дії</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+      <tr>
+        <td>{{ row.okrug }}</td>
+        <td>{{ row.district }}</td>
+        <td>{{ row.last_name }}</td>
+        <td>{{ row.first_name }}</td>
+        <td>{{ row.middle_name }}</td>
+        <td>{{ row.birth_date }}</td>
+        <td>{{ row.street }}</td>
+        <td>{{ row.building }}</td>
+        <td>{{ row.apartment }}</td>
+        <td>{{ row.phone }}</td>
+        <td>{{ row.activist }}</td>
+        <td class="actions">
+          <a href="{{ url_for('edit_region1', region_id=row.id) }}">
+            <button type="button" class="action-btn edit-btn">Редагувати</button>
+          </a>
+          <form method="POST" action="{{ url_for('delete_region1', region_id=row.id) }}" class="inline" onsubmit="return confirm('Видалити запис?');">
+            <button type="submit" class="action-btn delete-btn">Видалити</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>
