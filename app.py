@@ -64,7 +64,7 @@ def init_db():
         ''')
         
         c.execute('''
-            CREATE TABLE IF NOT EXISTS region1 (
+            CREATE TABLE IF NOT EXISTS regions1 (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 okrug INTEGER,
                 district TEXT,
@@ -488,15 +488,15 @@ def subscribers_home():
         return redirect(url_for('login'))
     return render_template('subscribers_home.html')
 
-@app.route('/region1', methods=['GET'])
-def region1():
+@app.route('/regions1', methods=['GET'])
+def regions1():
     if 'username' not in session:
         return redirect(url_for('login'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    query = "SELECT * FROM region1"
+    query = "SELECT * FROM regions1"
     params = []
 
     search = request.args.get('search', '').strip()
