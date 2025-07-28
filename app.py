@@ -96,6 +96,23 @@ def init_db():
                 activist TEXT
             )
         ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions3 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
         
         conn.commit()
 
@@ -862,6 +879,44 @@ def region3():
     conn.close()
 
     return render_template('region3.html', data=data)
+
+@app.route('/regions3/add', methods=['GET','POST'])
+def add_region3():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('region3'))
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        district = request.form['district']
+        c.execute('''
+            INSERT INTO regions3 (
+              okrug, district, last_name, first_name, middle_name,
+              birth_date, street, building, apartment, phone, activist
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        ''', (
+            3, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment',''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region3'))
+    # GET:
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+    return render_template('add_region3.html', activists=acts)
+
 
 
  
