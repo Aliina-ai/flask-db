@@ -579,6 +579,7 @@ def edit_activist(activist_id):
             request.form['middle_name'],
             request.form['address'],
             request.form['phone'],
+            request.form['birth_date'],
             request.form['subscribers_count'],
             request.form['newspapers_count'],
             request.form['location'],
