@@ -728,7 +728,7 @@ def region2():
     } for r in rows]
     return render_template('region2.html', data=data)
 
-@app.route('/regions2/add', methods=['GET', 'POST'])
+@app.route('/regions2/add', methods=['GET','POST'])
 def add_region2():
     if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може додавати.')
@@ -736,15 +736,17 @@ def add_region2():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     if request.method == 'POST':
+        street = request.form['street']  # <-- Ось тут
         building = request.form['building']
-        district = get_district_by_building2(building)
+        district = get_district_by_building2(street, building)
         c.execute('''
             INSERT INTO regions2 (
                 okrug, district, last_name, first_name, middle_name,
                 birth_date, street, building, apartment, phone, activist
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
         ''', (
-            2, district,
+            2,
+            district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
@@ -758,11 +760,7 @@ def add_region2():
         conn.commit()
         conn.close()
         return redirect(url_for('region2'))
-
-    c.execute("SELECT last_name, first_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-    conn.close()
-    return render_template('add_region2.html', buildings=expand_buildings2(), activists=acts)
+    # GET: підготовка даних для форми...
 
 @app.route('/regions2/edit/<int:subscriber_id>', methods=['GET', 'POST'])
 def edit_region2(subscriber_id):
