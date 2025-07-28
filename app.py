@@ -849,6 +849,21 @@ def delete_region2(subscriber_id):
     flash('Підписника видалено.')
     return redirect(url_for('region2'))
 
+@app.route('/regions3')
+def region3():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute('SELECT * FROM regions3')
+    data = c.fetchall()
+    conn.close()
+
+    return render_template('region3.html', data=data)
+
+
  
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
