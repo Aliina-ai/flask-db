@@ -114,7 +114,8 @@
         <option value="{{ a.name }}" {% if subscriber.activist == a.name %}selected{% endif %}>{{ a.name }}</option>
       {% endfor %}
     </select>
-
+    
+    <form method="POST" action="{{ url_for('add_region2') }}">
     <button type="submit">Зберегти зміни</button>
   </form>
 </div>
