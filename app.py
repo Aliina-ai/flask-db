@@ -13,6 +13,13 @@ USERS = {
     'Геннадій':  {'password': 'zT38mWc9', 'role': 'operator'},
 }
 
+def get_activists():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT id, name FROM activists')
+    activists = [{'id': row[0], 'name': row[1]} for row in c.fetchall()]
+    conn.close()
+    return activists
 
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
