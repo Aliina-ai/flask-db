@@ -438,6 +438,7 @@ def edit_region(region_id):
 
     if request.method == 'POST':
         loc = ', '.join(request.form.getlist('location'))
+
         c.execute('''
             UPDATE regions SET large_okrug=?, district_name=?, last_name=?, first_name=?,
                 middle_name=?, address=?, phone=?, birth_date=?, location=?
@@ -454,10 +455,12 @@ def edit_region(region_id):
             loc,
             region_id
         ))
+
         conn.commit()
         conn.close()
         return redirect(url_for('regions'))
 
+    # GET-запит: отримуємо дані для редагування
     c.execute('SELECT * FROM regions WHERE id=?', (region_id,))
     row = c.fetchone()
     conn.close()
@@ -466,14 +469,15 @@ def edit_region(region_id):
         flash('Не знайдено.')
         return redirect(url_for('regions'))
 
+    # Пакуємо дані у словник
     region = {
-        'id': row[0], 'large_okrug': row[1], 'district_name': row[2],
-        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
-        'address': row[6], 'phone': row[7], 'birth_date': row[8], 'location': row[9].split(', ')
-    }
-
-    return render_template('add_region.html', edit=True, region=region)
-
+        'id': row[0],
+        'large_okrug': row[1],
+        'district_name': row[2],
+        'okrug_num': int(row[2]) if row[2] else None,  # для шаблону
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
 
 @app.route('/regions/delete/<int:region_id>', methods=['POST'])
 def delete_region(region_id):
