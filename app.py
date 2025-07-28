@@ -733,10 +733,12 @@ def add_region2():
     if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може додавати.')
         return redirect(url_for('region2'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+
     if request.method == 'POST':
-        street = request.form['street']  # <-- Ось тут
+        street = request.form['street']
         building = request.form['building']
         district = get_district_by_building2(street, building)
         c.execute('''
@@ -760,7 +762,18 @@ def add_region2():
         conn.commit()
         conn.close()
         return redirect(url_for('region2'))
-    # GET: підготовка даних для форми...
+
+    # GET: Отримати активістів і структуру будинків
+    c.execute("SELECT last_name, first_name FROM activists")
+    activists = [{'name': f"{row[0]} {row[1]}"} for row in c.fetchall()]
+    conn.close()
+
+    buildings = expand_buildings2()  # функція повертає словник {"вулиця": [список будинків]}
+
+    return render_template('add_region2.html',
+                           activists=activists,
+                           buildings=buildings)
+
 
 @app.route('/regions2/edit/<int:subscriber_id>', methods=['GET', 'POST'])
 def edit_region2(subscriber_id):
