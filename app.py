@@ -115,6 +115,14 @@ def init_db():
         
         conn.commit()
 
+def get_activists():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT id, name FROM activists')
+    activists = [{'id': row[0], 'name': row[1]} for row in c.fetchall()]
+    conn.close()
+    return activists
+
 def expand_buildings():
     b=[]
     b += [str(i) for i in range(1,5)]
