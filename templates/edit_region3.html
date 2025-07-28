@@ -89,9 +89,12 @@
       <label>Вулиця</label>
       <select name="street" id="street" required onchange="updateBuildings3()">
         <option value="">Оберіть вулицю</option>
-        {% for s in addressData %}
-          <option value="{{ s }}" {% if s == subscriber.street %}selected{% endif %}>{{ s }}</option>
-        {% endfor %}
+        <option value="вул. Січневого прориву">вул. Січневого прориву</option>
+        <option value="вул. Володимира Антоновича">вул. Володимира Антоновича</option>
+        <option value="вул. Волонтерська">вул. Волонтерська</option>
+        <option value="вул. Добровольчих батальйонів">вул. Добровольчих батальйонів</option>
+        <option value="вул. Левка Лук’яненка">вул. Левка Лук’яненка</option>
+        <option value="вул. Чехословацька">вул. Чехословацька</option>
       </select>
 
       <label>Будинок</label>
