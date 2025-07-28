@@ -946,25 +946,25 @@ def add_region3():
 @app.route('/regions3/edit/<int:subscriber_id>', methods=['GET', 'POST'])
 def edit_region3(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може редагувати.')
+        flash('Лише адміністратор може редагувати записи.')
         return redirect(url_for('region3'))
 
     conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     if request.method == 'POST':
         street = request.form['street']
         building = request.form['building']
-        address_data3 = expand_buildings3()
-        district = address_data3.get(street, {}).get('district', '')
+        district = get_district_by_building3(street, building)
 
         c.execute('''
             UPDATE regions3 SET
-              okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
-              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+                last_name = ?, first_name = ?, middle_name = ?,
+                birth_date = ?, street = ?, building = ?, apartment = ?,
+                phone = ?, activist = ?, district = ?
             WHERE id = ?
         ''', (
-            3, district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
@@ -974,37 +974,26 @@ def edit_region3(subscriber_id):
             request.form.get('apartment', ''),
             request.form['phone'],
             request.form['activist'],
+            district,
             subscriber_id
         ))
+
         conn.commit()
         conn.close()
         return redirect(url_for('region3'))
 
-    # GET — читаємо поточні дані
+    # GET-запит — отримати поточні дані
     c.execute('SELECT * FROM regions3 WHERE id = ?', (subscriber_id,))
-    row = c.fetchone()
-    if not row:
-        conn.close()
-        flash('Підписника не знайдено.')
-        return redirect(url_for('region3'))
-
-    subscriber = dict(
-        id=row[0], okrug=row[1], district=row[2],
-        last_name=row[3], first_name=row[4], middle_name=row[5],
-        birth_date=row[6], street=row[7], building=row[8],
-        apartment=row[9], phone=row[10], activist=row[11]
-    )
-    c.execute("SELECT last_name, first_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    subscriber = c.fetchone()
     conn.close()
 
-    address_data3 = expand_buildings3()
-    return render_template(
-        'edit_region3.html',
-        subscriber=subscriber,
-        activists=acts,
-        address_data_json=json.dumps(address_data3, ensure_ascii=False)
-    )
+    activists = get_activists()
+    buildings = expand_buildings3()
+
+    return render_template('edit_region3.html',
+                           subscriber=subscriber,
+                           activists=activists,
+                           buildings=buildings)
 
 @app.route('/delete_region3/<int:subscriber_id>', methods=['POST'])
 def delete_region3(subscriber_id):
