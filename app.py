@@ -478,7 +478,7 @@ def edit_region(region_id):
         'last_name': row[3],
         'first_name': row[4],
         'middle_name': row[5],
-
+     }
 @app.route('/regions/delete/<int:region_id>', methods=['POST'])
 def delete_region(region_id):
     if 'username' not in session or session.get('role') != 'admin':
