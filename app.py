@@ -13,14 +13,6 @@ USERS = {
     'Геннадій':  {'password': 'zT38mWc9', 'role': 'operator'},
 }
 
-def get_activists():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('SELECT id, full_name FROM activists')  # ← виправлено тут
-    activists = [{'id': row[0], 'name': row[1]} for row in c.fetchall()]
-    conn.close()
-    return activists
-
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     with sqlite3.connect(DB_PATH) as conn:
@@ -953,25 +945,25 @@ def add_region3():
 @app.route('/regions3/edit/<int:subscriber_id>', methods=['GET', 'POST'])
 def edit_region3(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може редагувати записи.')
+        flash('Лише адміністратор може редагувати.')
         return redirect(url_for('region3'))
 
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     if request.method == 'POST':
         street = request.form['street']
         building = request.form['building']
-        district = get_district_by_building3(street, building)
+        address_data3 = expand_buildings3()
+        district = address_data3.get(street, {}).get('district', '')
 
         c.execute('''
             UPDATE regions3 SET
-                last_name = ?, first_name = ?, middle_name = ?,
-                birth_date = ?, street = ?, building = ?, apartment = ?,
-                phone = ?, activist = ?, district = ?
+              okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
             WHERE id = ?
         ''', (
+            3, district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
@@ -981,26 +973,37 @@ def edit_region3(subscriber_id):
             request.form.get('apartment', ''),
             request.form['phone'],
             request.form['activist'],
-            district,
             subscriber_id
         ))
-
         conn.commit()
         conn.close()
         return redirect(url_for('region3'))
 
-    # GET-запит — отримати поточні дані
+    # GET — читаємо поточні дані
     c.execute('SELECT * FROM regions3 WHERE id = ?', (subscriber_id,))
-    subscriber = c.fetchone()
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region3'))
+
+    subscriber = dict(
+        id=row[0], okrug=row[1], district=row[2],
+        last_name=row[3], first_name=row[4], middle_name=row[5],
+        birth_date=row[6], street=row[7], building=row[8],
+        apartment=row[9], phone=row[10], activist=row[11]
+    )
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
     conn.close()
 
-    activists = get_activists()
-    buildings = expand_buildings3()
-
-    return render_template('edit_region3.html',
-                           subscriber=subscriber,
-                           activists=activists,
-                           buildings=buildings)
+    address_data3 = expand_buildings3()
+    return render_template(
+        'edit_region3.html',
+        subscriber=subscriber,
+        activists=acts,
+        address_data_json=json.dumps(address_data3, ensure_ascii=False)
+    )
 
 @app.route('/delete_region3/<int:subscriber_id>', methods=['POST'])
 def delete_region3(subscriber_id):
