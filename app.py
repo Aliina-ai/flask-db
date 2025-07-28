@@ -417,7 +417,7 @@ def add_region():
             request.form['middle_name'],
             request.form['address'],
             request.form['phone'],
-            request.form['birthday'],
+            request.form['birth_date'],
             request.form['location']
         ))
         conn.commit()
