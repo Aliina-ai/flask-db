@@ -16,7 +16,7 @@ USERS = {
 def get_activists():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('SELECT id, name FROM activists')
+    c.execute('SELECT id, full_name FROM activists')  # ← виправлено тут
     activists = [{'id': row[0], 'name': row[1]} for row in c.fetchall()]
     conn.close()
     return activists
