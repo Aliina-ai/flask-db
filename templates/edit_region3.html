@@ -112,7 +112,8 @@
           <option value="{{ a.name }}">
         {% endfor %}
       </datalist>
-
+      
+      <form method="POST" action="{{ url_for('add_region3') }}">
       <button type="submit">Зберегти зміни</button>
     </form>
   </div>
