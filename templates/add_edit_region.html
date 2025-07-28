@@ -127,6 +127,7 @@
         {% endfor %}
       </select>
 
+      <form method="POST" action="{{ url_for('add_regions') }}">
       <button type="submit">{% if edit %}Зберегти{% else %}Додати{% endif %}</button>
     </form>
   </div>
