@@ -193,7 +193,33 @@ def get_district_by_building2(street, building):
         return address_data[street]["district"]
     return "Невідомо"
 
-
+def expand_buildings3():
+    return {
+        "вул. Січневого прориву": {
+            "buildings": ["27", "33", "33А", "33Б", "33/35"],
+            "district": "321101"
+        },
+        "вул. Володимира Антоновича": {
+            "buildings": [str(i) for i in range(3, 52)] + ["1/7", "2/9", "16А"],
+            "district": "321103"
+        },
+        "вул. Волонтерська": {
+            "buildings": ["4", "5", "6", "7", "8", "11"],
+            "district": "321103"
+        },
+        "вул. Добровольчих батальйонів": {
+            "buildings": ["2А", "4", "5", "8", "9", "11", "15", "17/17"],
+            "district": "321103"
+        },
+        "вул. Левка Лук’яненка": {
+            "buildings": [str(i) for i in range(1, 31)] + ["18А"],
+            "district": "321103"
+        },
+        "вул. Чехословацька": {
+            "buildings": [str(i) for i in range(3, 46)],
+            "district": "321103"
+        }
+    }
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
