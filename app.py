@@ -437,7 +437,7 @@ def edit_region(region_id):
     c = conn.cursor()
 
     if request.method == 'POST':
-        loc = ', '.join(request.form.getlist('location'))
+        loc = ', '.join(request.form.getlist('location'))  # Обробка location як список
 
         c.execute('''
             UPDATE regions SET large_okrug=?, district_name=?, last_name=?, first_name=?,
@@ -474,24 +474,18 @@ def edit_region(region_id):
         'id': row[0],
         'large_okrug': row[1],
         'district_name': row[2],
-        'okrug_num': int(row[2]) if row[2] else None,  # для шаблону
+        'okrug_num': int(row[2]) if row[2] else None,
         'last_name': row[3],
         'first_name': row[4],
         'middle_name': row[5],
-     }
-@app.route('/regions/delete/<int:region_id>', methods=['POST'])
-def delete_region(region_id):
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може видаляти.')
-        return redirect(url_for('regions'))
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'location': row[9]
+    }
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('DELETE FROM regions WHERE id = ?', (region_id,))
-    conn.commit()
-    conn.close()
-    flash('Видалено.')
-    return redirect(url_for('regions'))
+    return render_template('add_edit_region.html', edit=True, region=region)
+
 
 
 # ---------- ACTIVISTS ----------
