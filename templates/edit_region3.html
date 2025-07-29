@@ -89,12 +89,9 @@
       <label>Вулиця</label>
       <select name="street" id="street" required onchange="updateBuildings3()">
         <option value="">Оберіть вулицю</option>
-        <option value="вул. Січневого прориву">вул. Січневого прориву</option>
-        <option value="вул. Володимира Антоновича">вул. Володимира Антоновича</option>
-        <option value="вул. Волонтерська">вул. Волонтерська</option>
-        <option value="вул. Добровольчих батальйонів">вул. Добровольчих батальйонів</option>
-        <option value="вул. Левка Лук’яненка">вул. Левка Лук’яненка</option>
-        <option value="вул. Чехословацька">вул. Чехословацька</option>
+        {% for street in address_data3.keys() %}
+          <option value="{{ street }}" {% if subscriber.street == street %}selected{% endif %}>{{ street }}</option>
+        {% endfor %}
       </select>
 
       <label>Будинок</label>
@@ -109,15 +106,13 @@
       <input type="text" name="apartment" value="{{ subscriber.apartment }}">
 
       <label>Активіст</label>
-      <input type="text" name="activist" value="{{ subscriber.activist }}" list="activist-options" required
-             style="width: 100%; padding: 10px; margin-top: 6px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+      <input type="text" name="activist" value="{{ subscriber.activist }}" list="activist-options" required>
       <datalist id="activist-options">
         {% for a in activists %}
           <option value="{{ a.name }}">
         {% endfor %}
       </datalist>
-      
-      <form method="POST" action="{{ url_for('add_region3') }}">
+
       <button type="submit">Зберегти зміни</button>
     </form>
   </div>
