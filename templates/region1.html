@@ -147,7 +147,7 @@
 
   <h2>Підписники — Округ 1</h2>
 
-  <!-- Пошук та фільтр -->
+  <!-- Пошук, фільтр і сортування -->
   <div class="filters">
     <label>
       Пошук:
@@ -162,6 +162,14 @@
         <option value="Ні">Ні</option>
       </select>
     </label>
+
+    <label>
+      Сортувати за прізвищем:
+      <select id="sortOrder">
+        <option value="az">Від А до Я</option>
+        <option value="za">Від Я до А</option>
+      </select>
+    </label>
   </div>
 
   <div class="table-container">
@@ -173,7 +181,7 @@
           <th>Прізвище</th>
           <th>Ім’я</th>
           <th>По батькові</th>
-          <th>Дата нар.</th>
+          <th>Дата народження</th>
           <th>Вулиця</th>
           <th>Буд.</th>
           <th>Кв.</th>
@@ -216,19 +224,18 @@
   <script>
     const searchInput = document.getElementById('searchInput');
     const activistFilter = document.getElementById('activistFilter');
+    const sortOrder = document.getElementById('sortOrder');
     const tableBody = document.getElementById('tableBody');
 
-    function filterTable() {
+    function filterAndSortTable() {
       const searchTerm = searchInput.value.toLowerCase();
       const activistValue = activistFilter.value;
+      const order = sortOrder.value;
 
-      Array.from(tableBody.rows).forEach(row => {
-        // Пропускаємо службовий рядок без даних
-        if (row.cells.length < 2) {
-          row.style.display = '';
-          return;
-        }
+      let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
 
+      // Фільтрація
+      rows.forEach(row => {
         const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
         const activistText = row.cells[10].textContent.trim();
 
@@ -237,11 +244,25 @@
 
         row.style.display = (matchesSearch && matchesActivist) ? '' : 'none';
       });
+
+      // Сортування
+      rows = rows.filter(row => row.style.display !== 'none');
+      rows.sort((a, b) => {
+        const nameA = a.cells[2].textContent.toLowerCase();
+        const nameB = b.cells[2].textContent.toLowerCase();
+        if (order === 'az') return nameA.localeCompare(nameB, 'uk');
+        else return nameB.localeCompare(nameA, 'uk');
+      });
+
+      // Перемальовка
+      rows.forEach(row => tableBody.appendChild(row));
     }
 
-    searchInput.addEventListener('input', filterTable);
-    activistFilter.addEventListener('change', filterTable);
+    searchInput.addEventListener('input', filterAndSortTable);
+    activistFilter.addEventListener('change', filterAndSortTable);
+    sortOrder.addEventListener('change', filterAndSortTable);
   </script>
 
 </body>
 </html>
+
