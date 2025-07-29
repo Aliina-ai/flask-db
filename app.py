@@ -478,7 +478,7 @@ def edit_region(region_id):
         'middle_name': row[5],
         'address': row[6],
         'phone': row[7],
-
+     }
 
 @app.route('/regions/delete/<int:region_id>', methods=['POST'])
 def delete_region(region_id):
