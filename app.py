@@ -480,7 +480,7 @@ def edit_region(region_id):
         'phone': row[7],
      }
 
-        return render_template('add_edit_region.html', edit=True, region=region)
+    return render_template('add_edit_region.html', edit=True, region=region)
 
 @app.route('/regions/delete/<int:region_id>', methods=['POST'])
 def delete_region(region_id):
