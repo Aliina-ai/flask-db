@@ -1080,7 +1080,7 @@ def delete_region3(subscriber_id):
     flash('Підписника видалено успішно.')
     return redirect(url_for('region3'))
 
-@app.route('/region4')
+@app.route('/regions4')
 def region4():
     if 'username' not in session:
         return redirect(url_for('login'))
