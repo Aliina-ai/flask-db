@@ -112,6 +112,24 @@ def init_db():
                 activist TEXT
             )
         ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions4 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
         
         conn.commit()
 
@@ -1061,6 +1079,21 @@ def delete_region3(subscriber_id):
     conn.close()
     flash('Підписника видалено успішно.')
     return redirect(url_for('region3'))
+
+@app.route('/region4')
+def region4():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute("SELECT * FROM region4")
+    rows = c.fetchall()
+    conn.close()
+
+    return render_template('region4.html', data=rows)
+
 
  
 # ---------- APP LAUNCH ----------
