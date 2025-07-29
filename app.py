@@ -1015,6 +1015,7 @@ def edit_region3(subscriber_id):
         'edit_region3.html',
         subscriber=subscriber,
         activists=acts,
+        address_data3=address_data3,
         address_data_json=json.dumps(address_data3, ensure_ascii=False)
     )
 
