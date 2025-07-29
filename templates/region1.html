@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
@@ -37,6 +37,21 @@
     .top-bar-left a:hover,
     .top-bar-right a:hover {
       background-color: #3b5f85;
+    }
+
+    .filters {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
 
     .table-container {
@@ -132,6 +147,23 @@
 
   <h2>Підписники — Округ 1</h2>
 
+  <!-- Пошук та фільтр -->
+  <div class="filters">
+    <label>
+      Пошук:
+      <input type="search" id="searchInput" placeholder="Введіть для пошуку...">
+    </label>
+
+    <label>
+      Активіст:
+      <select id="activistFilter">
+        <option value="all">Всі</option>
+        <option value="Так">Так</option>
+        <option value="Ні">Ні</option>
+      </select>
+    </label>
+  </div>
+
   <div class="table-container">
     <table>
       <thead>
@@ -150,7 +182,7 @@
           <th>Дії</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="tableBody">
         {% for row in data %}
         <tr>
           <td>{{ row.okrug }}</td>
@@ -181,6 +213,35 @@
     </table>
   </div>
 
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const activistFilter = document.getElementById('activistFilter');
+    const tableBody = document.getElementById('tableBody');
+
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const activistValue = activistFilter.value;
+
+      Array.from(tableBody.rows).forEach(row => {
+        // Пропускаємо службовий рядок без даних
+        if (row.cells.length < 2) {
+          row.style.display = '';
+          return;
+        }
+
+        const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+        const activistText = row.cells[10].textContent.trim();
+
+        const matchesSearch = rowText.includes(searchTerm);
+        const matchesActivist = activistValue === 'all' || activistText === activistValue;
+
+        row.style.display = (matchesSearch && matchesActivist) ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    activistFilter.addEventListener('change', filterTable);
+  </script>
+
 </body>
 </html>
-
