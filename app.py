@@ -118,8 +118,8 @@ def init_db():
 def get_activists():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('SELECT id, name FROM activists')
-    activists = [{'id': row[0], 'name': row[1]} for row in c.fetchall()]
+    c.execute('SELECT id, last_name, first_name FROM activists')
+    activists = [{'id': row[0], 'name': f"{row[1]} {row[2]}"} for row in c.fetchall()]
     conn.close()
     return activists
 
