@@ -426,6 +426,60 @@ def add_region():
 
     return render_template('add_edit_region.html', edit=False)
 
+@app.route('/regions/edit/<int:region_id>', methods=['GET', 'POST'])
+def edit_region(region_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('regions'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        location = ', '.join(request.form.getlist('location'))
+
+        c.execute('''
+            UPDATE regions SET large_okrug=?, district_name=?, last_name=?, first_name=?,
+                middle_name=?, address=?, phone=?, birth_date=?, location=?
+            WHERE id=?
+        ''', (
+            request.form['large_okrug'],
+            request.form['district_name'],
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['address'],
+            request.form['phone'],
+            request.form['birth_date'],
+            location,
+            region_id
+        ))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('regions'))
+
+    # GET-запит: отримуємо дані для редагування
+    c.execute('SELECT * FROM regions WHERE id=?', (region_id,))
+    row = c.fetchone()
+    conn.close()
+
+    if not row:
+        flash('Підписника не знайдено.')
+        return redirect(url_for('regions'))
+
+    region = {
+        'id': row[0],
+        'large_okrug': row[1],
+        'district_name': row[2],
+        'okrug_num': int(row[2]) if row[2] else None,
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+
+
 @app.route('/regions/delete/<int:region_id>', methods=['POST'])
 def delete_region(region_id):
     if 'username' not in session or session.get('role') != 'admin':
