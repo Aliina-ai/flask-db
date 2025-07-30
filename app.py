@@ -1135,7 +1135,7 @@ def add_region4():
 def delete_region4(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може видаляти.')
-        return redirect(url_for('region3'))
+        return redirect(url_for('region4'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
