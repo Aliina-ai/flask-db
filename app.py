@@ -1092,7 +1092,7 @@ def region4():
     rows = c.fetchall()
     conn.close()
 
-    return render_template('region4.html', data=rows)
+    return render_template('region4.html', data=data)
 
 @app.route('/regions4/add', methods=['GET','POST'])
 def add_region4():
