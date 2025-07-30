@@ -1088,7 +1088,7 @@ def region4():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute("SELECT * FROM region4")
+    c.execute("SELECT * FROM regions4")
     rows = c.fetchall()
     conn.close()
 
