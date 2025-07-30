@@ -1,1 +1,177 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Додати підписника — Округ 4</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 40px;
+    }
+    .wrapper {
+      max-width: 600px;
+      margin: auto;
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin-top: 16px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+    }
+    input[type="text"],
+    input[type="date"],
+    select,
+    input[list] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      background: #fff;
+    }
+    button {
+      width: 100%;
+      margin-top: 30px;
+      padding: 12px;
+      background-color: #2b4f73;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1f3e5a;
+    }
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      background-color: #ccc;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="{{ url_for('region4') }}" class="back">← Повернутися</a>
+    <h2>Додати підписника — Округ 4</h2>
+
+    <form method="POST" action="{{ url_for('add_region4') }}">
+      <label>Прізвище</label>
+      <input type="text" name="last_name" required>
+
+      <label>Ім’я</label>
+      <input type="text" name="first_name" required>
+
+      <label>По батькові</label>
+      <input type="text" name="middle_name" required>
+
+      <label>Дата народження</label>
+      <input type="date" name="birth_date" required>
+
+      <label>Телефон</label>
+      <input type="text" name="phone" required>
+
+      <label>Вулиця</label>
+      <select name="street" id="street" required onchange="updateBuildings3()">
+        <option value="">Оберіть вулицю</option>
+        <option value="вул.Полковника Коновальця">вул.Полковника Коновальця</option>
+        <option value="вул.Гайова">вул.Гайова</option>
+        <option value="вул.Січневого прориву">вул.Січневого прориву</option>
+        <option value="вул.Сквирське шосе">вул.Сквирське шосе</option>
+        <option value="пров.Будівельників">пров.Будівельників</option>
+      </select>
+
+      <label>Будинок</label>
+      <select name="building" id="building" required onchange="updateDistrict3()">
+        <option value="">Оберіть будинок</option>
+      </select>
+
+      <label>Виборча дільниця</label>
+      <input type="text" name="district" id="district" readonly>
+
+      <label>Квартира</label>
+      <input type="text" name="apartment">
+
+      <label>Активіст</label>
+      <input list="activist-options" name="activist" required>
+      <datalist id="activist-options">
+        {% for a in activists %}
+          <option value="{{ a.name }}">
+        {% endfor %}
+      </datalist>
+
+      <button type="submit">Додати підписника</button>
+    </form>
+  </div>
+
+  <script>
+    
+    const addressData3 = {
+      "вул. Полковника Коновальця": {
+            "buildings": ["3", "3/1", "3/4"] + [str(i) for i in range(4, 11)] + ["12", "27", "29", "31", "104"],
+            "district": "321099"
+        },
+        "вул. Гайова": {
+            "buildings": ["3", "4", "5", "7", "7/1", "11", "13", "15/1", "17/2"],
+            "district": "321105"
+        },
+        "вул. Січневого прориву": {
+            "buildings": [str(i) for i in range(2, 6)],
+            "district": "321105"
+        },
+        "вул. Сквирське шосе": {
+            "buildings": ["39", "41"] + [str(i) for i in range(47, 52)] + [
+                "214А", "214Б", "214/2", "216", "216А", "218", "218Б", "220", "224А"],
+            "district": "321105"
+        },
+        "пров. Будівельників": {
+            "buildings": ["3", "4", "5", "7", "9", "11"],
+            "district": "321105"
+        }
+    };
+
+    function updateBuildings3() {
+      const street = document.getElementById("street").value;
+      const bsel = document.getElementById("building");
+      bsel.innerHTML = '<option value="">Оберіть будинок</option>';
+      document.getElementById("district").value = "";
+
+      if (addressData3[street]) {
+        addressData3[street].buildings.forEach(b => {
+          const opt = document.createElement("option");
+          opt.value = b;
+          opt.text = b;
+          bsel.add(opt);
+        });
+      }
+    }
+
+    function updateDistrict3() {
+      const street = document.getElementById("street").value;
+      const ds = document.getElementById("district");
+      ds.value = addressData3[street]?.district || "";
+    }
+  </script>
+</body>
+</html>
 
