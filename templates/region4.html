@@ -1,103 +1,202 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Підписники — Округ 4</title>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f4f4;
-      margin: 40px;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 30px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #2b4f73;
-      color: white;
-    }
-    .btn {
-      padding: 6px 12px;
-      text-decoration: none;
-      background-color: #2b4f73;
-      color: white;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-    .btn:hover {
-      background-color: #1f3e5a;
-    }
+
     .top-bar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
     }
-    .top-bar h2 {
-      margin: 0;
+
+    .top-bar a {
+      padding: 10px 16px;
+      background: #2b4f73;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .top-bar a:hover {
+      background: #3b5f85;
+    }
+
+    h2 {
       color: #2b4f73;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .search-input {
+      display: block;
+      margin: 0 auto 20px auto;
+      padding: 10px;
+      width: 100%;
+      max-width: 400px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1200px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      text-align: left;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #2b4f73;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f1f5f9;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .actions button {
+      padding: 6px 12px;
+      font-size: 13px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .edit-btn {
+      background: #4caf50;
+      color: white;
+    }
+
+    .edit-btn:hover {
+      background: #45a043;
+    }
+
+    .delete-btn {
+      background: #e53935;
+      color: white;
+    }
+
+    .delete-btn:hover {
+      background: #d32f2f;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 20px;
+      font-size: 16px;
+      color: #777;
     }
   </style>
 </head>
 <body>
+
   <div class="top-bar">
-    <h2>Підписники — Округ 4</h2>
-    <a href="{{ url_for('add_region4') }}" class="btn">+ Додати підписника</a>
+    <a href="{{ url_for('subscribers_home') }}">← Повернутися</a>
+    <a href="{{ url_for('add_region4') }}">+ Додати підписника</a>
   </div>
 
-  <table id="regionTable">
-    <thead>
-      <tr>
-        <th>Округ</th>
-        <th>Виборча дільниця</th>
-        <th>Прізвище</th>
-        <th>Ім’я</th>
-        <th>По батькові</th>
-        <th>Дата народження</th>
-        <th>Вулиця</th>
-        <th>Буд.</th>
-        <th>Кв.</th>
-        <th>Телефон</th>
-        <th>Активіст</th>
-        <th>Дії</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in data %}
-      <tr>
-        <td>4</td>
-        <td>{{ s.district }}</td>
-        <td>{{ s.last_name }}</td>
-        <td>{{ s.first_name }}</td>
-        <td>{{ s.middle_name }}</td>
-        <td>{{ s.birth_date }}</td>
-        <td>{{ s.street }}</td>
-        <td>{{ s.building }}</td>
-        <td>{{ s.apartment }}</td>
-        <td>{{ s.phone }}</td>
-        <td>{{ s.activist }}</td>
-        <td>
-          <a href="{{ url_for('edit_region4', subscriber_id=s.id) }}" class="btn">Редагувати</a>
-          <form method="POST" action="{{ url_for('delete_region4', subscriber_id=s.id) }}" style="display:inline;">
-            <button type="submit" class="delete-btn">Видалити</button>
+  <h2>Підписники — Округ 4</h2>
+
+  <input
+    type="text"
+    id="searchInput"
+    class="search-input"
+    placeholder="Пошук за прізвищем, активістом…"
+    onkeyup="filterTable()"
+  />
+
+  <div class="table-container">
+    <table id="region4Table">
+      <thead>
+        <tr>
+          <th>Округ</th>
+          <th>Виборча дільниця</th>
+          <th>Прізвище</th>
+          <th>Ім’я</th>
+          <th>По батькові</th>
+          <th>Дата нар.</th>
+          <th>Вулиця</th>
+          <th>Буд.</th>
+          <th>Кв.</th>
+          <th>Телефон</th>
+          <th>Активіст</th>
+          <th>Дії</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+        <tr>
+          <td>{{ row.okrug }}</td>
+          <td>{{ row.district }}</td>
+          <td>{{ row.last_name }}</td>
+          <td>{{ row.first_name }}</td>
+          <td>{{ row.middle_name }}</td>
+          <td>{{ row.birth_date }}</td>
+          <td>{{ row.street }}</td>
+          <td>{{ row.building }}</td>
+          <td>{{ row.apartment }}</td>
+          <td>{{ row.phone }}</td>
+          <td>{{ row.activist }}</td>
+          <td class="actions">
+            <a href="{{ url_for('edit_region4', subscriber_id=row.id) }}">
+              <button class="edit-btn">Редагувати</button>
+            </a>
+            <form method="POST" action="{{ url_for('delete_region4', subscriber_id=row.id) }}" style="display:inline;">
+              <button type="submit" class="delete-btn">Видалити</button>
             </form>
           </td>
         </tr>
         {% endfor %}
         {% if data|length == 0 %}
         <tr>
-          <td colspan="12" style="text-align:center; padding:20px;">Записи відсутні</td>
+          <td colspan="12" class="no-data">Записи відсутні</td>
         </tr>
         {% endif %}
       </tbody>
     </table>
   </div>
+
+  <script>
+    function filterTable() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#region4Table tbody tr");
+      rows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        row.style.display = rowText.includes(input) ? "" : "none";
+      });
+    }
+  </script>
+
 </body>
 </html>
