@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Додати підписника — Округ 4</title>
   <style>
     body {
@@ -77,28 +77,28 @@
 
     <form method="POST" action="{{ url_for('add_region4') }}">
       <label>Прізвище</label>
-      <input type="text" name="last_name" required>
+      <input type="text" name="last_name" required />
 
       <label>Ім’я</label>
-      <input type="text" name="first_name" required>
+      <input type="text" name="first_name" required />
 
       <label>По батькові</label>
-      <input type="text" name="middle_name" required>
+      <input type="text" name="middle_name" required />
 
       <label>Дата народження</label>
-      <input type="date" name="birth_date" required>
+      <input type="date" name="birth_date" required />
 
       <label>Телефон</label>
-      <input type="text" name="phone" required>
+      <input type="text" name="phone" required />
 
       <label>Вулиця</label>
       <select name="street" id="street" required onchange="updateBuildings4()">
         <option value="">Оберіть вулицю</option>
-        <option value="вул. Полковника Коновальця">вул. Полковника Коновальця</option>
-        <option value="вул. Гайова">вул. Гайова</option>
-        <option value="вул. Січневого прориву">вул. Січневого прориву</option>
-        <option value="вул. Сквирське шосе">вул. Сквирське шосе</option>
-        <option value="пров. Будівельників">пров. Будівельників</option>
+        <option value="вул.Полковника Коновальця">вул.Полковника Коновальця</option>
+        <option value="вул.Гайова">вул.Гайова</option>
+        <option value="вул.Січневого прориву">вул.Січневого прориву</option>
+        <option value="вул.Сквирське шосе">вул.Сквирське шосе</option>
+        <option value="пров.Будівельників">пров.Будівельників</option>
       </select>
 
       <label>Будинок</label>
@@ -107,13 +107,13 @@
       </select>
 
       <label>Виборча дільниця</label>
-      <input type="text" name="district" id="district" readonly>
+      <input type="text" name="district" id="district" readonly />
 
       <label>Квартира</label>
-      <input type="text" name="apartment">
+      <input type="text" name="apartment" />
 
       <label>Активіст</label>
-      <input list="activist-options" name="activist" required>
+      <input list="activist-options" name="activist" required />
       <datalist id="activist-options">
         {% for a in activists %}
           <option value="{{ a.name }}">
@@ -125,29 +125,27 @@
   </div>
 
   <script>
-    
     const addressData4 = {
-      "вул. Полковника Коновальця": {
-            "buildings": ["3", "3/1", "3/4"] + [str(i) for i in range(4, 11)] + ["12", "27", "29", "31", "104"],
-            "district": "321099"
-        },
-        "вул. Гайова": {
-            "buildings": ["3", "4", "5", "7", "7/1", "11", "13", "15/1", "17/2"],
-            "district": "321105"
-        },
-        "вул. Січневого прориву": {
-            "buildings": [str(i) for i in range(2, 6)],
-            "district": "321105"
-        },
-        "вул. Сквирське шосе": {
-            "buildings": ["39", "41"] + [str(i) for i in range(47, 52)] + [
-                "214А", "214Б", "214/2", "216", "216А", "218", "218Б", "220", "224А"],
-            "district": "321105"
-        },
-        "пров. Будівельників": {
-            "buildings": ["3", "4", "5", "7", "9", "11"],
-            "district": "321105"
-        }
+      "вул.Полковника Коновальця": {
+        "buildings": ["3", "3/1", "3/4", "4", "5", "6", "7", "8", "9", "10", "12", "27", "29", "31", "104"],
+        "district": "321099"
+      },
+      "вул.Гайова": {
+        "buildings": ["3", "4", "5", "7", "7/1", "11", "13", "15/1", "17/2"],
+        "district": "321105"
+      },
+      "вул.Січневого прориву": {
+        "buildings": ["2", "3", "4", "5"],
+        "district": "321105"
+      },
+      "вул.Сквирське шосе": {
+        "buildings": ["39", "41", "47", "48", "49", "50", "51", "214А", "214Б", "214/2", "216", "216А", "218", "218Б", "220", "224А"],
+        "district": "321105"
+      },
+      "пров.Будівельників": {
+        "buildings": ["3", "4", "5", "7", "9", "11"],
+        "district": "321105"
+      }
     };
 
     function updateBuildings4() {
@@ -174,4 +172,3 @@
   </script>
 </body>
 </html>
-
