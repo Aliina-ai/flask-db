@@ -1131,6 +1131,20 @@ def add_region4():
     conn.close()
     return render_template('add_region4.html', activists=acts)
 
+@app.route('/delete_region4/<int:subscriber_id>', methods=['POST'])
+def delete_region4(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти.')
+        return redirect(url_for('region3'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions4 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+    flash('Підписника видалено успішно.')
+    return redirect(url_for('region4'))
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
