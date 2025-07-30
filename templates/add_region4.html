@@ -92,7 +92,7 @@
       <input type="text" name="phone" required>
 
       <label>Вулиця</label>
-      <select name="street" id="street" required onchange="updateBuildings3()">
+      <select name="street" id="street" required onchange="updateBuildings4()">
         <option value="">Оберіть вулицю</option>
         <option value="вул.Полковника Коновальця">вул.Полковника Коновальця</option>
         <option value="вул.Гайова">вул.Гайова</option>
@@ -102,7 +102,7 @@
       </select>
 
       <label>Будинок</label>
-      <select name="building" id="building" required onchange="updateDistrict3()">
+      <select name="building" id="building" required onchange="updateDistrict4()">
         <option value="">Оберіть будинок</option>
       </select>
 
@@ -150,7 +150,7 @@
         }
     };
 
-    function updateBuildings3() {
+    function updateBuildings4() {
       const street = document.getElementById("street").value;
       const bsel = document.getElementById("building");
       bsel.innerHTML = '<option value="">Оберіть будинок</option>';
