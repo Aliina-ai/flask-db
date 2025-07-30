@@ -1108,57 +1108,6 @@ def region4():
 
     return render_template('region4.html', data=data)
 
-@app.route('/regions4/add', methods=['GET','POST'])
-def add_region4():
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати.')
-        return redirect(url_for('region4'))
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    if request.method == 'POST':
-        street = request.form['street']
-        building = request.form['building']
-        district = request.form['district']
-        c.execute('''
-            INSERT INTO regions4 (
-              okrug, district, last_name, first_name, middle_name,
-              birth_date, street, building, apartment, phone, activist
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
-        ''', (
-            4, district,
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['birth_date'],
-            street,
-            building,
-            request.form.get('apartment',''),
-            request.form['phone'],
-            request.form['activist']
-        ))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('region4'))
-    # GET:
-    c.execute("SELECT last_name, first_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-    conn.close()
-    return render_template('add_region4.html', activists=acts)
-
-@app.route('/delete_region4/<int:subscriber_id>', methods=['POST'])
-def delete_region4(subscriber_id):
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може видаляти.')
-        return redirect(url_for('region4'))
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('DELETE FROM regions4 WHERE id = ?', (subscriber_id,))
-    conn.commit()
-    conn.close()
-    flash('Підписника видалено успішно.')
-    return redirect(url_for('region4'))
-
 @app.route('/regions4/add', methods=['GET', 'POST'])
 def add_region4():
     if 'username' not in session or session.get('role') != 'admin':
