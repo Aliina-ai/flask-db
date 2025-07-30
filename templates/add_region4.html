@@ -126,7 +126,7 @@
 
   <script>
     
-    const addressData3 = {
+    const addressData4 = {
       "вул. Полковника Коновальця": {
             "buildings": ["3", "3/1", "3/4"] + [str(i) for i in range(4, 11)] + ["12", "27", "29", "31", "104"],
             "district": "321099"
@@ -156,8 +156,8 @@
       bsel.innerHTML = '<option value="">Оберіть будинок</option>';
       document.getElementById("district").value = "";
 
-      if (addressData3[street]) {
-        addressData3[street].buildings.forEach(b => {
+      if (addressData4[street]) {
+        addressData4[street].buildings.forEach(b => {
           const opt = document.createElement("option");
           opt.value = b;
           opt.text = b;
@@ -166,10 +166,10 @@
       }
     }
 
-    function updateDistrict3() {
+    function updateDistrict4() {
       const street = document.getElementById("street").value;
       const ds = document.getElementById("district");
-      ds.value = addressData3[street]?.district || "";
+      ds.value = addressData4[street]?.district || "";
     }
   </script>
 </body>
