@@ -1157,6 +1157,71 @@ def add_region4():
         address_data_json=json.dumps(address_data4, ensure_ascii=False)
     )
 
+@app.route('/regions4/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region4(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region4'))
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings4()
+        district = address_data.get(street, {}).get('district', '')
+
+        c.execute('''
+            UPDATE regions4 SET
+              okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+            WHERE id = ?
+        ''', (
+            4, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region4'))
+
+    # GET: отримання даних підписника
+    c.execute('SELECT * FROM regions4 WHERE id = ?', (subscriber_id,))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region4'))
+
+    subscriber = dict(
+        id=row['id'], okrug=row['okrug'], district=row['district'],
+        last_name=row['last_name'], first_name=row['first_name'], middle_name=row['middle_name'],
+        birth_date=row['birth_date'], street=row['street'], building=row['building'],
+        apartment=row['apartment'], phone=row['phone'], activist=row['activist']
+    )
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r['last_name']} {r['first_name']}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data = expand_buildings4()
+    return render_template(
+        'edit_region4.html',
+        subscriber=subscriber,
+        activists=acts,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
