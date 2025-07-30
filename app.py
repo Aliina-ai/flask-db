@@ -1086,11 +1086,25 @@ def region4():
         return redirect(url_for('login'))
 
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute("SELECT * FROM regions4")
+    c.execute('SELECT * FROM regions4')
     rows = c.fetchall()
     conn.close()
+
+    data = [{
+        'id': row[0],
+        'okrug': row[1],
+        'district': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'birth_date': row[6],
+        'street': row[7],
+        'building': row[8],
+        'apartment': row[9],
+        'phone': row[10],
+        'activist': row[11]
+    } for row in rows]
 
     return render_template('region4.html', data=data)
 
