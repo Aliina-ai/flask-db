@@ -1222,14 +1222,22 @@ def edit_region4(subscriber_id):
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
 
+@app.route('/regions4/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region4(subscriber_id):
+    # Перевірка авторизації (тільки адміністратор)
     if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може видаляти.')
-        return redirect(url_for('region4'))
-    
-    # Заглушка: тут мав бути код видалення з БД
-    flash(f'Функція видалення (id={subscriber_id}) тимчасово недоступна.')
-    return redirect(url_for('region3'))
+        return redirect(url_for('region4'))  # Перенаправлення на список округу 4
+
+    # Видалення з бази даних
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions4 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Підписника видалено успішно.')
+    return redirect(url_for('region4'))
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
