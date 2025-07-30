@@ -1094,16 +1094,7 @@ def region4():
 
     return render_template('region4.html', data=rows)
 
-@app.route('/regions4')
-def regions4():
-    return "<h1>Сторінка округу 4 у розробці</h1>"
-
-@app.route('/delete_region1/<int:subscriber_id>', methods=['POST'])
-def delete_region1(subscriber_id):
-    # Заглушка: видалення не виконується
-    print(f"[DEBUG] Запит на видалення підписника з ID: {subscriber_id}")
-    return f"Заглушка: підписника з ID {subscriber_id} не видалено (це лише демонстрація).", 200
-
+    
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
