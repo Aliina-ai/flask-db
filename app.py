@@ -1159,6 +1159,55 @@ def delete_region4(subscriber_id):
     flash('Підписника видалено успішно.')
     return redirect(url_for('region4'))
 
+@app.route('/regions4/add', methods=['GET', 'POST'])
+def add_region4():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('region4'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data4 = expand_buildings4()
+        district = address_data4.get(street, {}).get('district', '')
+
+        c.execute('''
+            INSERT INTO regions4 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            4, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region4'))
+
+    # Підготовка до GET-запиту
+    c.execute("SELECT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data4 = expand_buildings4()
+    return render_template(
+        'add_region4.html',
+        activists=activists,
+        address_data_json=json.dumps(address_data4, ensure_ascii=False)
+    )
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
