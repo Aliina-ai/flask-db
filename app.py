@@ -1222,6 +1222,15 @@ def edit_region4(subscriber_id):
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
 
+def delete_region4(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти.')
+        return redirect(url_for('region4'))
+    
+    # Заглушка: тут мав бути код видалення з БД
+    flash(f'Функція видалення (id={subscriber_id}) тимчасово недоступна.')
+    return redirect(url_for('region3'))
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
