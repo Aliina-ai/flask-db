@@ -87,7 +87,7 @@
       <label>Вулиця</label>
       <select name="street" id="street" required onchange="updateBuildings4()">
         <option value="">Оберіть вулицю</option>
-        {% for street in address_data_json.keys() %}
+        {% for street in address_data.keys() %}
           <option value="{{ street }}" {% if street == subscriber.street %}selected{% endif %}>{{ street }}</option>
         {% endfor %}
       </select>
