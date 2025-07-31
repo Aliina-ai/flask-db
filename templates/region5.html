@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Підписники — Округ 5</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .top-bar a {
+      padding: 8px 14px;
+      background: #2b4f73;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .top-bar a:hover {
+      background: #3b5f85;
+    }
+
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .filters label {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-top: 4px;
+      min-width: 160px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1200px;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #2b4f73;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f1f5f9;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .actions button {
+      padding: 6px 10px;
+      font-size: 13px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .edit-btn {
+      background: #4caf50;
+      color: #fff;
+    }
+
+    .edit-btn:hover {
+      background: #45a043;
+    }
+
+    .delete-btn {
+      background: #e53935;
+      color: #fff;
+    }
+
+    .delete-btn:hover {
+      background: #d32f2f;
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <a href="{{ url_for('subscribers_home') }}">← Повернутися</a>
+    <a href="{{ url_for('add_region5') }}">+ Додати підписника</a>
+  </div>
+
+  <h2>Підписники — Округ 5</h2>
+
+  <div class="filters">
+    <label>
+      Пошук:
+      <input type="text" id="searchInput" placeholder="Введіть текст…">
+    </label>
+
+    <label>
+      Активіст:
+      <select id="activistFilter">
+        <option value="all">Всі</option>
+        {% for a in activists %}
+          <option value="{{ a.name }}">{{ a.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  </div>
+
+  <div class="table-container">
+    <table id="region5Table">
+      <thead>
+        <tr>
+          <th>Округ</th>
+          <th>Виборча дільниця</th>
+          <th>Прізвище</th>
+          <th>Ім’я</th>
+          <th>По батькові</th>
+          <th>Дата нар.</th>
+          <th>Вулиця</th>
+          <th>Буд.</th>
+          <th>Кв.</th>
+          <th>Телефон</th>
+          <th>Активіст</th>
+          <th>Дії</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+        <tr>
+          <td>{{ row.okrug }}</td>
+          <td>{{ row.district }}</td>
+          <td>{{ row.last_name }}</td>
+          <td>{{ row.first_name }}</td>
+          <td>{{ row.middle_name }}</td>
+          <td>{{ row.birth_date }}</td>
+          <td>{{ row.street }}</td>
+          <td>{{ row.building }}</td>
+          <td>{{ row.apartment }}</td>
+          <td>{{ row.phone }}</td>
+          <td>{{ row.activist }}</td>
+          <td class="actions">
+            <a href="{{ url_for('edit_region5', subscriber_id=row.id) }}">
+              <button type="button" class="edit-btn">Редагувати</button>
+            </a>
+            <form method="POST" action="{{ url_for('delete_region5', subscriber_id=row.id) }}" style="display:inline;">
+              <button type="submit" class="delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+        {% if data|length == 0 %}
+        <tr>
+          <td colspan="12" style="text-align:center; padding:20px;">Записи відсутні</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const activistFilter = document.getElementById('activistFilter');
+    const tableRows = document.querySelectorAll('#region5Table tbody tr');
+
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const activist = activistFilter.value;
+
+      tableRows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        const activistText = row.cells[10].textContent;
+
+        const matchesSearch = rowText.includes(searchTerm);
+        const matchesActivist = activist === 'all' || activistText === activist;
+
+        row.style.display = matchesSearch && matchesActivist ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    activistFilter.addEventListener('change', filterTable);
+  </script>
+
+</body>
+</html>
