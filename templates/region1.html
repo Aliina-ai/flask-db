@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
@@ -37,21 +37,6 @@
     .top-bar-left a:hover,
     .top-bar-right a:hover {
       background-color: #3b5f85;
-    }
-
-    .filters {
-      margin-bottom: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .filters input,
-    .filters select {
-      padding: 6px 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
     }
 
     .table-container {
@@ -121,6 +106,15 @@
       background-color: #d32f2f;
     }
 
+    .filter-row input {
+      width: 100%;
+      padding: 6px;
+      font-size: 12px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
     @media (max-width: 768px) {
       .top-bar {
         flex-direction: column;
@@ -147,30 +141,22 @@
 
   <h2>Підписники — Округ 1</h2>
 
-  <!-- Пошук, фільтр і сортування -->
   <div class="filters">
     <label>
       Пошук:
       <input type="search" id="searchInput" placeholder="Введіть для пошуку...">
     </label>
 
-    <label>
+    <label> 
       Активіст:
       <select id="activistFilter">
         <option value="all">Всі</option>
-        <option value="Так">Так</option>
-        <option value="Ні">Ні</option>
-      </select>
-    </label>
-
-    <label>
-      Сортувати за прізвищем:
-      <select id="sortOrder">
-        <option value="az">Від А до Я</option>
-        <option value="za">Від Я до А</option>
-      </select>
-    </label>
-  </div>
+        {% for a in activists %}
+          <option value="{{ a.name }}">{{ a.name }}</option>
+        {% endfor %}
+       </select>
+     </label>
+   </div>
 
   <div class="table-container">
     <table>
@@ -188,6 +174,21 @@
           <th>Телефон</th>
           <th>Активіст</th>
           <th>Дії</th>
+        </tr>
+        <!-- Рядок фільтрів -->
+        <tr class="filter-row">
+          <th><input type="text" class="column-filter" data-col="0" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="1" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="2" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="3" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="4" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="5" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="6" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="7" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="8" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="9" placeholder="Фільтр..."></th>
+          <th><input type="text" class="column-filter" data-col="10" placeholder="Фільтр..."></th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="tableBody">
@@ -214,7 +215,7 @@
         {% endfor %}
         {% if data|length == 0 %}
         <tr>
-          <td colspan="13" style="text-align:center; padding:20px;">Записи відсутні</td>
+          <td colspan="12" style="text-align:center; padding:20px;">Записи відсутні</td>
         </tr>
         {% endif %}
       </tbody>
@@ -222,47 +223,34 @@
   </div>
 
   <script>
-    const searchInput = document.getElementById('searchInput');
-    const activistFilter = document.getElementById('activistFilter');
-    const sortOrder = document.getElementById('sortOrder');
     const tableBody = document.getElementById('tableBody');
+    const columnFilters = document.querySelectorAll('.column-filter');
 
-    function filterAndSortTable() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const activistValue = activistFilter.value;
-      const order = sortOrder.value;
+    columnFilters.forEach(input => {
+      input.addEventListener('input', filterByColumns);
+    });
 
-      let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
-
-      // Фільтрація
+    function filterByColumns() {
+      const rows = Array.from(tableBody.querySelectorAll('tr'));
       rows.forEach(row => {
-        const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-        const activistText = row.cells[10].textContent.trim();
+        if (row.cells.length <= 2) return;
 
-        const matchesSearch = rowText.includes(searchTerm);
-        const matchesActivist = activistValue === 'all' || activistText === activistValue;
+        let visible = true;
 
-        row.style.display = (matchesSearch && matchesActivist) ? '' : 'none';
+        columnFilters.forEach(input => {
+          const colIndex = parseInt(input.dataset.col);
+          const filterValue = input.value.trim().toLowerCase();
+          const cellText = row.cells[colIndex].textContent.trim().toLowerCase();
+
+          if (!cellText.includes(filterValue)) {
+            visible = false;
+          }
+        });
+
+        row.style.display = visible ? '' : 'none';
       });
-
-      // Сортування
-      rows = rows.filter(row => row.style.display !== 'none');
-      rows.sort((a, b) => {
-        const nameA = a.cells[2].textContent.toLowerCase();
-        const nameB = b.cells[2].textContent.toLowerCase();
-        if (order === 'az') return nameA.localeCompare(nameB, 'uk');
-        else return nameB.localeCompare(nameA, 'uk');
-      });
-
-      // Перемальовка
-      rows.forEach(row => tableBody.appendChild(row));
     }
-
-    searchInput.addEventListener('input', filterAndSortTable);
-    activistFilter.addEventListener('change', filterAndSortTable);
-    sortOrder.addEventListener('change', filterAndSortTable);
   </script>
 
 </body>
 </html>
-
