@@ -1154,6 +1154,7 @@ def add_region4():
     return render_template(
         'add_region4.html',
         activists=activists,
+        address_data=address_data4,
         address_data_json=json.dumps(address_data4, ensure_ascii=False)
     )
 
