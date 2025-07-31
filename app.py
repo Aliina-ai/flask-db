@@ -690,18 +690,29 @@ def subscribers_home():
 def region1():
     if 'username' not in session:
         return redirect(url_for('login'))
-    conn=sqlite3.connect(DB_PATH)
-    c=conn.cursor()
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    # Отримання підписників
     c.execute("SELECT * FROM regions1")
-    rows=c.fetchall()
-    conn.close()
-    data=[{
-        'id':r[0],'okrug':r[1],'district':r[2],
-        'last_name':r[3],'first_name':r[4],'middle_name':r[5],
-        'birth_date':r[6],'street':r[7],'building':r[8],
-        'apartment':r[9],'phone':r[10],'activist':r[11]
+    rows = c.fetchall()
+    data = [{
+        'id': r['id'], 'okrug': r['okrug'], 'district': r['district'],
+        'last_name': r['last_name'], 'first_name': r['first_name'], 'middle_name': r['middle_name'],
+        'birth_date': r['birth_date'], 'street': r['street'], 'building': r['building'],
+        'apartment': r['apartment'], 'phone': r['phone'], 'activist': r['activist']
     } for r in rows]
-    return render_template('region1.html', data=data)
+
+    # Отримання унікального списку активістів
+    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
+    activist_rows = c.fetchall()
+    activists = [{'name': f"{r['last_name']} {r['first_name']}"} for r in activist_rows]
+
+    conn.close()
+
+    return render_template('region1.html', data=data, activists=activists)
 
 @app.route('/regions1/add', methods=['GET','POST'])
 def add_region1():
