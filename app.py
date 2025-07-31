@@ -229,34 +229,6 @@ def get_district_by_building2(street, building):
         }
     }
 
-   def expand_buildings5():
-    return {
-        "бульв. Олександрійський": {
-            "buildings": ["98", "102", "104"],
-            "district": "321106"
-        },
-        "вул. Дачна": {
-            "buildings": ["66", "72"],
-            "district": "321106"
-        },
-        "вул. Ігоря Каплуненка": {
-            "buildings": ["75", "81"],
-            "district": "321106"
-        },
-        "вул. Клінічна": {
-            "buildings": ["4/1", "4/2", "6"],
-            "district": "321106"
-        },
-        "вул. Івана Мазепи": {
-            "buildings": [str(i) for i in range(3, 99)] + ["1А", "2/17", "3А", "45А", "45Б", "65А", "67А", "81А", "83А", "85А"],
-            "district": "321108"
-        },
-        "вул. Миру": {
-            "buildings": [str(i) for i in range(1, 42, 2)] + ["2А", "20А", "27А"],
-            "district": "321108"
-        }
-    }
-
     if street in address_data and building in address_data[street]["buildings"]:
         return address_data[street]["district"]
     return "Невідомо"
@@ -312,6 +284,34 @@ def expand_buildings4():
         "пров. Будівельників": {
             "buildings": ["3", "4", "5", "7", "9", "11"],
             "district": "321105"
+        }
+    }
+
+def expand_buildings5():
+    return {
+        "бульв. Олександрійський": {
+            "buildings": ["98", "102", "104"],
+            "district": "321106"
+        },
+        "вул. Дачна": {
+            "buildings": ["66", "72"],
+            "district": "321106"
+        },
+        "вул. Ігоря Каплуненка": {
+            "buildings": ["75", "81"],
+            "district": "321106"
+        },
+        "вул. Клінічна": {
+            "buildings": ["4/1", "4/2", "6"],
+            "district": "321106"
+        },
+        "вул. Івана Мазепи": {
+            "buildings": [str(i) for i in range(3, 99)] + ["1А", "2/17", "3А", "45А", "45Б", "65А", "67А", "81А", "83А", "85А"],
+            "district": "321108"
+        },
+        "вул. Миру": {
+            "buildings": [str(i) for i in range(1, 42)] + ["2А", "20А", "27А"],
+            "district": "321108"
         }
     }
 
