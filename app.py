@@ -1196,7 +1196,7 @@ def edit_region4(subscriber_id):
         conn.close()
         return redirect(url_for('region4'))
 
-    # GET: отримання даних підписника
+    # GET-запит — завантаження підписника
     c.execute('SELECT * FROM regions4 WHERE id = ?', (subscriber_id,))
     row = c.fetchone()
     if not row:
@@ -1211,17 +1211,22 @@ def edit_region4(subscriber_id):
         apartment=row['apartment'], phone=row['phone'], activist=row['activist']
     )
 
+    # Завантаження активістів
     c.execute("SELECT last_name, first_name FROM activists")
     acts = [{'name': f"{r['last_name']} {r['first_name']}"} for r in c.fetchall()]
     conn.close()
 
+    # Завантаження адрес
     address_data = expand_buildings4()
+
     return render_template(
         'edit_region4.html',
         subscriber=subscriber,
         activists=acts,
-        address_data=address_data
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
+
 
 @app.route('/regions4/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region4(subscriber_id):
