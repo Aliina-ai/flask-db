@@ -93,10 +93,10 @@
       </select>
 
       <label>Будинок</label>
-      <select name="building" id="building" required onchange="updateDistrict()">
+      <select name="building" id="building" required onchange="updateDistrict4()">
         <option value="">Оберіть будинок</option>
       </select>
-      
+
       <label>Виборча дільниця</label>
       <input type="text" name="district" id="district" value="{{ subscriber.district }}" readonly>
 
@@ -132,7 +132,7 @@
           const option = document.createElement("option");
           option.value = building;
           option.text = building;
-          if (building === selectedBuilding) option.selected = true;
+          if (String(building) === String(selectedBuilding)) option.selected = true;
           buildingSelect.add(option);
         });
       }
@@ -154,3 +154,4 @@
   </script>
 </body>
 </html>
+
