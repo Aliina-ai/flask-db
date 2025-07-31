@@ -1220,7 +1220,7 @@ def edit_region4(subscriber_id):
         'edit_region4.html',
         subscriber=subscriber,
         activists=acts,
-        address_data_json=json.dumps(address_data, ensure_ascii=False)
+        address_data=address_data
     )
 
 @app.route('/regions4/delete/<int:subscriber_id>', methods=['POST'])
