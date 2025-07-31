@@ -108,13 +108,13 @@
       <input type="text" name="apartment">
 
       <label>Активіст</label>
-      <input list="activist-options" name="activist" required>
-      <datalist id="activist-options">
+      <select name="activist" required>
+        <option value="">Оберіть активіста</option>
         {% for a in activists %}
-          <option value="{{ a.name }}">
+          <option value="{{ a.name }}">{{ a.name }}</option>
         {% endfor %}
-      </datalist>
-
+      </select>
+      
       <button type="submit">Додати</button>
     </form>
   </div>
