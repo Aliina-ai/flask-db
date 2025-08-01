@@ -7,32 +7,37 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f7f9fb;
+      margin: 0;
       padding: 40px;
     }
     .wrapper {
       max-width: 600px;
       margin: auto;
-      background-color: #fff;
+      background-color: #ffffff;
       padding: 30px 40px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-    h2 { color: #2b4f73; text-align: center; margin-bottom: 25px; }
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 25px;
+    }
     label {
       display: block;
       margin-top: 16px;
       font-weight: 600;
       font-size: 14px;
+      color: #333;
     }
-    input[type="text"],
-    input[type="date"],
-    select {
+    input[type="text"], input[type="date"], select {
       width: 100%;
       padding: 10px;
       margin-top: 6px;
+      font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 14px;
+      box-sizing: border-box;
     }
     button {
       width: 100%;
@@ -45,6 +50,7 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
     button:hover {
       background-color: #1f3e5a;
@@ -57,6 +63,7 @@
       color: #333;
       text-decoration: none;
       border-radius: 4px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -82,49 +89,50 @@
       <input type="text" name="phone" required>
 
       <label>Вулиця</label>
-      <select id="street" name="street" required onchange="updateBuildings()">
+      <select name="street" id="street" required onchange="updateBuildings()">
         <option value="">Оберіть вулицю</option>
-        {% for street in address_data %}
+        {% for street in address_data.keys() %}
           <option value="{{ street }}">{{ street }}</option>
         {% endfor %}
       </select>
 
       <label>Будинок</label>
-      <select id="building" name="building" required onchange="updateDistrict()">
+      <select name="building" id="building" required onchange="updateDistrict()">
         <option value="">Оберіть будинок</option>
       </select>
+
+      <label>Виборча дільниця</label>
+      <input type="text" name="district" id="district" readonly>
 
       <label>Квартира</label>
       <input type="text" name="apartment">
 
-      <label>Виборча дільниця</label>
-      <input type="text" id="district" name="district" readonly>
-
       <label>Активіст</label>
-      <input type="text" name="activist" list="activist-options" required>
-      <datalist id="activist-options">
+      <select name="activist" required>
+        <option value="">Оберіть активіста</option>
         {% for a in activists %}
-          <option value="{{ a.name }}">
+          <option value="{{ a.name }}">{{ a.name }}</option>
         {% endfor %}
-      </datalist>
-
-      <button type="submit">Зберегти</button>
+      </select>
+      
+      <button type="submit">Додати</button>
     </form>
   </div>
 
   <script>
-    const addressData = const addressData = {{ address_data_json | safe }};
+    const addressData = {{ address_data_json|safe }};
 
     function updateBuildings() {
-      const street = document.getElementById('street').value;
-      const buildingSelect = document.getElementById('building');
-      const districtInput = document.getElementById('district');
+      const street = document.getElementById("street").value;
+      const buildingSelect = document.getElementById("building");
+      const districtInput = document.getElementById("district");
+
       buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
       districtInput.value = "";
 
       if (addressData[street]) {
-        addressData[street].buildings.forEach(building => {
-          const option = document.createElement('option');
+        addressData[street].buildings.forEach(function(building) {
+          const option = document.createElement("option");
           option.value = building;
           option.text = building;
           buildingSelect.add(option);
@@ -133,9 +141,11 @@
     }
 
     function updateDistrict() {
-      const street = document.getElementById('street').value;
+      const street = document.getElementById("street").value;
+      const districtInput = document.getElementById("district");
+
       if (addressData[street]) {
-        document.getElementById('district').value = addressData[street].district;
+        districtInput.value = addressData[street].district;
       }
     }
   </script>
