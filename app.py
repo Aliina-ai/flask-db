@@ -1371,6 +1371,7 @@ def add_region5():
     return render_template(
         'add_region5.html',
         activists=acts,
+        address_data=address_data,
         address_data_json=json.dumps(expand_buildings5(), ensure_ascii=False)
     )
 
