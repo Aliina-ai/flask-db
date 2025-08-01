@@ -99,7 +99,7 @@
       <label>Вулиця</label>
       <select id="street" name="street" required onchange="updateBuildings()">
         <option value="">Оберіть вулицю</option>
-        {% for street in address_data_json|tojson|loads|dict.keys() %}
+        {% for street in address_data_json %}
           <option value="{{ street }}">{{ street }}</option>
         {% endfor %}
       </select>
