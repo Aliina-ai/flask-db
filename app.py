@@ -1327,6 +1327,53 @@ def region5():
 
     return render_template('region5.html', data=data)
 
+@app.route('/regions5/add', methods=['GET', 'POST'])
+def add_region5():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('region5'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings5()
+        district = address_data.get(street, {}).get('district', '')
+
+        c.execute('''
+            INSERT INTO regions5 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        ''', (
+            5, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region5'))
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    return render_template(
+        'add_region5.html',
+        activists=acts,
+        address_data_json=json.dumps(expand_buildings5(), ensure_ascii=False)
+    )
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
