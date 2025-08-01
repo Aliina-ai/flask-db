@@ -1333,20 +1333,21 @@ def add_region5():
         flash('Лише адміністратор може додавати.')
         return redirect(url_for('region5'))
 
+    address_data = expand_buildings5()
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     if request.method == 'POST':
         street = request.form['street']
         building = request.form['building']
-        address_data = expand_buildings5()
         district = address_data.get(street, {}).get('district', '')
 
         c.execute('''
             INSERT INTO regions5 (
                 okrug, district, last_name, first_name, middle_name,
                 birth_date, street, building, apartment, phone, activist
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             5, district,
             request.form['last_name'],
@@ -1364,6 +1365,7 @@ def add_region5():
         conn.close()
         return redirect(url_for('region5'))
 
+    # Підготовка до GET-запиту
     c.execute("SELECT last_name, first_name FROM activists")
     acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
     conn.close()
@@ -1372,8 +1374,9 @@ def add_region5():
         'add_region5.html',
         activists=acts,
         address_data=address_data,
-        address_data_json=json.dumps(expand_buildings5(), ensure_ascii=False)
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
+
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
