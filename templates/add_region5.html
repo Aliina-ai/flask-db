@@ -113,7 +113,7 @@
   </div>
 
   <script>
-    const addressData = {{ address_data | tojson | safe }};
+    const addressData = const addressData = {{ address_data_json | safe }};
 
     function updateBuildings() {
       const street = document.getElementById('street').value;
