@@ -835,27 +835,49 @@ def region1():
         return redirect(url_for('login'))
 
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
-    # Отримання підписників
+    # Отримуємо всі записи для округу 1
     c.execute("SELECT * FROM regions1")
     rows = c.fetchall()
+
+    # Формуємо словник з даними
     data = [{
-        'id': r['id'], 'okrug': r['okrug'], 'district': r['district'],
-        'last_name': r['last_name'], 'first_name': r['first_name'], 'middle_name': r['middle_name'],
-        'birth_date': r['birth_date'], 'street': r['street'], 'building': r['building'],
-        'apartment': r['apartment'], 'phone': r['phone'], 'activist': r['activist']
+        'id': r[0],
+        'okrug': r[1],
+        'district': r[2],
+        'last_name': r[3],
+        'first_name': r[4],
+        'middle_name': r[5],
+        'birth_date': r[6],
+        'street': r[7],
+        'building': r[8],
+        'apartment': r[9],
+        'phone': r[10],
+        'activist': r[11]
     } for r in rows]
 
-    # Отримання унікального списку активістів
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activist_rows = c.fetchall()
-    activists = [{'name': f"{r['last_name']} {r['first_name']}"} for r in activist_rows]
+    # Отримуємо унікальні вулиці для фільтра
+    c.execute("SELECT DISTINCT street FROM regions1 WHERE street IS NOT NULL AND street != '' ORDER BY street")
+    streets = [row[0] for row in c.fetchall()]
+
+    # Отримуємо унікальні будинки для фільтра
+    c.execute("SELECT DISTINCT building FROM regions1 WHERE building IS NOT NULL AND building != '' ORDER BY building")
+    buildings = [row[0] for row in c.fetchall()]
+
+    # Отримуємо список активістів для фільтра (уникальні, можна взяти їх з іншої таблиці, якщо є)
+    c.execute("SELECT DISTINCT activist FROM regions1 WHERE activist IS NOT NULL AND activist != '' ORDER BY activist")
+    activists = [{'name': row[0]} for row in c.fetchall()]
 
     conn.close()
 
-    return render_template('region1.html', data=data, activists=activists)
+    return render_template(
+        'region1.html',
+        data=data,
+        streets=streets,
+        buildings=buildings,
+        activists=activists
+    )
 
 @app.route('/regions1/add', methods=['GET','POST'])
 def add_region1():
