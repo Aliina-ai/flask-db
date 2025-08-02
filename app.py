@@ -1851,7 +1851,11 @@ def add_region7():
         street = request.form['street']
         building = request.form['building']
         address_data = expand_buildings7()
-        district = address_data.get(street, {}).get('district', '')
+
+        # Отримуємо дільницю по конкретному будинку
+        district = ''
+        if street in address_data and 'buildings' in address_data[street]:
+            district = address_data[street]['buildings'].get(building, '')
 
         c.execute('''
             INSERT INTO regions7 (
@@ -1875,7 +1879,7 @@ def add_region7():
         conn.close()
         return redirect(url_for('region7'))
 
-    # Підготовка до GET-запиту
+    # GET: Підготовка даних
     c.execute("SELECT last_name, first_name FROM activists")
     activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
     conn.close()
@@ -1884,8 +1888,8 @@ def add_region7():
     return render_template(
         'add_region7.html',
         activists=activists,
-        address_data=address_data,
-        address_data_json=json.dumps(address_data, ensure_ascii=False)
+        streets=list(address_data.keys()),
+        buildings7_json=json.dumps(address_data, ensure_ascii=False)
     )
 
 @app.route('/regions7/edit/<int:subscriber_id>', methods=['GET', 'POST'])
