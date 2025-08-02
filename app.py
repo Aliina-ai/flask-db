@@ -1325,13 +1325,6 @@ def region5():
         'activist': row[11]
     } for row in rows]
 
-    # Отримання унікального списку активістів
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activist_rows = c.fetchall()
-    activists = [{'name': f"{r['last_name']} {r['first_name']}"} for r in activist_rows]
-
-    conn.close()
-
     return render_template('region5.html', data=data)
 
 @app.route('/regions5/add', methods=['GET', 'POST'])
