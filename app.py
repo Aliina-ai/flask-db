@@ -979,18 +979,43 @@ def delete_region1(subscriber_id):
 def region2():
     if 'username' not in session:
         return redirect(url_for('login'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+
+    # Отримати всі дані підписників округу 2
     c.execute("SELECT * FROM regions2")
     rows = c.fetchall()
-    conn.close()
+
+    # Формування списку словників
     data = [{
         'id': r[0], 'okrug': r[1], 'district': r[2],
         'last_name': r[3], 'first_name': r[4], 'middle_name': r[5],
         'birth_date': r[6], 'street': r[7], 'building': r[8],
         'apartment': r[9], 'phone': r[10], 'activist': r[11]
     } for r in rows]
-    return render_template('region2.html', data=data)
+
+    # Унікальні активісти
+    c.execute("SELECT DISTINCT activist FROM regions2 WHERE activist IS NOT NULL AND activist != ''")
+    activists = sorted([row[0] for row in c.fetchall()])
+
+    # Унікальні вулиці
+    c.execute("SELECT DISTINCT street FROM regions2 WHERE street IS NOT NULL AND street != ''")
+    streets = sorted([row[0] for row in c.fetchall()])
+
+    # Унікальні будинки
+    c.execute("SELECT DISTINCT building FROM regions2 WHERE building IS NOT NULL AND building != ''")
+    buildings = sorted([row[0] for row in c.fetchall()])
+
+    conn.close()
+
+    return render_template(
+        'region2.html',
+        data=data,
+        activists=activists,
+        streets=streets,
+        buildings=buildings
+    )
 
 @app.route('/regions2/add', methods=['GET','POST'])
 def add_region2():
