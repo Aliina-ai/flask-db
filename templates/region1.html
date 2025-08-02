@@ -180,6 +180,26 @@
     </label>
 
     <label>
+      Вулиця:
+      <select id="streetFilter">
+        <option value="all">Всі</option>
+        {% for street in streets %}
+          <option value="{{ street }}">{{ street }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Будинок:
+      <select id="buildingFilter">
+        <option value="all">Всі</option>
+        {% for building in buildings %}
+          <option value="{{ building }}">{{ building }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
       Сортувати за прізвищем:
       <select id="sortOrder">
         <option value="az">Від А до Я</option>
@@ -237,42 +257,52 @@
     </table>
   </div>
 
-  <script>
-    const searchInput = document.getElementById('searchInput');
-    const activistFilter = document.getElementById('activistFilter');
-    const sortOrder = document.getElementById('sortOrder');
-    const tableBody = document.getElementById('tableBody');
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const activistFilter = document.getElementById('activistFilter');
+  const streetFilter = document.getElementById('streetFilter');
+  const buildingFilter = document.getElementById('buildingFilter');
+  const sortOrder = document.getElementById('sortOrder');
+  const tableBody = document.getElementById('tableBody');
 
-    function filterAndSortTable() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const selectedActivist = activistFilter.value;
-      const order = sortOrder.value;
+  function filterAndSortTable() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const selectedActivist = activistFilter.value;
+    const selectedStreet = streetFilter.value;
+    const selectedBuilding = buildingFilter.value;
+    const order = sortOrder.value;
 
-      let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
+    let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
 
-      rows.forEach(row => {
-        const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-        const rowActivist = row.cells[10].textContent.trim();
+    rows.forEach(row => {
+      const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+      const rowActivist = row.cells[10].textContent.trim();
+      const rowStreet = row.cells[6].textContent.trim();
+      const rowBuilding = row.cells[7].textContent.trim();
 
-        const matchesSearch = rowText.includes(searchTerm);
-        const matchesActivist = selectedActivist === 'all' || rowActivist === selectedActivist;
+      const matchesSearch = rowText.includes(searchTerm);
+      const matchesActivist = selectedActivist === 'all' || rowActivist === selectedActivist;
+      const matchesStreet = selectedStreet === 'all' || rowStreet === selectedStreet;
+      const matchesBuilding = selectedBuilding === 'all' || rowBuilding === selectedBuilding;
 
-        row.style.display = (matchesSearch && matchesActivist) ? '' : 'none';
-      });
+      row.style.display = (matchesSearch && matchesActivist && matchesStreet && matchesBuilding) ? '' : 'none';
+    });
 
-      rows = rows.filter(row => row.style.display !== 'none');
-      rows.sort((a, b) => {
-        const nameA = a.cells[2].textContent.toLowerCase();
-        const nameB = b.cells[2].textContent.toLowerCase();
-        return order === 'az' ? nameA.localeCompare(nameB, 'uk') : nameB.localeCompare(nameA, 'uk');
-      });
+    rows = rows.filter(row => row.style.display !== 'none');
+    rows.sort((a, b) => {
+      const nameA = a.cells[2].textContent.toLowerCase();
+      const nameB = b.cells[2].textContent.toLowerCase();
+      return order === 'az' ? nameA.localeCompare(nameB, 'uk') : nameB.localeCompare(nameA, 'uk');
+    });
 
-      rows.forEach(row => tableBody.appendChild(row));
-    }
+    rows.forEach(row => tableBody.appendChild(row));
+  }
 
-    searchInput.addEventListener('input', filterAndSortTable);
-    activistFilter.addEventListener('change', filterAndSortTable);
-    sortOrder.addEventListener('change', filterAndSortTable);
-  </script>
+  searchInput.addEventListener('input', filterAndSortTable);
+  activistFilter.addEventListener('change', filterAndSortTable);
+  streetFilter.addEventListener('change', filterAndSortTable);
+  buildingFilter.addEventListener('change', filterAndSortTable);
+  sortOrder.addEventListener('change', filterAndSortTable);
+</script>
 </body>
 </html>
