@@ -129,6 +129,24 @@ def init_db():
                 activist TEXT
             )
         ''')
+        
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions5 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
         c.execute('''
             CREATE TABLE IF NOT EXISTS regions5 (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -312,6 +330,43 @@ def expand_buildings5():
         "вул. Миру": {
             "buildings": [str(i) for i in range(1, 42)] + ["2А", "20А", "27А"],
             "district": "321108"
+        }
+    }
+
+def expand_buildings6():
+    return {
+        "бульв.Олександрійський": {
+            "buildings": [
+                "54Г", "84", "86", "88", "92"
+            ] + [str(i) for i in range(159, 218)] + ["181А", "74", "76", "78", "80", "82"],
+            "district": "321107"
+        },
+        "вул.Гетьмана Сагайдачного": {
+            "buildings": [str(i) for i in range(126, 144)] + ["126/6"],
+            "district": "321107"
+        },
+        "вул.Колодязна": {
+            "buildings": ["6", "6/147", "11", "13", "17"],
+            "district": "321107"
+        },
+        "пров.Олександрійський": {
+            "buildings": ["3", "4", "5/124", "8/133", "10", "12", "14А", "15"],
+            "district": "321107"
+        },
+        "вул.Вячеслава Чорновола": {
+            "buildings": ["3", "4/35", "5", "6", "9", "15"],
+            "district": "321109"
+        },
+        "вул.Дачна": {
+            "buildings": [str(i) for i in range(5, 45)],
+            "district": "321109"
+        },
+        "вул.Ігоря Каплуненка": {
+            "buildings": [str(i) for i in range(1, 75)] +
+                         [str(i) for i in range(76, 81)] +
+                         [str(i) for i in range(82, 87)] +
+                         ["5А", "5Б", "7А", "34А", "80А", "80Б"],
+            "district": "321109"
         }
     }
 
@@ -1454,6 +1509,26 @@ def delete_region5(subscriber_id):
     conn.close()
     flash('Підписника видалено.')
     return redirect(url_for('region5'))
+
+@app.route('/regions6')
+def region6():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT * FROM regions6")
+    rows = c.fetchall()
+    conn.close()
+
+    data = [{
+        'id': r[0], 'okrug': r[1], 'district': r[2],
+        'last_name': r[3], 'first_name': r[4], 'middle_name': r[5],
+        'birth_date': r[6], 'street': r[7], 'building': r[8],
+        'apartment': r[9], 'phone': r[10], 'activist': r[11]
+    } for r in rows]
+
+    return render_template('region6.html', data=data)
 
 
 # ---------- APP LAUNCH ----------
