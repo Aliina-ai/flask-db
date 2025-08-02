@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Додати підписника — Округ 7</title>
+  <meta charset="UTF-8" />
+  <title>Додати підписника — Округ 7</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -10,19 +10,22 @@
       margin: 0;
       padding: 40px;
     }
+
     .wrapper {
       max-width: 600px;
       margin: auto;
       background: #fff;
       padding: 30px 40px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
+
     h2 {
       color: #2b4f73;
       text-align: center;
       margin-bottom: 25px;
     }
+
     label {
       display: block;
       margin-top: 16px;
@@ -30,6 +33,7 @@
       font-size: 14px;
       color: #333;
     }
+
     input[type="text"],
     input[type="date"],
     select {
@@ -41,6 +45,7 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
+
     button {
       width: 100%;
       margin-top: 30px;
@@ -52,10 +57,13 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
+
     button:hover {
       background: #1f3e5a;
     }
+
     .back {
       display: inline-block;
       margin-bottom: 20px;
@@ -65,12 +73,18 @@
       text-decoration: none;
       border-radius: 4px;
       font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .back:hover {
+      background: #bbb;
     }
   </style>
 </head>
 <body>
 
-  <a href="{{ url_for('region7') }}" class="back-link">← Назад до списку</a>
+<div class="wrapper">
+  <a href="{{ url_for('region7') }}" class="back">← Повернутися</a>
 
   <h2>Додати підписника — Округ 7</h2>
 
