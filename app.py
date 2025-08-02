@@ -370,6 +370,34 @@ def expand_buildings6():
         }
     }
 
+def expand_buildings7():
+    return {
+        "вул. Василя Стуса": {
+            "buildings": ["10", "20"] + [str(i) for i in range(23, 35)] + ["44", "50", "52"] + [str(i) for i in range(70, 77)],
+            "district": "321112"
+        },
+        "вул. Володимира Іванціва": {
+            "buildings": [str(i) for i in range(5, 10)] + [str(i) for i in range(12, 32)] + ["10"],
+            "district": "321112"  # буд. "10" входить у 321113, тому розіб’ємо далі
+        },
+        "вул. Гетьмана Сагайдачного": {
+            "buildings": [str(i) for i in range(118, 122)],
+            "district": "321112"
+        },
+        "бульв. Олександрійський": {
+            "buildings": ["137"] + [str(i) for i in range(143, 158)],
+            "district": "321113"
+        },
+        "вул. Василя Стуса (2/147)": {
+            "buildings": ["2/147"],
+            "district": "321113"
+        },
+        "вул. Володимира Іванціва (10)": {
+            "buildings": ["10"],
+            "district": "321113"
+        }
+    }
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
