@@ -39,6 +39,36 @@
       background-color: #3b5f85;
     }
 
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 25px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .filters label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 600;
+      font-size: 14px;
+      color: #2b4f73;
+    }
+
+    .filters input,
+    .filters select {
+      margin-top: 6px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      min-width: 160px;
+    }
+
     .table-container {
       overflow-x: auto;
       background: #fff;
@@ -128,6 +158,51 @@
 
   <h2>Підписники — Округ 2</h2>
 
+  <div class="filters">
+    <label>
+      Пошук:
+      <input type="search" id="searchInput" placeholder="Введіть для пошуку...">
+    </label>
+
+    <label>
+      Активіст:
+      <select id="activistFilter">
+        <option value="all">Всі</option>
+        {% for a in activists %}
+          <option value="{{ a }}">{{ a }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Вулиця:
+      <select id="streetFilter">
+        <option value="all">Всі</option>
+        {% for s in streets %}
+          <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Будинок:
+      <select id="buildingFilter">
+        <option value="all">Всі</option>
+        {% for b in buildings %}
+          <option value="{{ b }}">{{ b }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Сортувати за прізвищем:
+      <select id="sortOrder">
+        <option value="az">Від А до Я</option>
+        <option value="za">Від Я до А</option>
+      </select>
+    </label>
+  </div>
+
   <div class="table-container">
     <table>
       <thead>
@@ -137,7 +212,7 @@
           <th>Прізвище</th>
           <th>Ім’я</th>
           <th>По батькові</th>
-          <th>Дата нар.</th>
+          <th>Дата народження</th>
           <th>Вулиця</th>
           <th>Буд.</th>
           <th>Кв.</th>
@@ -178,6 +253,56 @@
       </tbody>
     </table>
   </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const activistFilter = document.getElementById('activistFilter');
+    const streetFilter = document.getElementById('streetFilter');
+    const buildingFilter = document.getElementById('buildingFilter');
+    const sortOrder = document.getElementById('sortOrder');
+    const tableBody = document.querySelector('tbody');
+
+    function filterAndSortTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedActivist = activistFilter.value;
+      const selectedStreet = streetFilter.value;
+      const selectedBuilding = buildingFilter.value;
+      const order = sortOrder.value;
+
+      let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
+
+      rows.forEach(row => {
+        const cells = row.cells;
+        const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+
+        const activist = cells[10].textContent.trim();
+        const street = cells[6].textContent.trim();
+        const building = cells[7].textContent.trim();
+
+        const matchesSearch = rowText.includes(searchTerm);
+        const matchesActivist = selectedActivist === 'all' || activist === selectedActivist;
+        const matchesStreet = selectedStreet === 'all' || street === selectedStreet;
+        const matchesBuilding = selectedBuilding === 'all' || building === selectedBuilding;
+
+        row.style.display = (matchesSearch && matchesActivist && matchesStreet && matchesBuilding) ? '' : 'none';
+      });
+
+      rows = rows.filter(row => row.style.display !== 'none');
+      rows.sort((a, b) => {
+        const nameA = a.cells[2].textContent.toLowerCase();
+        const nameB = b.cells[2].textContent.toLowerCase();
+        return order === 'az' ? nameA.localeCompare(nameB, 'uk') : nameB.localeCompare(nameA, 'uk');
+      });
+
+      rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    searchInput.addEventListener('input', filterAndSortTable);
+    activistFilter.addEventListener('change', filterAndSortTable);
+    streetFilter.addEventListener('change', filterAndSortTable);
+    buildingFilter.addEventListener('change', filterAndSortTable);
+    sortOrder.addEventListener('change', filterAndSortTable);
+  </script>
 
 </body>
 </html>
