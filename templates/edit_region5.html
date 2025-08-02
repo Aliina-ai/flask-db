@@ -117,29 +117,48 @@
     </form>
   </div>
 
-  <script>
-    const addressData = {{ address_data_json | safe }};
-    const selectedStreet = "{{ subscriber.street }}";
-    const selectedBuilding = "{{ subscriber.building }}";
+<script>
+  const addressData = {{ address_data_json | safe }};
+  const selectedStreet = "{{ subscriber.street }}";
+  const selectedBuilding = "{{ subscriber.building }}";
 
-    function updateBuildings() {
-      const street = document.getElementById("street").value;
-      const buildingSelect = document.getElementById("building");
-      const districtInput = document.getElementById("district");
+  function updateBuildings() {
+    const street = document.getElementById("street").value;
+    const buildingSelect = document.getElementById("building");
+    const districtInput = document.getElementById("district");
 
-      buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
-      districtInput.value = "";
+    buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
+    districtInput.value = "";
 
-      if (addressData[street]) {
-        addressData[street].buildings.forEach(function(building) {
-          const option = document.createElement("option");
-          option.value = building;
-          option.text = building;
-         
-    window.onload = function () {
-      updateBuildings();
-      updateDistrict();
-    };
-  </script>
+    if (addressData[street]) {
+      addressData[street].buildings.forEach(function(building) {
+        const option = document.createElement("option");
+        option.value = building;
+        option.text = building;
+        if (building === selectedBuilding) {
+          option.selected = true;
+        }
+        buildingSelect.appendChild(option);
+      });
+
+      districtInput.value = addressData[street].district;
+    }
+  }
+
+  function updateDistrict() {
+    const street = document.getElementById("street").value;
+    const districtInput = document.getElementById("district");
+    if (addressData[street]) {
+      districtInput.value = addressData[street].district;
+    }
+  }
+
+  window.onload = function () {
+    document.getElementById("street").value = selectedStreet;
+    updateBuildings();
+    updateDistrict();
+  };
+</script>
+
 </body>
 </html>
