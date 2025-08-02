@@ -1376,6 +1376,70 @@ def add_region5():
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
 
+@app.route('/regions5/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region5(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region5'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings5()
+        district = address_data.get(street, {}).get('district', '')
+
+        c.execute('''
+            UPDATE regions5 SET
+                okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+                birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+            WHERE id = ?
+        ''', (
+            5, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region5'))
+
+    # GET-запит
+    c.execute('SELECT * FROM regions5 WHERE id = ?', (subscriber_id,))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region5'))
+
+    subscriber = {
+        'id': row[0], 'okrug': row[1], 'district': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
+    }
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data = expand_buildings5()
+    return render_template(
+        'edit_region5.html',
+        subscriber=subscriber,
+        activists=acts,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
