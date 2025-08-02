@@ -1,163 +1,187 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <title>Додати підписника — Округ 7</title>
+  <meta charset="UTF-8">
+  <title>Додати підписника — Округ 7</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f7f9fb;
-      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fb;
       padding: 40px;
-      color: #333;
     }
-    .wrapper {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 30px 40px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
+
     h2 {
-      color: #2b4f73;
       text-align: center;
-      margin-bottom: 25px;
-      font-weight: 700;
-      font-size: 24px;
+      color: #2b4f73;
     }
+
+    form {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
     label {
       display: block;
-      margin-top: 16px;
-      font-weight: 600;
-      font-size: 14px;
+      margin-bottom: 15px;
+      color: #333;
     }
+
+    label span {
+      display: inline-block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
     input[type="text"],
     input[type="date"],
     select {
       width: 100%;
       padding: 10px;
-      margin-top: 6px;
-      font-size: 14px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      transition: border-color 0.2s ease;
+      font-size: 14px;
     }
-    input[type="text"]:focus,
-    input[type="date"]:focus,
-    select:focus {
-      border-color: #2b4f73;
-      outline: none;
-    }
+
     button {
-      width: 100%;
-      margin-top: 30px;
-      padding: 12px;
-      background: #2b4f73;
-      color: #fff;
+      background-color: #2b4f73;
+      color: white;
+      padding: 10px 20px;
       border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: bold;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-size: 16px;
+      margin-top: 20px;
     }
+
     button:hover {
-      background: #1f3e5a;
+      background-color: #3d658f;
     }
-    .back {
+
+    .back-link {
       display: inline-block;
       margin-bottom: 20px;
-      padding: 8px 14px;
-      background: #ccc;
-      color: #333;
+      color: #2b4f73;
       text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: background-color 0.3s ease;
     }
-    .back:hover {
-      background: #b3b3b3;
+
+    .back-link:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <a href="{{ url_for('region7') }}" class="back">← Повернутися</a>
-    <h2>Додати підписника — Округ 7</h2>
-    <form method="POST">
-      <label for="last_name">Прізвище</label>
-      <input id="last_name" type="text" name="last_name" required />
 
-      <label for="first_name">Ім’я</label>
-      <input id="first_name" type="text" name="first_name" required />
+  <a href="{{ url_for('region7') }}" class="back-link">← Назад до списку</a>
 
-      <label for="middle_name">По батькові</label>
-      <input id="middle_name" type="text" name="middle_name" required />
+  <h2>Додати підписника — Округ 7</h2>
 
-      <label for="birth_date">Дата народження</label>
-      <input id="birth_date" type="date" name="birth_date" required />
+  <form method="POST" action="{{ url_for('insert_region7') }}">
+    <label>
+      <span>Округ:</span>
+      <input type="text" name="okrug" value="7" readonly>
+    </label>
 
-      <label for="phone">Телефон</label>
-      <input id="phone" type="text" name="phone" required />
+    <label>
+      <span>Прізвище:</span>
+      <input type="text" name="last_name" required>
+    </label>
 
-      <label for="street">Вулиця</label>
-      <select id="street" name="street" required onchange="updateBuildings()">
+    <label>
+      <span>Ім’я:</span>
+      <input type="text" name="first_name" required>
+    </label>
+
+    <label>
+      <span>По батькові:</span>
+      <input type="text" name="middle_name" required>
+    </label>
+
+    <label>
+      <span>Дата народження:</span>
+      <input type="date" name="birth_date" required>
+    </label>
+
+    <label>
+      <span>Вулиця:</span>
+      <select name="street" id="streetSelect" required>
         <option value="">Оберіть вулицю</option>
-        {% for street in address_data %}
+        {% for street in streets %}
           <option value="{{ street }}">{{ street }}</option>
         {% endfor %}
       </select>
+    </label>
 
-      <label for="building">Будинок</label>
-      <select id="building" name="building" required onchange="updateDistrict()">
+    <label>
+      <span>Будинок:</span>
+      <select name="building" id="buildingSelect" required>
         <option value="">Оберіть будинок</option>
       </select>
+    </label>
 
-      <label for="district">Виборча дільниця</label>
-      <input id="district" type="text" name="district" readonly />
+    <label>
+      <span>Квартира:</span>
+      <input type="text" name="apartment">
+    </label>
 
-      <label for="apartment">Квартира</label>
-      <input id="apartment" type="text" name="apartment" />
+    <label>
+      <span>Виборча дільниця:</span>
+      <input type="text" name="district" id="districtInput" readonly>
+    </label>
 
-      <label for="activist">Активіст</label>
-      <input id="activist" type="text" name="activist" list="activist-options" required />
-      <datalist id="activist-options">
+    <label>
+      <span>Телефон:</span>
+      <input type="text" name="phone">
+    </label>
+
+    <label>
+      <span>Активіст:</span>
+      <select name="activist">
         {% for a in activists %}
-          <option value="{{ a.name }}">
+          <option value="{{ a.name }}">{{ a.name }}</option>
         {% endfor %}
-      </datalist>
+      </select>
+    </label>
 
-      <button type="submit">Додати</button>
-    </form>
-  </div>
+    <button type="submit">Зберегти</button>
+  </form>
 
   <script>
-    const addressData = {{ address_data_json | safe }};
+    const buildingsData = {{ buildings7_json | safe }};
+    const streetSelect = document.getElementById('streetSelect');
+    const buildingSelect = document.getElementById('buildingSelect');
+    const districtInput = document.getElementById('districtInput');
 
-    function updateBuildings() {
-      const street = document.getElementById('street').value;
-      const buildingSelect = document.getElementById('building');
+    streetSelect.addEventListener('change', function () {
+      const selectedStreet = streetSelect.value;
       buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
-      document.getElementById('district').value = "";
-      if (addressData[street]) {
-        addressData[street].buildings.forEach(b => {
-          const opt = document.createElement('option');
-          opt.value = b;
-          opt.text = b;
-          buildingSelect.appendChild(opt);
-        });
-      }
-    }
+      districtInput.value = '';
 
-    function updateDistrict() {
-      const street = document.getElementById('street').value;
-      const districtInput = document.getElementById('district');
-      if (addressData[street]) {
-        districtInput.value = addressData[street].district;
+      if (selectedStreet && buildingsData[selectedStreet]) {
+        const buildingMap = buildingsData[selectedStreet]['buildings'];
+        for (const building in buildingMap) {
+          const option = document.createElement('option');
+          option.value = building;
+          option.textContent = building;
+          buildingSelect.appendChild(option);
+        }
       }
-    }
+    });
+
+    buildingSelect.addEventListener('change', function () {
+      const selectedStreet = streetSelect.value;
+      const selectedBuilding = buildingSelect.value;
+
+      if (selectedStreet && selectedBuilding && buildingsData[selectedStreet]) {
+        const district = buildingsData[selectedStreet]['buildings'][selectedBuilding];
+        districtInput.value = district || '';
+      } else {
+        districtInput.value = '';
+      }
+    });
   </script>
 </body>
 </html>
