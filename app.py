@@ -1879,7 +1879,7 @@ def add_region7():
         conn.close()
         return redirect(url_for('region7'))
 
-    # GET: Підготовка даних
+    # GET-запит: підготовка даних для форми
     c.execute("SELECT last_name, first_name FROM activists")
     activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
     conn.close()
@@ -1905,7 +1905,10 @@ def edit_region7(subscriber_id):
         street = request.form['street']
         building = request.form['building']
         address_data = expand_buildings7()
-        district = address_data.get(street, {}).get('district', '')
+
+        district = ''
+        if street in address_data and 'buildings' in address_data[street]:
+            district = address_data[street]['buildings'].get(building, '')
 
         c.execute('''
             UPDATE regions7 SET
@@ -1929,6 +1932,7 @@ def edit_region7(subscriber_id):
         conn.close()
         return redirect(url_for('region7'))
 
+    # GET-запит: отримуємо дані підписника
     c.execute('SELECT * FROM regions7 WHERE id = ?', (subscriber_id,))
     row = c.fetchone()
     if not row:
@@ -1955,6 +1959,7 @@ def edit_region7(subscriber_id):
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
+    
 @app.route('/regions7/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region7(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
