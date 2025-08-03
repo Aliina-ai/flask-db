@@ -2151,8 +2151,10 @@ def edit_region8(subscriber_id):
         'edit_region8.html',
         subscriber=subscriber,
         activists=acts,
+        address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
+    
 @app.route('/regions8/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region8(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
@@ -2167,8 +2169,6 @@ def delete_region8(subscriber_id):
 
     flash('Запис успішно видалено.')
     return redirect(url_for('region8'))
-
-
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
