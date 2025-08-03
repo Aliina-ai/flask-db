@@ -49,14 +49,19 @@
     .back {
       display: inline-block;
       margin-bottom: 20px;
+      padding: 8px 14px;
+      background: #ccc;
+      color: #333;
       text-decoration: none;
-      color: #2b4f73;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
     }
   </style>
 </head>
 <body>
   <div class="form-container">
-    <a class="back" href="{{ url_for('region8') }}">← Назад</a>
+    <a class="back" href="{{ url_for('region8') }}">← Повернутися</a>
     <h2>Додати підписника — Округ 8</h2>
 
     <form method="POST">
