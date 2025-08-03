@@ -6,64 +6,56 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f9fbfd;
-      padding: 40px;
+      background: #f7f9fb;
       margin: 0;
+      padding: 40px;
     }
-
-    .form-container {
+    .wrapper {
       max-width: 600px;
       margin: auto;
-      background-color: #fff;
+      background: #fff;
       padding: 30px 40px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-
     h2 {
-      text-align: center;
       color: #2b4f73;
-      margin-bottom: 20px;
+      text-align: center;
+      margin-bottom: 25px;
     }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
     label {
       display: block;
+      margin-top: 16px;
       font-weight: 600;
-      margin-bottom: 6px;
       font-size: 14px;
       color: #333;
     }
-
-    input, select {
+    input[type="text"],
+    input[type="date"],
+    select {
       width: 100%;
       padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+      margin-top: 6px;
       font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
       box-sizing: border-box;
     }
-
     button {
       width: 100%;
-      margin-top: 24px;
+      margin-top: 30px;
       padding: 12px;
-      background-color: #2b4f73;
-      color: white;
+      background: #2b4f73;
+      color: #fff;
       border: none;
       border-radius: 4px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
     }
-
     button:hover {
-      background-color: #1f3e5a;
+      background: #1f3e5a;
     }
-
     .back {
       display: inline-block;
       margin-bottom: 20px;
@@ -73,21 +65,15 @@
       text-decoration: none;
       border-radius: 4px;
       font-size: 14px;
-      transition: background-color 0.3s ease;
-    }
-
-    .back:hover {
-      background: #bbb;
     }
   </style>
 </head>
 <body>
-
   <div class="wrapper">
     <a href="{{ url_for('region9') }}" class="back">← Повернутися</a>
     <h2>Редагувати підписника — Округ 9</h2>
-
     <form method="POST" action="{{ url_for('edit_region9', subscriber_id=subscriber.id) }}">
+      
       <label>Прізвище</label>
       <input type="text" name="last_name" value="{{ subscriber.last_name }}" required>
 
@@ -143,7 +129,6 @@
       const street = document.getElementById('street').value;
       const buildingSelect = document.getElementById('building');
       const districtInput = document.getElementById('district');
-
       buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
       districtInput.value = "";
 
@@ -152,9 +137,7 @@
           const opt = document.createElement('option');
           opt.value = b;
           opt.text = b;
-          if (b === selectedBuilding) {
-            opt.selected = true;
-          }
+          if (b === selectedBuilding) opt.selected = true;
           buildingSelect.appendChild(opt);
         });
         districtInput.value = addressData[street].buildings[selectedBuilding] || '';
@@ -162,10 +145,9 @@
     }
 
     function updateDistrict() {
-      const street = document.getElementById('street').value;
-      const building = document.getElementById('building').value;
-      const districtInput = document.getElementById('district');
-
+      const street = document.getElementById("street").value;
+      const building = document.getElementById("building").value;
+      const districtInput = document.getElementById("district");
       if (addressData[street] && addressData[street].buildings[building]) {
         districtInput.value = addressData[street].buildings[building];
       } else {
@@ -173,12 +155,11 @@
       }
     }
 
-    window.onload = function () {
+    window.onload = function() {
       document.getElementById('street').value = selectedStreet;
       updateBuildings();
       updateDistrict();
     };
   </script>
-
 </body>
 </html>
