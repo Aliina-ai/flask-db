@@ -2050,6 +2050,83 @@ def add_region8():
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
 
+@app.route('/regions8/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region8(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region8'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings8()
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            UPDATE regions8 SET
+              okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+            WHERE id = ?
+        ''', (
+            8, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region8'))
+
+    c.execute('SELECT * FROM regions8 WHERE id = ?', (subscriber_id,))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region8'))
+
+    subscriber = {
+        'id': row[0], 'okrug': row[1], 'district': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
+    }
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data = expand_buildings8()
+    return render_template(
+        'edit_region8.html',
+        subscriber=subscriber,
+        activists=acts,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+@app.route('/regions8/delete/<int:subscriber_id>', methods=['POST'])
+def delete_region8(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти записи.')
+        return redirect(url_for('region8'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions8 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Запис успішно видалено.')
+    return redirect(url_for('region8'))
+
 
 
 # ---------- APP LAUNCH ----------
