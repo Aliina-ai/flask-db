@@ -2307,7 +2307,7 @@ def region9():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Отримати всі записи округу 9
+    # Отримуємо всі підписники округу 9
     c.execute("SELECT * FROM regions9")
     rows = c.fetchall()
 
@@ -2333,15 +2333,22 @@ def region9():
     activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
 
     # Унікальні вулиці
-    c.execute("SELECT DISTINCT street FROM regions9 WHERE street IS NOT NULL AND street != '' ORDER BY street COLLATE NOCASE")
-    streets = [r[0] for r in c.fetchall()]
+    c.execute("SELECT DISTINCT street FROM regions9")
+    streets = [row[0] for row in c.fetchall()]
 
     # Унікальні будинки
-    c.execute("SELECT DISTINCT building FROM regions9 WHERE building IS NOT NULL AND building != '' ORDER BY building COLLATE NOCASE")
-    buildings = [r[0] for r in c.fetchall()]
+    c.execute("SELECT DISTINCT building FROM regions9")
+    buildings = [row[0] for row in c.fetchall()]
 
     conn.close()
-    return render_template('region9.html', data=data, activists=activists, streets=streets, buildings=buildings)
+
+    return render_template(
+        'region9.html',
+        data=data,
+        activists=activists,
+        streets=streets,
+        buildings=buildings
+    )
 
 @app.route('/regions9/add', methods=['GET', 'POST'])
 def add_region9():
