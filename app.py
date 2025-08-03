@@ -2299,6 +2299,51 @@ def delete_region8(subscriber_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('region8'))
 
+@app.route('/regions9')
+def region9():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Отримати всі записи округу 9
+    c.execute("SELECT * FROM regions9")
+    rows = c.fetchall()
+
+    data = []
+    for row in rows:
+        data.append({
+            'id': row[0],
+            'okrug': row[1],
+            'district': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
+        })
+
+    # Унікальні активісти
+    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+
+    # Унікальні вулиці
+    c.execute("SELECT DISTINCT street FROM regions9 WHERE street IS NOT NULL AND street != '' ORDER BY street COLLATE NOCASE")
+    streets = [r[0] for r in c.fetchall()]
+
+    # Унікальні будинки
+    c.execute("SELECT DISTINCT building FROM regions9 WHERE building IS NOT NULL AND building != '' ORDER BY building COLLATE NOCASE")
+    buildings = [r[0] for r in c.fetchall()]
+
+    conn.close()
+    return render_template('region9.html', data=data, activists=activists, streets=streets, buildings=buildings)
+
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
