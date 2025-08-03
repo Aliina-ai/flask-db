@@ -2038,8 +2038,20 @@ def region8():
     c.execute("SELECT last_name, first_name FROM activists")
     activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
 
+    # Унікальні вулиці
+    streets = sorted({row['street'] for row in data if row['street']})
+    
+    # Унікальні будинки
+    buildings = sorted({row['building'] for row in data if row['building']})
+
     conn.close()
-    return render_template('region8.html', data=data, activists=activists)
+    return render_template(
+        'region8.html',
+        data=data,
+        activists=activists,
+        streets=streets,
+        buildings=buildings
+    )
 
 @app.route('/regions8/add', methods=['GET', 'POST'])
 def add_region8():
