@@ -6,85 +6,60 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f9fbfd;
+      background-color: #f4f7f9;
       padding: 40px;
-      margin: 0;
     }
-
-    .form-container {
+    .container {
       max-width: 600px;
       margin: auto;
-      background-color: #fff;
-      padding: 30px 40px;
+      background: #fff;
+      padding: 30px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
     h2 {
       text-align: center;
+      margin-bottom: 25px;
       color: #2b4f73;
-      margin-bottom: 20px;
     }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
     label {
+      font-weight: bold;
       display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 14px;
-      color: #333;
+      margin-top: 15px;
     }
-
-    input, select {
+    input[type="text"],
+    input[type="date"],
+    select {
       width: 100%;
       padding: 10px;
+      margin-top: 5px;
       border-radius: 4px;
       border: 1px solid #ccc;
-      font-size: 14px;
-      box-sizing: border-box;
     }
-
     button {
+      margin-top: 25px;
       width: 100%;
-      margin-top: 24px;
       padding: 12px;
       background-color: #2b4f73;
       color: white;
       border: none;
       border-radius: 4px;
       font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
     }
-
-    button:hover {
-      background-color: #1f3e5a;
-    }
-
     .back {
       display: inline-block;
       margin-bottom: 20px;
-      padding: 8px 14px;
-      background: #ccc;
-      color: #333;
+      color: #2b4f73;
       text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: background-color 0.3s ease;
-    }
-
-    .back:hover {
-      background: #bbb;
     }
   </style>
 </head>
 <body>
 <div class="container">
   <a href="{{ url_for('region9') }}" class="back">← Повернутися</a>
+  
   <h2>Додати підписника — Округ 9</h2>
+  
   <form method="POST">
     <label>Прізвище</label>
     <input type="text" name="last_name" required>
