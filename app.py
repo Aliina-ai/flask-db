@@ -1974,6 +1974,33 @@ def delete_region7(subscriber_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('region7'))
 
+@app.route('/regions8')
+def region8():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Отримання записів округу 8
+    c.execute("SELECT * FROM regions8")
+    rows = c.fetchall()
+
+    data = [{
+        'id': row[0], 'okrug': row[1], 'district': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
+    } for row in rows]
+
+    # Отримання списку активістів
+    c.execute("SELECT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+
+    conn.close()
+    return render_template('region8.html', data=data, activists=activists)
+
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
