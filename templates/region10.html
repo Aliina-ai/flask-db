@@ -126,13 +126,48 @@
   <h2>Підписники — Округ 10</h2>
 
   <div class="filters">
-    <input type="text" id="searchInput" placeholder="Пошук…" oninput="filterTable()" />
-    <select id="activistFilter" onchange="filterTable()">
-      <option value="">— Активіст —</option>
-      {% for a in activists %}
-        <option value="{{ a.name }}">{{ a.name }}</option>
-      {% endfor %}
-    </select>
+    <label>
+      Пошук:
+      <input type="search" id="searchInput" placeholder="Введіть для пошуку...">
+    </label>
+
+    <label>
+      Активіст:
+      <select id="activistFilter">
+        <option value="all">Всі</option>
+        {% for a in activists %}
+          <option value="{{ a.name }}">{{ a.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Вулиця:
+      <select id="streetFilter">
+        <option value="all">Всі</option>
+        {% for street in streets %}
+          <option value="{{ street }}">{{ street }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Будинок:
+      <select id="buildingFilter">
+        <option value="all">Всі</option>
+        {% for building in buildings %}
+          <option value="{{ building }}">{{ building }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      Сортувати за прізвищем:
+      <select id="sortOrder">
+        <option value="az">Від А до Я</option>
+        <option value="za">Від Я до А</option>
+      </select>
+    </label>
   </div>
 
   <div class="table-container">
@@ -140,11 +175,11 @@
       <thead>
         <tr>
           <th>Округ</th>
-          <th>ВД</th>
+          <th>Виборча дільниця</th>
           <th>Прізвище</th>
           <th>Ім’я</th>
           <th>По батькові</th>
-          <th>Дата нар.</th>
+          <th>Дата народження</th>
           <th>Вулиця</th>
           <th>Буд.</th>
           <th>Кв.</th>
