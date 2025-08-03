@@ -2000,6 +2000,57 @@ def region8():
     conn.close()
     return render_template('region8.html', data=data, activists=activists)
 
+@app.route('/regions8/add', methods=['GET', 'POST'])
+def add_region8():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('region8'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings8()
+        # витяг дільниці з вкладеної структури
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            INSERT INTO regions8 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            8, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region8'))
+
+    # GET-запит: підтягуємо активістів
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data = expand_buildings8()
+    return render_template(
+        'add_region8.html',
+        activists=acts,
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
+
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
