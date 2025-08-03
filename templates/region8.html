@@ -39,6 +39,7 @@
 
     .filters {
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -64,8 +65,7 @@
       min-width: 1200px;
     }
 
-    th,
-    td {
+    th, td {
       padding: 10px 14px;
       border: 1px solid #ddd;
       font-size: 14px;
@@ -77,6 +77,7 @@
       background: #2b4f73;
       color: #fff;
       font-weight: 600;
+      cursor: pointer;
     }
 
     tr:hover {
@@ -126,17 +127,32 @@
   <h2>Підписники — Округ 8</h2>
 
   <div class="filters">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Пошук (ім'я, вулиця…)"
-      oninput="filterTable()" />
+    <input type="text" id="searchInput" placeholder="Пошук (ім'я, вулиця…)" oninput="filterTable()" />
 
     <select id="activistFilter" onchange="filterTable()">
       <option value="">— Активіст —</option>
       {% for a in activists %}
         <option value="{{ a.name }}">{{ a.name }}</option>
       {% endfor %}
+    </select>
+
+    <select id="streetFilter" onchange="filterTable()">
+      <option value="">— Вулиця —</option>
+      {% for s in streets %}
+        <option value="{{ s }}">{{ s }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="buildingFilter" onchange="filterTable()">
+      <option value="">— Будинок —</option>
+      {% for b in buildings %}
+        <option value="{{ b }}">{{ b }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="sortFilter" onchange="filterTable()">
+      <option value="az">Прізвище: А → Я</option>
+      <option value="za">Прізвище: Я → А</option>
     </select>
   </div>
 
@@ -145,11 +161,11 @@
       <thead>
         <tr>
           <th>Округ</th>
-          <th>Виборча дільниця</th>
+          <th>ВД</th>
           <th>Прізвище</th>
           <th>Ім’я</th>
           <th>По батькові</th>
-          <th>Дата народження</th>
+          <th>Дата нар.</th>
           <th>Вулиця</th>
           <th>Буд.</th>
           <th>Кв.</th>
@@ -183,9 +199,7 @@
         </tr>
         {% endfor %}
         {% if data|length == 0 %}
-        <tr>
-          <td colspan="12" style="text-align: center; padding: 20px;">Записи відсутні</td>
-        </tr>
+        <tr><td colspan="12" style="text-align: center; padding: 20px;">Записи відсутні</td></tr>
         {% endif %}
       </tbody>
     </table>
@@ -193,15 +207,38 @@
 
   <script>
     function filterTable() {
-      const term = document.getElementById('searchInput').value.toLowerCase();
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       const activist = document.getElementById('activistFilter').value;
+      const street = document.getElementById('streetFilter').value;
+      const building = document.getElementById('buildingFilter').value;
+      const sortOrder = document.getElementById('sortFilter').value;
 
-      document.querySelectorAll('#region8Table tbody tr').forEach(tr => {
-        const text = tr.textContent.toLowerCase();
-        const act = tr.cells[10].textContent;
-        const show = text.includes(term) && (activist === "" || act === activist);
-        tr.style.display = show ? "" : "none";
+      let rows = Array.from(document.querySelectorAll('#region8Table tbody tr'));
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const act = row.cells[10].textContent;
+        const rowStreet = row.cells[6].textContent;
+        const rowBuilding = row.cells[7].textContent;
+
+        const show =
+          text.includes(searchTerm) &&
+          (activist === "" || act === activist) &&
+          (street === "" || rowStreet === street) &&
+          (building === "" || rowBuilding === building);
+
+        row.style.display = show ? "" : "none";
       });
+
+      const visibleRows = rows.filter(r => r.style.display !== 'none');
+      visibleRows.sort((a, b) => {
+        const aText = a.cells[2].textContent.toLowerCase();
+        const bText = b.cells[2].textContent.toLowerCase();
+        return sortOrder === 'az' ? aText.localeCompare(bText) : bText.localeCompare(aText);
+      });
+
+      const tbody = document.querySelector('#region8Table tbody');
+      visibleRows.forEach(row => tbody.appendChild(row));
     }
   </script>
 
