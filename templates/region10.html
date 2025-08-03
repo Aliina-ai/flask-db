@@ -222,18 +222,51 @@
   </div>
 
   <script>
-    function filterTable() {
-      const term = document.getElementById('searchInput').value.toLowerCase();
-      const activist = document.getElementById('activistFilter').value;
+  const searchInput = document.getElementById('searchInput');
+  const activistFilter = document.getElementById('activistFilter');
+  const streetFilter = document.getElementById('streetFilter');
+  const buildingFilter = document.getElementById('buildingFilter');
+  const sortOrder = document.getElementById('sortOrder');
+  const tableBody = document.getElementById('tableBody');
 
-      document.querySelectorAll('#region10Table tbody tr').forEach(tr => {
-        const text = tr.textContent.toLowerCase();
-        const act = tr.cells[10].textContent;
-        const show = text.includes(term) && (activist === "" || act === activist);
-        tr.style.display = show ? "" : "none";
-      });
-    }
-  </script>
+  function filterAndSortTable() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const selectedActivist = activistFilter.value;
+    const selectedStreet = streetFilter.value;
+    const selectedBuilding = buildingFilter.value;
+    const order = sortOrder.value;
 
+    let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
+
+    rows.forEach(row => {
+      const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+      const rowActivist = row.cells[10].textContent.trim();
+      const rowStreet = row.cells[6].textContent.trim();
+      const rowBuilding = row.cells[7].textContent.trim();
+
+      const matchesSearch = rowText.includes(searchTerm);
+      const matchesActivist = selectedActivist === 'all' || rowActivist === selectedActivist;
+      const matchesStreet = selectedStreet === 'all' || rowStreet === selectedStreet;
+      const matchesBuilding = selectedBuilding === 'all' || rowBuilding === selectedBuilding;
+
+      row.style.display = (matchesSearch && matchesActivist && matchesStreet && matchesBuilding) ? '' : 'none';
+    });
+
+    rows = rows.filter(row => row.style.display !== 'none');
+    rows.sort((a, b) => {
+      const nameA = a.cells[2].textContent.toLowerCase();
+      const nameB = b.cells[2].textContent.toLowerCase();
+      return order === 'az' ? nameA.localeCompare(nameB, 'uk') : nameB.localeCompare(nameA, 'uk');
+    });
+
+    rows.forEach(row => tableBody.appendChild(row));
+  }
+
+  searchInput.addEventListener('input', filterAndSortTable);
+  activistFilter.addEventListener('change', filterAndSortTable);
+  streetFilter.addEventListener('change', filterAndSortTable);
+  buildingFilter.addEventListener('change', filterAndSortTable);
+  sortOrder.addEventListener('change', filterAndSortTable);
+</script>
 </body>
 </html>
