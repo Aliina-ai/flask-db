@@ -68,6 +68,18 @@
       transition: background-color 0.3s ease;
     }
 
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      background: #ccc;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
     button:hover {
       background: #1f3e5a;
     }
@@ -75,7 +87,7 @@
 </head>
 <body>
   <div class="container">
-    <a href="{{ url_for('region10') }}" class="back">← Назад до списку</a>
+    <a href="{{ url_for('region10') }}" class="back">← Повернутися</a>
     <h2>Додати підписника — Округ 10</h2>
 
     <form method="POST">
