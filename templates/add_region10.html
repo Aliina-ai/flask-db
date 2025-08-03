@@ -113,13 +113,15 @@
       <label>Квартира</label>
       <input type="text" name="apartment">
 
-      <label>Активіст</label>
-      <input type="text" name="activist" list="activist-options" required>
-      <datalist id="activist-options">
-        {% for a in activists %}
-          <option value="{{ a.name }}">
-        {% endfor %}
-      </datalist>
+      <div class="form-group">
+        <label>Активіст</label>
+        <input type="text" name="activist" list="activist-options" required>
+        <datalist id="activist-options">
+          {% for a in activists %}
+            <option value="{{ a.name }}">
+          {% endfor %}
+        </datalist>
+      </div>
 
       <button type="submit">Додати</button>
     </form>
