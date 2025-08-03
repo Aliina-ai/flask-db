@@ -34,19 +34,26 @@
     h2 {
       color: #2b4f73;
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .filters {
       display: flex;
       gap: 12px;
-      margin-bottom: 12px;
       flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .filters label {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+      color: #2b4f73;
     }
 
     .filters input,
     .filters select {
-      padding: 8px;
+      padding: 6px 10px;
       font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -188,7 +195,7 @@
           <th>Дії</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="tableBody">
         {% for row in data %}
         <tr>
           <td>{{ row.okrug }}</td>
@@ -222,51 +229,50 @@
   </div>
 
   <script>
-  const searchInput = document.getElementById('searchInput');
-  const activistFilter = document.getElementById('activistFilter');
-  const streetFilter = document.getElementById('streetFilter');
-  const buildingFilter = document.getElementById('buildingFilter');
-  const sortOrder = document.getElementById('sortOrder');
-  const tableBody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+    const activistFilter = document.getElementById('activistFilter');
+    const streetFilter = document.getElementById('streetFilter');
+    const buildingFilter = document.getElementById('buildingFilter');
+    const sortOrder = document.getElementById('sortOrder');
+    const tableBody = document.getElementById('tableBody');
 
-  function filterAndSortTable() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const selectedActivist = activistFilter.value;
-    const selectedStreet = streetFilter.value;
-    const selectedBuilding = buildingFilter.value;
-    const order = sortOrder.value;
+    function filterAndSortTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedActivist = activistFilter.value;
+      const selectedStreet = streetFilter.value;
+      const selectedBuilding = buildingFilter.value;
+      const order = sortOrder.value;
 
-    let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
+      let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
 
-    rows.forEach(row => {
-      const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-      const rowActivist = row.cells[10].textContent.trim();
-      const rowStreet = row.cells[6].textContent.trim();
-      const rowBuilding = row.cells[7].textContent.trim();
+      rows.forEach(row => {
+        const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+        const rowActivist = row.cells[10].textContent.trim();
+        const rowStreet = row.cells[6].textContent.trim();
+        const rowBuilding = row.cells[7].textContent.trim();
 
-      const matchesSearch = rowText.includes(searchTerm);
-      const matchesActivist = selectedActivist === 'all' || rowActivist === selectedActivist;
-      const matchesStreet = selectedStreet === 'all' || rowStreet === selectedStreet;
-      const matchesBuilding = selectedBuilding === 'all' || rowBuilding === selectedBuilding;
+        const matchesSearch = rowText.includes(searchTerm);
+        const matchesActivist = selectedActivist === 'all' || rowActivist === selectedActivist;
+        const matchesStreet = selectedStreet === 'all' || rowStreet === selectedStreet;
+        const matchesBuilding = selectedBuilding === 'all' || rowBuilding === selectedBuilding;
 
-      row.style.display = (matchesSearch && matchesActivist && matchesStreet && matchesBuilding) ? '' : 'none';
-    });
+        row.style.display = (matchesSearch && matchesActivist && matchesStreet && matchesBuilding) ? '' : 'none';
+      });
 
-    rows = rows.filter(row => row.style.display !== 'none');
-    rows.sort((a, b) => {
-      const nameA = a.cells[2].textContent.toLowerCase();
-      const nameB = b.cells[2].textContent.toLowerCase();
-      return order === 'az' ? nameA.localeCompare(nameB, 'uk') : nameB.localeCompare(nameA, 'uk');
-    });
+      rows = rows.filter(row => row.style.display !== 'none');
+      rows.sort((a, b) => {
+        const nameA = a.cells[2].textContent.toLowerCase();
+        const nameB = b.cells[2].textContent.toLowerCase();
+        return order === 'az' ? nameA.localeCompare(nameB, 'uk') : nameB.localeCompare(nameA, 'uk');
+      });
 
-    rows.forEach(row => tableBody.appendChild(row));
-  }
+      rows.forEach(row => tableBody.appendChild(row));
+    }
 
-  searchInput.addEventListener('input', filterAndSortTable);
-  activistFilter.addEventListener('change', filterAndSortTable);
-  streetFilter.addEventListener('change', filterAndSortTable);
-  buildingFilter.addEventListener('change', filterAndSortTable);
-  sortOrder.addEventListener('change', filterAndSortTable);
-</script>
+    [searchInput, activistFilter, streetFilter, buildingFilter, sortOrder].forEach(el =>
+      el.addEventListener('input', filterAndSortTable)
+    );
+  </script>
+
 </body>
 </html>
