@@ -2724,6 +2724,21 @@ def edit_region10(subscriber_id):
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
 
+@app.route('/regions10/delete/<int:subscriber_id>', methods=['POST'])
+def delete_region10(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти записи.')
+        return redirect(url_for('region10'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions10 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Запис успішно видалено.')
+    return redirect(url_for('region10'))
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
