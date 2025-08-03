@@ -129,6 +129,11 @@
         <option value="{{ b }}">{{ b }}</option>
       {% endfor %}
     </select>
+
+    <select id="sortFilter" onchange="filterTable()">
+      <option value="az">Прізвище: А → Я</option>
+      <option value="za">Прізвище: Я → А</option>
+    </select>
   </div>
 
   <div class="table-container">
