@@ -8,7 +8,9 @@
       font-family: 'Segoe UI', sans-serif;
       background-color: #f9fbfd;
       padding: 40px;
+      margin: 0;
     }
+
     .form-container {
       max-width: 600px;
       margin: auto;
@@ -17,26 +19,37 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
+
     h2 {
       text-align: center;
       color: #2b4f73;
+      margin-bottom: 20px;
     }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
     label {
       display: block;
-      margin-top: 16px;
       font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #333;
     }
+
     input, select {
       width: 100%;
       padding: 10px;
-      margin-top: 6px;
       border-radius: 4px;
       border: 1px solid #ccc;
       font-size: 14px;
+      box-sizing: border-box;
     }
+
     button {
       width: 100%;
-      margin-top: 30px;
+      margin-top: 24px;
       padding: 12px;
       background-color: #2b4f73;
       color: white;
@@ -46,6 +59,11 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    button:hover {
+      background-color: #1f3e5a;
+    }
+
     .back {
       display: inline-block;
       margin-bottom: 20px;
@@ -57,6 +75,10 @@
       font-size: 14px;
       transition: background-color 0.3s ease;
     }
+
+    .back:hover {
+      background: #bbb;
+    }
   </style>
 </head>
 <body>
@@ -65,47 +87,67 @@
     <h2>Додати підписника — Округ 8</h2>
 
     <form method="POST">
-      <label>Прізвище</label>
-      <input type="text" name="last_name" required>
+      <div class="form-group">
+        <label>Прізвище</label>
+        <input type="text" name="last_name" required>
+      </div>
 
-      <label>Ім’я</label>
-      <input type="text" name="first_name" required>
+      <div class="form-group">
+        <label>Ім’я</label>
+        <input type="text" name="first_name" required>
+      </div>
 
-      <label>По батькові</label>
-      <input type="text" name="middle_name" required>
+      <div class="form-group">
+        <label>По батькові</label>
+        <input type="text" name="middle_name" required>
+      </div>
 
-      <label>Дата народження</label>
-      <input type="date" name="birth_date" required>
+      <div class="form-group">
+        <label>Дата народження</label>
+        <input type="date" name="birth_date" required>
+      </div>
 
-      <label>Телефон</label>
-      <input type="text" name="phone" required>
+      <div class="form-group">
+        <label>Телефон</label>
+        <input type="text" name="phone" required>
+      </div>
 
-      <label>Вулиця</label>
-      <select name="street" id="street" required onchange="updateBuildings()">
-        <option value="">Оберіть вулицю</option>
-        {% for street in address_data.keys() %}
-          <option value="{{ street }}">{{ street }}</option>
-        {% endfor %}
-      </select>
+      <div class="form-group">
+        <label>Вулиця</label>
+        <select name="street" id="street" required onchange="updateBuildings()">
+          <option value="">Оберіть вулицю</option>
+          {% for street in address_data.keys() %}
+            <option value="{{ street }}">{{ street }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-      <label>Будинок</label>
-      <select name="building" id="building" required onchange="updateDistrict()">
-        <option value="">Оберіть будинок</option>
-      </select>
+      <div class="form-group">
+        <label>Будинок</label>
+        <select name="building" id="building" required onchange="updateDistrict()">
+          <option value="">Оберіть будинок</option>
+        </select>
+      </div>
 
-      <label>Виборча дільниця</label>
-      <input type="text" name="district" id="district" readonly>
+      <div class="form-group">
+        <label>Виборча дільниця</label>
+        <input type="text" name="district" id="district" readonly>
+      </div>
 
-      <label>Квартира</label>
-      <input type="text" name="apartment">
+      <div class="form-group">
+        <label>Квартира</label>
+        <input type="text" name="apartment">
+      </div>
 
-      <label>Активіст</label>
-      <input type="text" name="activist" list="activist-options" required>
-      <datalist id="activist-options">
-        {% for a in activists %}
-          <option value="{{ a.name }}">
-        {% endfor %}
-      </datalist>
+      <div class="form-group">
+        <label>Активіст</label>
+        <input type="text" name="activist" list="activist-options" required>
+        <datalist id="activist-options">
+          {% for a in activists %}
+            <option value="{{ a.name }}">
+          {% endfor %}
+        </datalist>
+      </div>
 
       <button type="submit">Додати</button>
     </form>
