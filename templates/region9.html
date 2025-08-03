@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Підписники — Округ 9</title>
   <style>
     body {
@@ -10,14 +10,12 @@
       margin: 0;
       padding: 30px;
     }
-
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
-
     .top-bar a {
       padding: 8px 14px;
       background: #2b4f73;
@@ -26,24 +24,20 @@
       border-radius: 4px;
       transition: background-color 0.3s ease;
     }
-
     .top-bar a:hover {
       background: #3b5f85;
     }
-
     h2 {
       color: #2b4f73;
       text-align: center;
       margin-bottom: 15px;
     }
-
     .filters {
       display: flex;
       gap: 12px;
       margin-bottom: 12px;
       flex-wrap: wrap;
     }
-
     .filters input,
     .filters select {
       padding: 8px;
@@ -51,20 +45,17 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-
     .table-container {
       overflow-x: auto;
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       min-width: 1200px;
     }
-
     th, td {
       padding: 10px 14px;
       border: 1px solid #ddd;
@@ -72,27 +63,19 @@
       text-align: left;
       white-space: nowrap;
     }
-
     th {
       background: #2b4f73;
       color: #fff;
       font-weight: 600;
-    }
-
-    th.sortable:hover {
       cursor: pointer;
-      text-decoration: underline;
     }
-
     tr:hover {
       background: #f1f5f9;
     }
-
     .actions {
       display: flex;
       gap: 6px;
     }
-
     .actions button {
       padding: 6px 10px;
       font-size: 13px;
@@ -101,21 +84,17 @@
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
-
     .edit-btn {
       background: #4caf50;
       color: #fff;
     }
-
     .edit-btn:hover {
       background: #45a043;
     }
-
     .delete-btn {
       background: #e53935;
       color: #fff;
     }
-
     .delete-btn:hover {
       background: #d32f2f;
     }
@@ -128,7 +107,7 @@
     <a href="{{ url_for('add_region9') }}">+ Додати підписника</a>
   </div>
 
-  <h2>Підписники — Округ 9</h2>
+  <h2>Підписники — Округ 9</h2>
 
   <div class="filters">
     <input type="text" id="searchInput" placeholder="Пошук (ім'я, вулиця…)" oninput="filterTable()" />
@@ -156,17 +135,17 @@
     <table id="region9Table">
       <thead>
         <tr>
-          <th>Округ</th>
-          <th>ВД</th>
-          <th class="sortable" onclick="sortByLastName()">Прізвище ▲</th>
-          <th>Ім’я</th>
-          <th>По батькові</th>
-          <th>Дата нар.</th>
-          <th>Вулиця</th>
-          <th>Буд.</th>
-          <th>Кв.</th>
-          <th>Телефон</th>
-          <th>Активіст</th>
+          <th onclick="sortTable(0)">Округ</th>
+          <th onclick="sortTable(1)">Виборча дільниця</th>
+          <th onclick="sortTable(2)">Прізвище</th>
+          <th onclick="sortTable(3)">Ім’я</th>
+          <th onclick="sortTable(4)">По батькові</th>
+          <th onclick="sortTable(5)">Дата нар.</th>
+          <th onclick="sortTable(6)">Вулиця</th>
+          <th onclick="sortTable(7)">Буд.</th>
+          <th onclick="sortTable(8)">Кв.</th>
+          <th onclick="sortTable(9)">Телефон</th>
+          <th onclick="sortTable(10)">Активіст</th>
           <th>Дії</th>
         </tr>
       </thead>
@@ -211,27 +190,25 @@
       const building = document.getElementById('buildingFilter').value;
 
       document.querySelectorAll('#region9Table tbody tr').forEach(tr => {
-        const text = tr.textContent.toLowerCase();
-        const act = tr.cells[10].textContent;
-        const str = tr.cells[6].textContent;
-        const bld = tr.cells[7].textContent;
-
-        const show =
-          text.includes(term) &&
-          (activist === "" || act === activist) &&
-          (street === "" || str === street) &&
-          (building === "" || bld === building);
-
-        tr.style.display = show ? "" : "none";
+        const cells = tr.getElementsByTagName('td');
+        const rowText = tr.textContent.toLowerCase();
+        const match =
+          rowText.includes(term) &&
+          (activist === "" || cells[10].textContent === activist) &&
+          (street === "" || cells[6].textContent === street) &&
+          (building === "" || cells[7].textContent === building);
+        tr.style.display = match ? "" : "none";
       });
     }
 
-    function sortByLastName() {
-      const table = document.getElementById('region9Table').tBodies[0];
+    function sortTable(colIndex) {
+      const table = document.getElementById("region9Table").tBodies[0];
       const rows = Array.from(table.rows);
-      const sorted = rows.sort((a, b) =>
-        a.cells[2].textContent.localeCompare(b.cells[2].textContent, 'uk')
-      );
+      const sorted = rows.sort((a, b) => {
+        const valA = a.cells[colIndex].textContent.trim().toLowerCase();
+        const valB = b.cells[colIndex].textContent.trim().toLowerCase();
+        return valA.localeCompare(valB, 'uk');
+      });
       sorted.forEach(row => table.appendChild(row));
     }
   </script>
