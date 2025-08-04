@@ -2869,51 +2869,48 @@ def delete_region10(subscriber_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('region10'))
 
-@app.route('/regions11/add', methods=['GET', 'POST'])
-def add_region11():
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати записи.')
-        return redirect(url_for('region11'))
-
+@app.route('/regions11', methods=['GET'])
+def region11():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    if request.method == 'POST':
-        street = request.form['street']
-        building = request.form['building']
-        address_data = expand_buildings11()
-        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+    # Отримання всіх підписників
+    c.execute("SELECT * FROM regions11")
+    rows = c.fetchall()
 
-        c.execute('''
-            INSERT INTO regions11 (okrug, district, last_name, first_name, middle_name,
-                                   birth_date, street, building, apartment, phone, activist)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            11, district,
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['birth_date'],
-            street,
-            building,
-            request.form.get('apartment', ''),
-            request.form['phone'],
-            request.form['activist']
-        ))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('region11'))
+    data = [
+        {
+            'id': row[0],
+            'okrug': row[1],
+            'district': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
+        }
+        for row in rows
+    ]
 
-    c.execute("SELECT last_name, first_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    # Отримання активістів
+    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+
+    # Унікальні вулиці та будинки для фільтрів
+    streets = sorted(set(row['street'] for row in data))
+    buildings = sorted(set(row['building'] for row in data))
+
     conn.close()
-
-    address_data = expand_buildings11()
     return render_template(
-        'add_region11.html',
-        activists=acts,
-        address_data=address_data,
-        address_data_json=json.dumps(address_data, ensure_ascii=False)
+        'region11.html',
+        data=data,
+        activists=activists,
+        streets=streets,
+        buildings=buildings
     )
 
 @app.route('/regions11/add', methods=['GET', 'POST'])
