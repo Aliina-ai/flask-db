@@ -3116,7 +3116,7 @@ def region12():
 
     # Отримання всіх підписників
     c.execute("SELECT * FROM regions12")
-    rows = c.fetchal1()
+    rows = c.fetchall()
 
     data = [
         {
