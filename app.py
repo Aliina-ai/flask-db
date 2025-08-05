@@ -3463,7 +3463,7 @@ def add_region13():
         ))
         conn.commit()
         conn.close()
-        return redirect(url_for('region12'))
+        return redirect(url_for('region13'))
 
     c.execute("SELECT last_name, first_name FROM activists")
     acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
