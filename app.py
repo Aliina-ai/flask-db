@@ -266,6 +266,23 @@ def init_db():
             )
         ''')
 
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions13 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
         conn.commit()
 
 def get_activists():
@@ -925,6 +942,149 @@ def expand_buildings12():
         }
     }
 
+def expand_buildings12():
+    return {
+        "вул. Андрея Шептицького": {
+            "buildings": {
+                "70": "321121",
+                "34": "321123", "34/13": "321123", "48": "321123", "50": "321123",
+                "52": "321123", "54": "321123", "56": "321123", "58": "321123",
+                "60": "321123", "62": "321123", "64": "321123", "65": "321123",
+                "66": "321123", "75": "321123", "79": "321123", "80Б": "321123",
+                "81": "321123", "83": "321123"
+            }
+        },
+        "вул. Вокзальна": {
+            "buildings": {"22": "321121"}
+        },
+        "вул. Олеся Гончара": {
+            "buildings": {**{str(i): "321121" for i in range(2,10)}, "10": "321121", "11": "321121", "12": "321121", "18": "321121", "20": "321121"}
+        },
+        "вул. Павла Скоропадського": {
+            "buildings": {
+                "41": "321121", "41А": "321121", "43": "321121",
+                "45": "321121", "47": "321121", "51": "321121", "53А": "321121",
+                **{str(i): "321121" for i in range(55,77)}, "58А": "321121", "75Б": "321121",
+                "78": "321121", "80": "321121", "82": "321121", "69А": "321123"
+            }
+        },
+        "вул. Привокзальна": {
+            "buildings": {
+                "16": "321121", "26": "321121", "36": "321121", "55": "321121",
+                "59": "321121", "61": "321121", "64": "321121", "69": "321121",
+                "71": "321121", "73": "321121", "75": "321121", "89": "321121",
+                "91": "321121"
+            }
+        },
+        "вул. Симона Петлюри": {
+            "buildings": {
+                "37": "321121", "39": "321121", "41": "321121",
+                "43": "321121", "45": "321121", "48": "321121",
+                "50": "321121", "52": "321121", "56": "321121",
+                "62": "321121"
+            }
+        },
+        "пров. Курсовий": {
+            "buildings": {"12А": "321121"}
+        }
+    }
+
+def expand_buildings1225():
+    return {
+        "бульв. Олександрійський": {
+            "buildings": {
+                "75": "321122", "20": "321125", "61": "321125", "61А": "321125",
+                "63": "321125", "65": "321125", "67": "321125", "69": "321125"
+            }
+        },
+        "вул. Андрея Шептицького": {
+            "buildings": {
+                "59": "321122", "69": "321122"
+            }
+        },
+        "вул. Водопійна": {
+            "buildings": {
+                "1А/44": "321122", "1Б/44": "321122", "2": "321122", "3А": "321122",
+                "3": "321122", "4": "321122", "6": "321122", "7А": "321122",
+                "7": "321122", "8А": "321122", "8/31": "321122", "9": "321122",
+                "11": "321122", "14А": "321122", "14": "321122", "19": "321122",
+                "20": "321122", "22": "321122", "24А": "321122", "25": "321122",
+                "27А": "321122"
+            }
+        },
+        "вул. Курсова": {
+            "buildings": {
+                "59": "321122", "59А": "321122", "60А": "321122",
+                "61": "321122", "62А": "321122", "62": "321122",
+                "64А": "321122", "66А": "321122", "66": "321122",
+                "66/2": "321122", "68А": "321122", "68/1": "321122",
+                "68": "321122", "69": "321122", "70А": "321122", "70": "321122",
+                "78А": "321122", "78А/78Б": "321122"
+            }
+        },
+        "вул. Миколи Леонтовича": {
+            "buildings": {**{str(i): "321122" for i in range(3,10)}, **{str(i): "321122" for i in range(11,28)},
+                          "27А": "321122", "29": "321122", "33": "321122"}
+        },
+        "вул. Олеся Гончара": {
+            "buildings": {"6А": "321122"}
+        },
+        "вул. Павла Скоропадського": {
+            "buildings": {"37": "321122", "37/7": "321122", "39": "321122", "39/12": "321122",
+                          "49": "321122", "52": "321122", "54/10": "321122"}
+        },
+        "вул. Привокзальна": {
+            "buildings": {"51/1": "321122", "53/2": "321122"}
+        },
+        "пров. Курсовий": {
+            "buildings": {"3": "321122", "8": "321122", "10": "321122"}
+        },
+        "вул. Богдана Хмельницького": {
+            "buildings": {
+                **{str(i): "321125" for i in range(26,32)}, "33": "321125", "34": "321125",
+                "36А": "321125", "36": "321125", "38": "321125", "42/41": "321125", "40": "321125"
+            }
+        },
+        "вул. Героїв 72-ї Бригади": {
+            "buildings": {"14А/22": "321125", "51": "321125", "53": "321125", "55А": "321125"}
+        },
+        "вул. Златопольська": {
+            "buildings": {
+                "2/13": "321125", **{str(i): "321125" for i in range(3,22)},
+                "4А": "321125", "18А": "321125", "20А": "321125",
+                "23": "321125", "24": "321125", "25": "321125", "26": "321125",
+                "27": "321125", "37": "321125", "38": "321125", "40": "321125",
+                "42А": "321125", "42": "321125", "44": "321125", "46": "321125",
+                "47": "321125", "48": "321125", "50": "321125"
+            }
+        },
+        "вул. Нова": {
+            "buildings": {"3А": "321125", "5": "321125", "10": "321125", "21": "321125"}
+        },
+        "вул. Підвальна": {
+            "buildings": {
+                "4/4": "321125", "5": "321125", "6/7": "321125", "7": "321125", "8": "321125",
+                **{str(i): "321125" for i in range(9,23)}, "20/8": "321125", "21/6": "321125",
+                "23/3": "321125", **{str(i): "321125" for i in range(24,29)}, "29": "321125",
+                **{str(i): "321125" for i in range(32,39)}, "32А": "321125", "40": "321125",
+                "44": "321125", "46": "321125"
+            }
+        },
+        "вул. Праведників світу": {
+            "buildings": {"4": "321125", "5А": "321125", "7": "321125", "9": "321125",
+                          "10А": "321125", "10/11": "321125", "11/1": "321125",
+                          "11/12": "321125", "15": "321125", "16/40": "321125",
+                          **{str(i): "321125" for i in range(17,20)}, "21/1": "321125",
+                          "22": "321125", "23/2": "321125", "25": "321125", "27": "321125",
+                          "29": "321125", "31": "321125"}
+        },
+        "вул. Юр’ївська": {
+            "buildings": {
+                **{str(i): "321122" for i in range(3,8)}, "3А": "321122", "5А": "321122",
+                "9": "321122", "11/12": "321122"
+            }
+        }
+    }
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -3278,6 +3438,176 @@ def delete_region12(subscriber_id):
 
     flash('Запис успішно видалено.')
     return redirect(url_for('region12'))
+
+@app.route('/regions13', methods=['GET'])
+def region13():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Отримання всіх підписників
+    c.execute("SELECT * FROM regions13")
+    rows = c.fetchall()
+
+    data = [
+        {
+            'id': row[0],
+            'okrug': row[1],
+            'district': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
+        }
+        for row in rows
+    ]
+
+    # Отримання активістів
+    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+
+    # Унікальні вулиці та будинки для фільтрів
+    streets = sorted(set(row['street'] for row in data))
+    buildings = sorted(set(row['building'] for row in data))
+
+    conn.close()
+    return render_template(
+        'region13.html',
+        data=data,
+        activists=activists,
+        streets=streets,
+        buildings=buildings
+    )
+
+@app.route('/regions13/add', methods=['GET', 'POST'])
+def add_region13():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати записи.')
+        return redirect(url_for('region13'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings13()
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            INSERT INTO regions13 (okrug, district, last_name, first_name, middle_name,
+                                   birth_date, street, building, apartment, phone, activist)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            13, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region12'))
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data = expand_buildings13()
+    return render_template(
+        'add_region13.html',
+        activists=acts,
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
+@app.route('/regions13/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region13(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region13'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings13()
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            UPDATE regions13 SET
+              okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+            WHERE id = ?
+        ''', (
+            13, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region13'))
+
+    c.execute('SELECT * FROM regions13 WHERE id = ?', (subscriber_id,))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region13'))
+
+    subscriber = {
+        'id': row[0], 'okrug': row[1], 'district': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
+    }
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    address_data = expand_buildings12()
+    conn.close()
+
+    return render_template(
+        'edit_region13.html',
+        subscriber=subscriber,
+        activists=acts,
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
+@app.route('/regions13/delete/<int:subscriber_id>', methods=['POST'])
+def delete_region13(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти записи.')
+        return redirect(url_for('region12'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions12 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Запис успішно видалено.')
+    return redirect(url_for('region13'))
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
