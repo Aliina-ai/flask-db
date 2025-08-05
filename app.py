@@ -3530,7 +3530,7 @@ def edit_region13(subscriber_id):
 
     c.execute("SELECT last_name, first_name FROM activists")
     acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-    address_data = expand_buildings12()
+    address_data = expand_buildings13()
     conn.close()
 
     return render_template(
