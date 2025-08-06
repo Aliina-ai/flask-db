@@ -368,7 +368,7 @@ def init_db():
             )
         ''')
 
-         c.execute('''
+        c.execute('''
             CREATE TABLE IF NOT EXISTS regions19 (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 okrug INTEGER,
