@@ -2,16 +2,16 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Додати підписника — Округ 28</title>
+  <title>Редагувати підписника — Округ 28</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f7f9fb;
-      padding: 40px;
       margin: 0;
+      padding: 40px;
     }
 
-    .container {
+    .wrapper {
       max-width: 600px;
       margin: auto;
       background: #fff;
@@ -29,16 +29,19 @@
     .back {
       display: inline-block;
       margin-bottom: 20px;
-      color: #2b4f73;
+      padding: 8px 14px;
+      background: #ccc;
+      color: #333;
       text-decoration: none;
+      border-radius: 4px;
       font-size: 14px;
     }
 
     label {
       display: block;
       margin-top: 16px;
-      font-size: 14px;
       font-weight: 600;
+      font-size: 14px;
       color: #333;
     }
 
@@ -68,79 +71,68 @@
       transition: background-color 0.3s ease;
     }
 
-    .back {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 8px 14px;
-      background: #ccc;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: background-color 0.3s ease;
-    }
-
     button:hover {
       background: #1f3e5a;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrapper">
     <a href="{{ url_for('region28') }}" class="back">← Повернутися</a>
-    <h2>Додати підписника — Округ 28</h2>
+    <h2>Редагувати підписника — Округ 28</h2>
 
-    <form method="POST">
+    <form method="POST" action="{{ url_for('edit_region28', subscriber_id=subscriber.id) }}">
       <label>Прізвище</label>
-      <input type="text" name="last_name" required>
+      <input type="text" name="last_name" value="{{ subscriber.last_name }}" required>
 
       <label>Ім’я</label>
-      <input type="text" name="first_name" required>
+      <input type="text" name="first_name" value="{{ subscriber.first_name }}" required>
 
       <label>По батькові</label>
-      <input type="text" name="middle_name" required>
+      <input type="text" name="middle_name" value="{{ subscriber.middle_name }}" required>
 
       <label>Дата народження</label>
-      <input type="date" name="birth_date" required>
+      <input type="date" name="birth_date" value="{{ subscriber.birth_date }}" required>
 
       <label>Телефон</label>
-      <input type="text" name="phone" required>
+      <input type="text" name="phone" value="{{ subscriber.phone }}" required>
 
       <label>Вулиця</label>
-      <select name="street" id="street" required onchange="updateBuildings()">
+      <select id="street" name="street" required onchange="updateBuildings()">
         <option value="">Оберіть вулицю</option>
         {% for street in address_data.keys() %}
-          <option value="{{ street }}">{{ street }}</option>
+          <option value="{{ street }}" {% if subscriber.street == street %}selected{% endif %}>{{ street }}</option>
         {% endfor %}
       </select>
 
       <label>Будинок</label>
-      <select name="building" id="building" required onchange="updateDistrict()">
+      <select id="building" name="building" required onchange="updateDistrict()">
         <option value="">Оберіть будинок</option>
+        <!-- Будинки додаються скриптом -->
       </select>
 
-      <label>Виборча дільниця</label>
-      <input type="text" id="district" name="district" readonly>
-
       <label>Квартира</label>
-      <input type="text" name="apartment">
+      <input type="text" name="apartment" value="{{ subscriber.apartment }}">
 
-      <div class="form-group">
-        <label>Активіст</label>
-        <input type="text" name="activist" list="activist-options" required>
-        <datalist id="activist-options">
-          {% for a in activists %}
-            <option value="{{ a.name }}">
-          {% endfor %}
-        </datalist>
-      </div>
+      <label>Виборча дільниця</label>
+      <input type="text" id="district" name="district" value="{{ subscriber.district }}" readonly>
 
-      <button type="submit">Додати</button>
+       <label>Активіст</label>
+      <input type="text" name="activist" list="activist-options" value="{{ subscriber.activist }}" required>
+      <datalist id="activist-options">
+        {% for a in activists %}
+          <option value="{{ a.name }}"></option>
+        {% endfor %}
+      </datalist>
+
+      <button type="submit">Зберегти зміни</button>
     </form>
   </div>
 
   <script>
     const addressData = {{ address_data_json | safe }};
+    const selectedStreet = "{{ subscriber.street }}";
+    const selectedBuilding = "{{ subscriber.building }}";
 
     function updateBuildings() {
       const street = document.getElementById("street").value;
@@ -151,12 +143,17 @@
       districtInput.value = "";
 
       if (addressData[street]) {
-        Object.keys(addressData[street].buildings).forEach(b => {
+        Object.entries(addressData[street].buildings).forEach(([b, d]) => {
           const opt = document.createElement("option");
           opt.value = b;
           opt.textContent = b;
+          if (b === selectedBuilding) opt.selected = true;
           buildingSelect.appendChild(opt);
         });
+
+        if (addressData[street].buildings[selectedBuilding]) {
+          districtInput.value = addressData[street].buildings[selectedBuilding];
+        }
       }
     }
 
@@ -171,6 +168,12 @@
         districtInput.value = "";
       }
     }
+
+    window.onload = function () {
+      document.getElementById("street").value = selectedStreet;
+      updateBuildings();
+      updateDistrict();
+    };
   </script>
 </body>
 </html>
