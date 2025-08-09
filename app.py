@@ -589,6 +589,193 @@ def init_db():
             )
         ''')
 
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions32 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions33 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions34 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions35 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions36 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions37 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions38 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions39 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions40 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions41 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS regions42 (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                okrug INTEGER,
+                district TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                birth_date TEXT,
+                street TEXT,
+                building TEXT,
+                apartment TEXT,
+                phone TEXT,
+                activist TEXT
+            )
+        ''')
+
         conn.commit()
 
 def get_activists():
@@ -2443,6 +2630,124 @@ def expand_buildings31():
         }
     }
 
+address_data_32 = {
+    "вул. Івана Кожедуба": {
+        "buildings": {
+            # ВД 321163
+            "123А": "321163", "123Б": "321163", "129А": "321163", "133А": "321163",
+            "135А": "321163", "135Б": "321163", "139А": "321163", "141А": "321163",
+            "143А": "321163", "149": "321163", "154": "321163", "155": "321163",
+            "155А": "321163", "156": "321163", "160": "321163", "161": "321163",
+            "162": "321163", "163": "321163", "164": "321163",
+            "166": "321163", "167": "321163", "168": "321163",
+            "170": "321163", "171": "321163", "172": "321163",
+            "174": "321163", "175": "321163", "176": "321163", "177": "321163", "178": "321163", "179": "321163", "180": "321163", "181": "321163",
+            "185": "321163", "185А": "321163", "187": "321163", "189": "321163", "191": "321163", "193": "321163", "193/1": "321163", "195": "321163",
+            # ВД 321164
+            "103А": "321164", "105": "321164", "105В": "321164", "119": "321164", "125": "321164", "127": "321164",
+            "129": "321164", "131": "321164",
+            **{str(n): "321164" for n in range(135, 149)}, "149А": "321164",
+            "150": "321164", "152": "321164",
+            # ВД 321165
+            "182": "321165", "184": "321165", "184А": "321165", "186": "321165", "188": "321165", "188А": "321165",
+            "190": "321165", "192": "321165", "194": "321165", "195/2": "321165",
+            "197": "321165", "198/1": "321165", "199": "321165",
+            **{str(n): "321165" for n in range(201, 209)},
+            "207А": "321165", "209А": "321165", "210": "321165",
+            **{str(n): "321165" for n in range(213, 218)},
+            "213А": "321165",
+            **{str(n): "321165" for n in range(219, 226)},
+            "221А": "321165", "221Б": "321165", "223А": "321165", "225А": "321165", "227А": "321165", "227": "321165",
+            **{str(n): "321165" for n in range(229, 241)},
+            "229А": "321165", "229Б": "321165", "230А": "321165", "230Б": "321165",
+            "231А": "321165", "232А": "321165", "233А": "321165", "234А": "321165", "239/1": "321165",
+            "241А": "321165", "242": "321165", "242А": "321165",
+            "244": "321165", "244Б": "321165", "244В": "321165", "244Д": "321165",
+            "245": "321165", "247": "321165",
+            "248А": "321165", "248Б": "321165",
+            "251А": "321165", "251": "321165", "253": "321165",
+            "255А": "321165", "255": "321165", "257": "321165", "259": "321165", "261": "321165", "263": "321165", "263А": "321165",
+            "265": "321165", "267": "321165", "269": "321165", "271": "321165", "273": "321165",
+            "275А": "321165", "275": "321165", "279": "321165", "281": "321165", "283": "321165",
+            "287": "321165", "289": "321165", "293": "321165",
+            "295": "321165", "297": "321165", "297А": "321165",
+            "299": "321165", "299А": "321165",
+            "301": "321165", "303": "321165", "305": "321165",
+            "307": "321165", "307А": "321165", "309": "321165", "311": "321165",
+            "313": "321165", "315": "321165", "317": "321165", "319": "321165", "323": "321165",
+            "325": "321165", "329": "321165", "331": "321165",
+            "337": "321165", "341": "321165", "343": "321165", "345": "321165",
+            "347": "321165", "349": "321165", "351": "321165",
+            "355": "321165", "357": "321165", "359": "321165", "359Б": "321165"
+        }
+    },
+    "вул. Луки Долинського": {
+        "buildings": {
+            "107А": "321163",
+            "3": "321164", "105А": "321164"
+        }
+    },
+    "вул. Храпачанська": {
+        "buildings": {
+            "3": "321163", "4": "321163", "5": "321163",
+            "7": "321163", "8": "321163", "9": "321163", "10": "321163",
+            "10А": "321163", "12": "321163", "13": "321163", "14": "321163",
+            "16": "321163", "18": "321163", "18А": "321163", "20": "321163",
+            "22": "321163", "24": "321163", "26": "321163", "28": "321163",
+            "30": "321163",
+            "32": "321165", "32А": "321165", "34": "321165",
+            "36": "321165", "38": "321165", "39": "321165", "40": "321165",
+            "42": "321165", "44": "321165", "46": "321165", "60": "321165"
+        }
+    },
+    "вул. Глиняна": {
+        "buildings": {
+            "47Б": "321164"
+        }
+    },
+    "вул. Північна": {
+        "buildings": {
+            "1": "321164"
+        }
+    },
+    "вул. Андрія Мельника": {
+        "buildings": {
+            **{str(n): "321165" for n in range(4, 8)},
+            **{str(n): "321165" for n in range(9, 17)},
+            "13А": "321165", "17А": "321165", "17Б": "321165",
+            **{str(n): "321165" for n in range(18, 21)},
+            "19А": "321165", "21А": "321165",
+            **{str(n): "321165" for n in range(22, 29)},
+            "26А": "321165", "28А": "321165",
+            "31": "321165", "31А": "321165",
+            "32А": "321165", "32Б": "321165",
+            **{str(n): "321165" for n in range(33, 36)},
+            "34А": "321165",
+            "37": "321165", "38": "321165", "38А": "321165",
+            "41": "321165", "41А": "321165",
+            **{str(n): "321165" for n in range(42, 44)},
+            "43А": "321165",
+            **{str(n): "321165" for n in range(45, 48)},
+            "45А": "321165", "46А": "321165",
+            **{str(n): "321165" for n in range(50, 54)},
+            "52А": "321165",
+            **{str(n): "321165" for n in range(57, 84)},
+            "89А": "321165", "89Б": "321165",
+            **{str(n): "321165" for n in range(85, 94)},
+            "91А": "321165", "91Б": "321165",
+            **{str(n): "321165" for n in range(95, 99)}
+        }
+    },
+    "вул. Миколи Кириленка": {
+        "buildings": {
+            "24": "321165", "25": "321165", "27": "321165", "27А": "321165",
+            "29": "321165", "31": "321165",
+            "35": "321165",
+            **{str(n): "321165" for n in range(40, 46)},
+            "47": "321165", "49": "321165", "51": "321165"
+        }
+    }
+}
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -8026,6 +8331,176 @@ def delete_region31(subscriber_id):
 
     flash('Запис успішно видалено.')
     return redirect(url_for('region31'))
+
+@app.route('/regions32', methods=['GET'])
+def region32():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Отримання всіх підписників
+    c.execute("SELECT * FROM regions32")
+    rows = c.fetchall()
+
+    data = [
+        {
+            'id': row[0],
+            'okrug': row[1],
+            'district': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
+        }
+        for row in rows
+    ]
+
+    # Отримання активістів
+    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+
+    # Унікальні вулиці та будинки для фільтрів
+    streets = sorted(set(row['street'] for row in data))
+    buildings = sorted(set(row['building'] for row in data))
+
+    conn.close()
+    return render_template(
+        'region32.html',
+        data=data,
+        activists=activists,
+        streets=streets,
+        buildings=buildings
+    )
+
+@app.route('/regions32/add', methods=['GET', 'POST'])
+def add_region32():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати записи.')
+        return redirect(url_for('region32'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings32()
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            INSERT INTO regions32 (okrug, district, last_name, first_name, middle_name,
+                                   birth_date, street, building, apartment, phone, activist)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            32, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region32'))
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data = expand_buildings32()
+    return render_template(
+        'add_region32.html',
+        activists=acts,
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
+@app.route('/regions32/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region32(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region32'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings32()
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            UPDATE regions32 SET
+              okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+            WHERE id = ?
+        ''', (
+            32, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region32'))
+
+    c.execute('SELECT * FROM regions32 WHERE id = ?', (subscriber_id,))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region32'))
+
+    subscriber = {
+        'id': row[0], 'okrug': row[1], 'district': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
+    }
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    address_data = expand_buildings32()
+    conn.close()
+
+    return render_template(
+        'edit_region32.html',
+        subscriber=subscriber,
+        activists=acts,
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
+@app.route('/regions32/delete/<int:subscriber_id>', methods=['POST'])
+def delete_region32(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти записи.')
+        return redirect(url_for('region32'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions32 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Запис успішно видалено.')
+    return redirect(url_for('region32'))
     
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
