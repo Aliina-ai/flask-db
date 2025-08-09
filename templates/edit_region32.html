@@ -81,7 +81,7 @@
     <a href="{{ url_for('region32') }}" class="back">← Повернутися</a>
     <h2>Редагувати підписника — Округ 32</h2>
 
-    <form method="POST" action="{{ url_for('edit_region31', subscriber_id=subscriber.id) }}">
+    <form method="POST" action="{{ url_for('edit_region32', subscriber_id=subscriber.id) }}">
       <label>Прізвище</label>
       <input type="text" name="last_name" value="{{ subscriber.last_name }}" required>
 
