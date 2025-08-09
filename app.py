@@ -2749,6 +2749,68 @@ address_data_32 = {
     }
 }
 
+address_data_33 = {
+    "вул. Глиняна": {
+        "buildings": {
+            "1": "321167", "1А": "321167",
+            **{str(n): "321167" for n in range(3, 11)},
+            "3А": "321167", "5А": "321167", "6А": "321167", "7А": "321167",
+            "12": "321167",
+            "15": "321167",
+            **{f"15{lit}" : "321167" for lit in ["А", "Б", "В", "Г", "Д", "Е", "Ж"]},
+            **{f"15/{n}": "321167" for n in range(1, 7)},
+            "15/9": "321167",
+            "16": "321167",
+            "18А": "321167", "18Б": "321167",
+            **{str(n): "321167" for n in range(18, 58)},
+            "20А": "321167", "23А": "321167",
+            "29В": "321167", "29А": "321167", "29Б": "321167",
+            "41А": "321167", "56А": "321167",
+            "59": "321167", "61": "321167", "63": "321167",
+            "65": "321167", "65А": "321167",
+            "67": "321167", "67А": "321167",
+            "69": "321167", "69А": "321167", "69В": "321167"
+        }
+    },
+    "вул. Київська": {
+        "buildings": {
+            **{str(n): "321167" for n in range(1, 10)},
+            "8А": "321167", "11": "321167", "12": "321167", "13/1": "321167", "14": "321167",
+            "15/2": "321167",
+            **{str(n): "321167" for n in range(16, 21)},
+            "22": "321167",
+            **{str(n): "321167" for n in range(24, 27)},
+            "27/2": "321167", "28": "321167", "30": "321167",
+            "32": "321167", "34": "321167", "34А": "321167",
+            "36": "321167", "38": "321167", "40": "321167", "42": "321167",
+            "44": "321167", "46": "321167", "54": "321167", "56": "321167",
+            "58": "321167", "60": "321167", "64": "321167", "66": "321167",
+            "68": "321167", "68А": "321167",
+            "70": "321167", "72": "321167", "76": "321167", "78": "321167",
+            "82": "321167", "84": "321167"
+        }
+    },
+    "пров. Київський": {
+        "buildings": {
+            "3": "321167", "4": "321167", "6": "321167",
+            "8": "321167", "8А": "321167",
+            **{str(n): "321167" for n in range(10, 23)},
+            "24": "321167", "26": "321167", "28": "321167", "30": "321167",
+            "32": "321167", "34/2": "321167"
+        }
+    },
+    "шосе Київське": {
+        "buildings": {
+            **{str(n): "321167" for n in range(1, 5)},
+            **{str(n): "321167" for n in range(6, 21)},
+            **{str(n): "321167" for n in range(22, 28)},
+            "29": "321167", "30": "321167", "30А": "321167", "32/2": "321167",
+            "32": "321167", "33": "321167", "34": "321167",
+            "36": "321167", "38": "321167", "39": "321167"
+        }
+    }
+}
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
@@ -8501,6 +8563,176 @@ def delete_region32(subscriber_id):
 
     flash('Запис успішно видалено.')
     return redirect(url_for('region32'))
+
+@app.route('/regions33', methods=['GET'])
+def region33():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Отримання всіх підписників
+    c.execute("SELECT * FROM regions33")
+    rows = c.fetchall()
+
+    data = [
+        {
+            'id': row[0],
+            'okrug': row[1],
+            'district': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
+        }
+        for row in rows
+    ]
+
+    # Отримання активістів
+    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+
+    # Унікальні вулиці та будинки для фільтрів
+    streets = sorted(set(row['street'] for row in data))
+    buildings = sorted(set(row['building'] for row in data))
+
+    conn.close()
+    return render_template(
+        'region33.html',
+        data=data,
+        activists=activists,
+        streets=streets,
+        buildings=buildings
+    )
+
+@app.route('/regions33/add', methods=['GET', 'POST'])
+def add_region33():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати записи.')
+        return redirect(url_for('region33'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings33()
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            INSERT INTO regions33 (okrug, district, last_name, first_name, middle_name,
+                                   birth_date, street, building, apartment, phone, activist)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            33, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist']
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region33'))
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    conn.close()
+
+    address_data = expand_buildings33()
+    return render_template(
+        'add_region33.html',
+        activists=acts,
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
+@app.route('/regions33/edit/<int:subscriber_id>', methods=['GET', 'POST'])
+def edit_region33(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('region33'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        street = request.form['street']
+        building = request.form['building']
+        address_data = expand_buildings33()
+        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+
+        c.execute('''
+            UPDATE regions33 SET
+              okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+            WHERE id = ?
+        ''', (
+            33, district,
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['birth_date'],
+            street,
+            building,
+            request.form.get('apartment', ''),
+            request.form['phone'],
+            request.form['activist'],
+            subscriber_id
+        ))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('region33'))
+
+    c.execute('SELECT * FROM regions33 WHERE id = ?', (subscriber_id,))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        flash('Підписника не знайдено.')
+        return redirect(url_for('region33'))
+
+    subscriber = {
+        'id': row[0], 'okrug': row[1], 'district': row[2],
+        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
+    }
+
+    c.execute("SELECT last_name, first_name FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    address_data = expand_buildings33()
+    conn.close()
+
+    return render_template(
+        'edit_region33.html',
+        subscriber=subscriber,
+        activists=acts,
+        address_data=address_data,
+        address_data_json=json.dumps(address_data, ensure_ascii=False)
+    )
+
+@app.route('/regions33/delete/<int:subscriber_id>', methods=['POST'])
+def delete_region33(subscriber_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти записи.')
+        return redirect(url_for('region33'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM regions33 WHERE id = ?', (subscriber_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Запис успішно видалено.')
+    return redirect(url_for('region33'))
     
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
