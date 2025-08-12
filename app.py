@@ -11792,7 +11792,7 @@ def region40():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Отримання всіх підписників
+    # Отримання всіх підписників округу 40
     c.execute("SELECT * FROM regions40")
     rows = c.fetchall()
 
@@ -11822,13 +11822,26 @@ def region40():
     streets = sorted(set(row['street'] for row in data))
     buildings = sorted(set(row['building'] for row in data))
 
+    # Отримання ПІБ відповідального за Великий округ 6
+    c.execute("SELECT last_name, first_name, middle_name FROM regions_large WHERE okrug = 6 LIMIT 1")
+    person_row = c.fetchone()
+    large_district_person = None
+    if person_row:
+        large_district_person = {
+            'last_name': person_row[0],
+            'first_name': person_row[1],
+            'middle_name': person_row[2]
+        }
+
     conn.close()
+
     return render_template(
         'region40.html',
         data=data,
         activists=activists,
         streets=streets,
-        buildings=buildings
+        buildings=buildings,
+        large_district_person=large_district_person
     )
 
 @app.route('/regions40/add', methods=['GET', 'POST'])
