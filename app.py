@@ -11792,7 +11792,7 @@ def region40():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Отримання всіх підписників округу 40
+    # Отримання всіх підписників
     c.execute("SELECT * FROM regions40")
     rows = c.fetchall()
 
@@ -11814,26 +11814,26 @@ def region40():
         for row in rows
     ]
 
-    # Отримання ПІБ відповідального за Великий округ 6 з regions_large
-    c.execute("""
-        SELECT last_name, first_name, middle_name 
-        FROM regions_large 
-        WHERE okrug = Округ 6 
-        LIMIT 1
-    """)
-    person_row = c.fetchone()
-    if person_row:
-        large_district_responsible = f"{person_row[0]} {person_row[1]} {person_row[2]}"
-    else:
-        large_district_responsible = None
-
     # Отримання активістів
     c.execute("SELECT DISTINCT last_name, first_name FROM activists")
     activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
 
-    # Унікальні вулиці та будинки для фільтрів
+    # Унікальні вулиці та будинки
     streets = sorted(set(row['street'] for row in data))
     buildings = sorted(set(row['building'] for row in data))
+
+    # Отримання відповідального за Великий округ 6
+    c.execute("""
+        SELECT last_name, first_name, middle_name
+        FROM regions_large
+        WHERE LOWER(TRIM(okrug)) = LOWER('Округ 6')
+        LIMIT 1
+    """)
+    responsible_row = c.fetchone()
+    large_district_responsible = (
+        f"{responsible_row[0]} {responsible_row[1]} {responsible_row[2]}"
+        if responsible_row else None
+    )
 
     conn.close()
     return render_template(
