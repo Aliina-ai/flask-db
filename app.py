@@ -11818,7 +11818,7 @@ def region40():
     c.execute("""
         SELECT last_name, first_name, middle_name 
         FROM regions_large 
-        WHERE okrug = 6 
+        WHERE okrug = Округ 6 
         LIMIT 1
     """)
     person_row = c.fetchone()
