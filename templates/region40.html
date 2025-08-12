@@ -112,12 +112,20 @@
   </div>
 
   <h2>Підписники — Округ 40</h2>
-
-   {% if large_district_responsible %}
-  <div style="margin-bottom: 15px; font-weight: bold; font-size: 16px;">
+  
+     {% if large_district_responsible %}
+  <div style="
+      background-color: #004085;
+      color: white;
+      padding: 12px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 5px;
+   ">
      Відповідальний за Великий округ 6: {{ large_district_responsible }}
-  </div>
-   {% endif %}
+   </div>
+     {% endif %}
 
 
   <div class="filters">
