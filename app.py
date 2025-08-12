@@ -12276,9 +12276,9 @@ def add_region42():
         c.execute('''
             INSERT INTO regions42 (okrug, district, last_name, first_name, middle_name,
                                    street, building, apartment, phone, activist)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            41, district,
+            42, district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
@@ -12320,7 +12320,7 @@ def edit_region42(subscriber_id):
         district = address_data.get(street, {}).get('buildings', {}).get(building, '')
 
         c.execute('''
-            UPDATE regions41 SET
+            UPDATE regions42 SET
               okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
               street = ?, building = ?, apartment = ?, phone = ?, activist = ?
             WHERE id = ?
