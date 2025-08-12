@@ -11814,6 +11814,19 @@ def region40():
         for row in rows
     ]
 
+    # Отримання ПІБ відповідального за Великий округ 6 з regions_large
+    c.execute("""
+        SELECT last_name, first_name, middle_name 
+        FROM regions_large 
+        WHERE okrug = 6 
+        LIMIT 1
+    """)
+    person_row = c.fetchone()
+    if person_row:
+        large_district_responsible = f"{person_row[0]} {person_row[1]} {person_row[2]}"
+    else:
+        large_district_responsible = None
+
     # Отримання активістів
     c.execute("SELECT DISTINCT last_name, first_name FROM activists")
     activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
@@ -11822,26 +11835,14 @@ def region40():
     streets = sorted(set(row['street'] for row in data))
     buildings = sorted(set(row['building'] for row in data))
 
-    # Отримання ПІБ відповідального за Великий округ 6
-    c.execute("SELECT last_name, first_name, middle_name FROM regions_large WHERE okrug = 6 LIMIT 1")
-    person_row = c.fetchone()
-    large_district_person = None
-    if person_row:
-        large_district_person = {
-            'last_name': person_row[0],
-            'first_name': person_row[1],
-            'middle_name': person_row[2]
-        }
-
     conn.close()
-
     return render_template(
         'region40.html',
         data=data,
         activists=activists,
         streets=streets,
         buildings=buildings,
-        large_district_person=large_district_person
+        large_district_responsible=large_district_responsible
     )
 
 @app.route('/regions40/add', methods=['GET', 'POST'])
