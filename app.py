@@ -5429,7 +5429,7 @@ def edit_region1(subscriber_id):
     if request.method == 'POST':
         street = request.form['street']
         building = request.form['building']
-        address_data = expand_buildings1()
+        address_data = expand_buildings_1()
         district = address_data.get(street, {}).get('buildings', {}).get(building, '')
 
         c.execute('''
@@ -5470,7 +5470,7 @@ def edit_region1(subscriber_id):
 
     c.execute("SELECT last_name, first_name FROM activists")
     acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-    address_data = expand_buildings1()
+    address_data = expand_buildings_1()
     conn.close()
 
     return render_template(
