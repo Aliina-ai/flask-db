@@ -2,37 +2,48 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Додати підписника — Округ 1</title>
+  <title>Додати підписника — Округ 1</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f7f9fb;
-      margin: 0;
+      background: #f7f9fb;
       padding: 40px;
+      margin: 0;
     }
-    .wrapper {
+
+    .container {
       max-width: 600px;
       margin: auto;
-      background-color: #ffffff;
-      padding: 30px 40px;
+      background: #fff;
+      padding: 30px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
+
     h2 {
       color: #2b4f73;
       text-align: center;
       margin-bottom: 25px;
     }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #2b4f73;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
     label {
       display: block;
       margin-top: 16px;
-      font-weight: 600;
       font-size: 14px;
+      font-weight: 600;
       color: #333;
     }
+
     input[type="text"],
     input[type="date"],
-    input[list],
     select {
       width: 100%;
       padding: 10px;
@@ -41,48 +52,45 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-color: white;
     }
+
     button {
       width: 100%;
       margin-top: 30px;
       padding: 12px;
-      background-color: #2b4f73;
-      color: white;
+      background: #2b4f73;
+      color: #fff;
       border: none;
       border-radius: 4px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.3s ease;
     }
-    button:hover {
-      background-color: #1f3e5a;
-    }
+
     .back {
       display: inline-block;
       margin-bottom: 20px;
       padding: 8px 14px;
-      background-color: #ccc;
+      background: #ccc;
       color: #333;
       text-decoration: none;
       border-radius: 4px;
       font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background: #1f3e5a;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
+  <div class="container">
     <a href="{{ url_for('region1') }}" class="back">← Повернутися</a>
-    <h2>Додати підписника — Округ 1</h2>
+    <h2>Додати підписника — Округ 1</h2>
 
-    <form method="POST" action="{{ url_for('add_region1') }}">
-      <label>Округ</label>
-      <input type="text" name="okrug" value="1" readonly>
-
+    <form method="POST">
       <label>Прізвище</label>
       <input type="text" name="last_name" required>
 
@@ -99,30 +107,70 @@
       <input type="text" name="phone" required>
 
       <label>Вулиця</label>
-      <input type="text" name="street" value="вул. Гайок" readonly>
+      <select name="street" id="street" required onchange="updateBuildings()">
+        <option value="">Оберіть вулицю</option>
+        {% for street in address_data.keys() %}
+          <option value="{{ street }}">{{ street }}</option>
+        {% endfor %}
+      </select>
 
       <label>Будинок</label>
-      <input list="building-options" name="building" required>
-      <datalist id="building-options">
-        {% for b in buildings %}
-          <option value="{{ b }}">
-        {% endfor %}
-      </datalist>
+      <select name="building" id="building" required onchange="updateDistrict()">
+        <option value="">Оберіть будинок</option>
+      </select>
+
+      <label>Виборча дільниця</label>
+      <input type="text" id="district" name="district" readonly>
 
       <label>Квартира</label>
       <input type="text" name="apartment">
 
-      <label>Активіст</label>
-      <input list="activist-options" name="activist" required>
-      <datalist id="activist-options">
-        {% for a in activists %}
-          <option value="{{ a.name }}">
-        {% endfor %}
-      </datalist>
+      <div class="form-group">
+        <label>Активіст</label>
+        <input type="text" name="activist" list="activist-options" required>
+        <datalist id="activist-options">
+          {% for a in activists %}
+            <option value="{{ a.name }}">
+          {% endfor %}
+        </datalist>
+      </div>
 
-      <form method="POST" action="{{ url_for('add_region1') }}">
-      <button type="submit">Додати підписника</button>
+      <button type="submit">Додати</button>
     </form>
   </div>
+
+  <script>
+    const addressData = {{ address_data_json | safe }};
+
+    function updateBuildings() {
+      const street = document.getElementById("street").value;
+      const buildingSelect = document.getElementById("building");
+      const districtInput = document.getElementById("district");
+
+      buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
+      districtInput.value = "";
+
+      if (addressData[street]) {
+        Object.keys(addressData[street].buildings).forEach(b => {
+          const opt = document.createElement("option");
+          opt.value = b;
+          opt.textContent = b;
+          buildingSelect.appendChild(opt);
+        });
+      }
+    }
+
+    function updateDistrict() {
+      const street = document.getElementById("street").value;
+      const building = document.getElementById("building").value;
+      const districtInput = document.getElementById("district");
+
+      if (addressData[street] && addressData[street].buildings[building]) {
+        districtInput.value = addressData[street].buildings[building];
+      } else {
+        districtInput.value = "";
+      }
+    }
+  </script>
 </body>
 </html>
