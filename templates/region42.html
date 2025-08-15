@@ -171,6 +171,7 @@
           <th>Прізвище </th>
           <th>Ім’я</th>
           <th>По батькові</th>
+          <th>Дата народження</th>
           <th>Вулиця</th>
           <th>Буд.</th>
           <th>Квартира</th>
@@ -187,6 +188,7 @@
           <td>{{ row.last_name }}</td>
           <td>{{ row.first_name }}</td>
           <td>{{ row.middle_name }}</td>
+          <td>{{ row.birth_date }}</td>
           <td>{{ row.street }}</td>
           <td>{{ row.building }}</td>
           <td>{{ row.apartment }}</td>
@@ -203,7 +205,7 @@
         </tr>
         {% endfor %}
         {% if not data %}
-        <tr><td colspan="11" style="text-align:center; padding:20px;">Записи відсутні</td></tr>
+        <tr><td colspan="12" style="text-align:center; padding:20px;">Записи відсутні</td></tr>
         {% endif %}
       </tbody>
     </table>
