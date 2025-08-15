@@ -5409,7 +5409,7 @@ def add_region1():
     acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
     conn.close()
 
-    address_data = expand_buildings1()
+    address_data = expand_buildings_1()
     return render_template(
         'add_region1.html',
         activists=acts,
