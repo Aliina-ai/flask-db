@@ -2,225 +2,179 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Підписники — Округ 1</title>
+  <title>Підписники — Округ 1</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f7f9fb;
+      background: #f7f9fb;
       margin: 0;
       padding: 30px;
     }
-
-    h2 {
-      color: #2b4f73;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
     .top-bar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
-
-    .top-bar-left a,
-    .top-bar-right a {
+    .top-bar a {
       padding: 8px 14px;
-      background-color: #2b4f73;
-      color: #fff;
+      background: #2b4f73;
+      color: white;
       text-decoration: none;
       border-radius: 4px;
-      transition: background-color 0.3s;
+      font-size: 14px;
     }
-
-    .top-bar-left a:hover,
-    .top-bar-right a:hover {
-      background-color: #3b5f85;
+    .top-bar a:hover {
+      background: #3b5f85;
     }
-
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 15px;
+    }
     .filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      align-items: center;
-      margin-bottom: 25px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      gap: 12px;
+      margin-bottom: 14px;
     }
-
     .filters label {
+      font-size: 14px;
       display: flex;
       flex-direction: column;
-      font-weight: 600;
-      font-size: 14px;
-      color: #2b4f73;
     }
-
     .filters input,
     .filters select {
-      margin-top: 6px;
-      padding: 8px 12px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+      padding: 6px;
       font-size: 14px;
-      min-width: 180px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
-
     .table-container {
       overflow-x: auto;
-      background: #fff;
+      background: white;
       border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
-
     table {
       width: 100%;
-      border-collapse: collapse;
       min-width: 1200px;
+      border-collapse: collapse;
     }
-
     th, td {
-      padding: 12px 16px;
+      padding: 10px 14px;
       border: 1px solid #ddd;
-      text-align: left;
       font-size: 14px;
       white-space: nowrap;
+      text-align: left;
     }
-
     th {
-      background-color: #2b4f73;
+      background: #2b4f73;
       color: white;
       font-weight: 600;
+      cursor: pointer;
     }
-
     tr:hover {
-      background-color: #f1f5f9;
+      background: #f1f5f9;
     }
-
     .actions {
       display: flex;
       gap: 6px;
     }
-
-    a.edit-btn {
-      padding: 6px 12px;
+    .actions button {
+      padding: 6px 10px;
       font-size: 13px;
-      border-radius: 4px;
-      background-color: #4caf50;
-      color: white;
-      text-decoration: none;
-      transition: background-color 0.2s;
-    }
-
-    a.edit-btn:hover {
-      background-color: #45a043;
-    }
-
-    .delete-btn {
-      padding: 6px 12px;
-      font-size: 13px;
-      background-color: #e53935;
-      color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background 0.2s;
     }
-
+    .edit-btn {
+      background: #4caf50;
+      color: white;
+    }
+    .edit-btn:hover {
+      background: #45a043;
+    }
+    .delete-btn {
+      background: #e53935;
+      color: white;
+    }
     .delete-btn:hover {
-      background-color: #d32f2f;
-    }
-
-    @media (max-width: 768px) {
-      .top-bar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .top-bar-right {
-        align-self: flex-end;
-        margin-top: 10px;
-      }
-      .filters {
-        flex-direction: column;
-        align-items: stretch;
-      }
+      background: #d32f2f;
     }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <div class="top-bar-left">
-      <a href="{{ url_for('subscribers_home') }}">← Повернутися</a>
-    </div>
-    <div class="top-bar-right">
-      <a href="{{ url_for('add_region1') }}">+ Додати підписника</a>
-    </div>
+    <a href="{{ url_for('subscribers_home') }}">← Повернутися</a>
+    <a href="{{ url_for('add_region1') }}">+ Додати підписника</a>
   </div>
 
-  <h2>Підписники — Округ 1</h2>
+  <h2>Підписники — Округ 1</h2>
+  
+     {% if large_district_responsible %}
+  <div class="alert alert-primary text-center" 
+       style="font-size: 20px; font-weight: bold; padding: 15px; border-radius: 8px;">
+      Відповідальний за Великий округ: {{ large_district_responsible }}
+   </div>
+     {% endif %}
+
 
   <div class="filters">
     <label>
       Пошук:
-      <input type="search" id="searchInput" placeholder="Введіть для пошуку...">
+      <input type="search" id="searchInput" placeholder="— Введіть для пошуку…">
     </label>
-
     <label>
       Активіст:
       <select id="activistFilter">
-        <option value="all">Всі</option>
+        <option value="all">— Всі —</option>
         {% for a in activists %}
           <option value="{{ a.name }}">{{ a.name }}</option>
         {% endfor %}
       </select>
     </label>
-
     <label>
       Вулиця:
       <select id="streetFilter">
-        <option value="all">Всі</option>
-        {% for street in streets %}
-          <option value="{{ street }}">{{ street }}</option>
+        <option value="all">— Всі —</option>
+        {% for s in streets %}
+          <option value="{{ s }}">{{ s }}</option>
         {% endfor %}
       </select>
     </label>
-
     <label>
       Будинок:
       <select id="buildingFilter">
-        <option value="all">Всі</option>
-        {% for building in buildings %}
-          <option value="{{ building }}">{{ building }}</option>
+        <option value="all">— Всі —</option>
+        {% for b in buildings %}
+          <option value="{{ b }}">{{ b }}</option>
         {% endfor %}
       </select>
     </label>
-
     <label>
-      Сортувати за прізвищем:
+      Сортування:
       <select id="sortOrder">
-        <option value="az">Від А до Я</option>
-        <option value="za">Від Я до А</option>
+        <option value="az">А→Я</option>
+        <option value="za">Я→А</option>
       </select>
     </label>
   </div>
 
   <div class="table-container">
-    <table>
+    <table id="region1Table">
       <thead>
         <tr>
           <th>Округ</th>
           <th>Виборча дільниця</th>
-          <th>Прізвище</th>
+          <th>Прізвище </th>
           <th>Ім’я</th>
           <th>По батькові</th>
           <th>Дата народження</th>
           <th>Вулиця</th>
           <th>Буд.</th>
-          <th>Кв.</th>
+          <th>Квартира</th>
           <th>Телефон</th>
           <th>Активіст</th>
           <th>Дії</th>
@@ -241,17 +195,17 @@
           <td>{{ row.phone }}</td>
           <td>{{ row.activist }}</td>
           <td class="actions">
-            <a href="{{ url_for('edit_region1', subscriber_id=row.id) }}" class="edit-btn">Редагувати</a>
+            <a href="{{ url_for('edit_region1', subscriber_id=row.id) }}">
+              <button type="button" class="edit-btn">Редагувати</button>
+            </a>
             <form method="POST" action="{{ url_for('delete_region1', subscriber_id=row.id) }}" style="display:inline;">
-              <button type="submit" class="delete-btn">Видалити</button>
+              <button type="submit" class="delete-btn" onclick="return confirm('Видалити запис?');">Видалити</button>
             </form>
           </td>
         </tr>
         {% endfor %}
-        {% if data|length == 0 %}
-        <tr>
-          <td colspan="13" style="text-align:center; padding:20px;">Записи відсутні</td>
-        </tr>
+        {% if not data %}
+        <tr><td colspan="12" style="text-align:center; padding:20px;">Записи відсутні</td></tr>
         {% endif %}
       </tbody>
     </table>
@@ -266,36 +220,39 @@
   const tableBody = document.getElementById('tableBody');
 
   function filterAndSortTable() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const selectedActivist = activistFilter.value;
-    const selectedStreet = streetFilter.value;
-    const selectedBuilding = buildingFilter.value;
+    const term = searchInput.value.toLowerCase();
+    const act = activistFilter.value;
+    const streetSel = streetFilter.value;
+    const buildingSel = buildingFilter.value;
     const order = sortOrder.value;
 
-    let rows = Array.from(tableBody.querySelectorAll('tr')).filter(row => row.cells.length > 2);
+    let rows = Array.from(tableBody.querySelectorAll('tr'));
 
-    rows.forEach(row => {
-      const rowText = Array.from(row.cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-      const rowActivist = row.cells[10].textContent.trim();
-      const rowStreet = row.cells[6].textContent.trim();
-      const rowBuilding = row.cells[7].textContent.trim();
-
-      const matchesSearch = rowText.includes(searchTerm);
-      const matchesActivist = selectedActivist === 'all' || rowActivist === selectedActivist;
-      const matchesStreet = selectedStreet === 'all' || rowStreet === selectedStreet;
-      const matchesBuilding = selectedBuilding === 'all' || rowBuilding === selectedBuilding;
-
-      row.style.display = (matchesSearch && matchesActivist && matchesStreet && matchesBuilding) ? '' : 'none';
+    rows.forEach(r => {
+      const cells = r.cells;
+      const rowText = Array.from(cells).map(c => c.textContent.toLowerCase()).join(' ');
+      const matchSearch = rowText.includes(term);
+      const matchAct = (act === 'all' || cells[10].textContent === act);
+      const matchStreet = (streetSel === 'all' || cells[6].textContent === streetSel);
+      const matchBuilding = (buildingSel === 'all' || cells[7].textContent === buildingSel);
+      r.style.display = (matchSearch && matchAct && matchStreet && matchBuilding) ? '' : 'none';
     });
 
-    rows = rows.filter(row => row.style.display !== 'none');
+    rows = rows.filter(r => r.style.display !== 'none');
     rows.sort((a, b) => {
       const nameA = a.cells[2].textContent.toLowerCase();
       const nameB = b.cells[2].textContent.toLowerCase();
-      return order === 'az' ? nameA.localeCompare(nameB, 'uk') : nameB.localeCompare(nameA, 'uk');
+      return order === 'az'
+        ? nameA.localeCompare(nameB, 'uk')
+        : nameB.localeCompare(nameA, 'uk');
     });
+    rows.forEach(r => tableBody.appendChild(r));
+  }
 
-    rows.forEach(row => tableBody.appendChild(row));
+  function sortByLastName() {
+    const current = sortOrder.value;
+    sortOrder.value = current === 'az' ? 'za' : 'az';
+    filterAndSortTable();
   }
 
   searchInput.addEventListener('input', filterAndSortTable);
@@ -304,5 +261,6 @@
   buildingFilter.addEventListener('change', filterAndSortTable);
   sortOrder.addEventListener('change', filterAndSortTable);
 </script>
+
 </body>
 </html>
