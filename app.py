@@ -750,6 +750,7 @@ def init_db():
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
+                birth_date TEXT,
                 street TEXT,
                 building TEXT,
                 apartment TEXT,
@@ -766,6 +767,7 @@ def init_db():
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
+                birth_date TEXT,
                 street TEXT,
                 building TEXT,
                 apartment TEXT,
@@ -12037,11 +12039,12 @@ def region41():
             'last_name': row[3],
             'first_name': row[4],
             'middle_name': row[5],
-            'street': row[6],
-            'building': row[7],
-            'apartment': row[8],
-            'phone': row[9],
-            'activist': row[10]
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
         }
         for row in rows
     ]
@@ -12094,13 +12097,14 @@ def add_region41():
 
         c.execute('''
             INSERT INTO regions41 (okrug, district, last_name, first_name, middle_name,
-                                   street, building, apartment, phone, activist)
+                                   birth_date, street, building, apartment, phone, activist)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             41, district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
+            request.form['birth_date'],
             street,
             building,
             request.form.get('apartment', ''),
@@ -12141,13 +12145,14 @@ def edit_region41(subscriber_id):
         c.execute('''
             UPDATE regions41 SET
               okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
-              street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
             WHERE id = ?
         ''', (
             41, district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
+            request.form['birth_date'],
             street,
             building,
             request.form.get('apartment', ''),
@@ -12169,13 +12174,13 @@ def edit_region41(subscriber_id):
     subscriber = {
         'id': row[0], 'okrug': row[1], 'district': row[2],
         'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
-        'street': row[6], 'building': row[7],
-        'apartment': row[8], 'phone': row[9], 'activist': row[10]
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
     }
 
     c.execute("SELECT last_name, first_name FROM activists")
     acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-    address_data = expand_buildings41()
+    address_data = expand_buildings40()
     conn.close()
 
     return render_template(
@@ -12218,11 +12223,12 @@ def region42():
             'last_name': row[3],
             'first_name': row[4],
             'middle_name': row[5],
-            'street': row[6],
-            'building': row[7],
-            'apartment': row[8],
-            'phone': row[9],
-            'activist': row[10]
+            'birth_date': row[6],
+            'street': row[7],
+            'building': row[8],
+            'apartment': row[9],
+            'phone': row[10],
+            'activist': row[11]
         }
         for row in rows
     ]
@@ -12262,7 +12268,7 @@ def region42():
 def add_region42():
     if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може додавати записи.')
-        return redirect(url_for('region42'))
+        return redirect(url_for('region40'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -12275,13 +12281,14 @@ def add_region42():
 
         c.execute('''
             INSERT INTO regions42 (okrug, district, last_name, first_name, middle_name,
-                                   street, building, apartment, phone, activist)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                   birth_date, street, building, apartment, phone, activist)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             42, district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
+            request.form['birth_date'],
             street,
             building,
             request.form.get('apartment', ''),
@@ -12322,13 +12329,14 @@ def edit_region42(subscriber_id):
         c.execute('''
             UPDATE regions42 SET
               okrug = ?, district = ?, last_name = ?, first_name = ?, middle_name = ?,
-              street = ?, building = ?, apartment = ?, phone = ?, activist = ?
+              birth_date = ?, street = ?, building = ?, apartment = ?, phone = ?, activist = ?
             WHERE id = ?
         ''', (
             42, district,
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
+            request.form['birth_date'],
             street,
             building,
             request.form.get('apartment', ''),
@@ -12350,8 +12358,8 @@ def edit_region42(subscriber_id):
     subscriber = {
         'id': row[0], 'okrug': row[1], 'district': row[2],
         'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
-        'street': row[6], 'building': row[7],
-        'apartment': row[8], 'phone': row[9], 'activist': row[10]
+        'birth_date': row[6], 'street': row[7], 'building': row[8],
+        'apartment': row[9], 'phone': row[10], 'activist': row[11]
     }
 
     c.execute("SELECT last_name, first_name FROM activists")
