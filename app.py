@@ -5326,11 +5326,12 @@ def edit_activist(activist_id):
     c = conn.cursor()
 
     if request.method == 'POST':
+        # Оновлюємо дані активіста
         c.execute('''
             UPDATE activists SET
                 large_okrug = ?, okrug = ?, last_name = ?, first_name = ?,
                 middle_name = ?, address = ?, phone = ?, birth_date = ?,
-                subscribers_count = ?, newspapers_count = ?, location = ?
+                newspapers_count = ?, location = ?
             WHERE id = ?
         ''', (
             request.form['large_okrug'],
@@ -5341,15 +5342,16 @@ def edit_activist(activist_id):
             request.form['address'],
             request.form['phone'],
             request.form['birth_date'],
-            request.form['subscribers_count'],
             request.form['newspapers_count'],
             request.form['location'],
             activist_id
         ))
         conn.commit()
         conn.close()
+        flash('Дані активіста успішно оновлено.')
         return redirect(url_for('activists'))
 
+    # Отримуємо поточні дані активіста для заповнення форми
     c.execute('SELECT * FROM activists WHERE id = ?', (activist_id,))
     row = c.fetchone()
     conn.close()
@@ -5367,17 +5369,13 @@ def edit_activist(activist_id):
         'middle_name': row[5],
         'address': row[6],
         'phone': row[7],
-        'subscribers_count': row[9],
+        'birth_date': row[8],
+        'subscribers_count': row[9],  # можна залишити для шаблону, але він readonly
         'newspapers_count': row[10],
         'location': row[11]
     }
 
-    return render_template('add_activist.html', edit=True, activist=activist)
-
-import io
-from flask import send_file, session, redirect, url_for
-from openpyxl import Workbook
-import sqlite3
+    return render_template('edit_activist.html', activist=activist)
 
 @app.route('/activists/export')
 def export_activists():
