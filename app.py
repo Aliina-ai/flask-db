@@ -5281,31 +5281,37 @@ def add_activist():
     if request.method == 'POST':
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
+
+        # Підтягуємо дані з форми
+        large_okrug = request.form['large_okrug']
+        okrug = request.form['okrug']
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        address = request.form['address']
+        phone = request.form['phone']
+        birth_date = request.form['birth_date']
+        newspapers_count = request.form.get('newspapers_count', 0)
+        location = request.form['location']
+
+        # Вставка в базу (кількість підписників = 0)
         c.execute('''
             INSERT INTO activists (
                 large_okrug, okrug, last_name, first_name, middle_name,
-                address, phone, birth_date, subscribers_count,
-                newspapers_count, location
+                address, phone, birth_date, subscribers_count, newspapers_count, location
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            request.form['large_okrug'],
-            request.form['okrug'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['address'],
-            request.form['phone'],
-            request.form['birth_date'],
-            request.form['subscribers_count'],
-            request.form['newspapers_count'],
-            request.form['location']
+            large_okrug, okrug, last_name, first_name, middle_name,
+            address, phone, birth_date, 0, newspapers_count, location
         ))
+
         conn.commit()
         conn.close()
+        flash('Активіста успішно додано!')
         return redirect(url_for('activists'))
 
+    # GET-запит – показати форму
     return render_template('add_activist.html')
-
 
 @app.route('/activists/edit/<int:activist_id>', methods=['GET', 'POST'])
 def edit_activist(activist_id):
