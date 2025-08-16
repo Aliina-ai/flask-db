@@ -2,23 +2,41 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Редагувати підписника — Округ 3</title>
+  <title>Редагувати підписника — Округ 3</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f7f9fb;
+      background: #f7f9fb;
       margin: 0;
       padding: 40px;
     }
+
     .wrapper {
       max-width: 600px;
       margin: auto;
-      background-color: #ffffff;
-      padding: 30px 40px;
+      background: #fff;
+      padding: 30px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-    h2 { color: #2b4f73; text-align: center; margin-bottom: 25px; }
+
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      background: #ccc;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
     label {
       display: block;
       margin-top: 16px;
@@ -26,6 +44,7 @@
       font-size: 14px;
       color: #333;
     }
+
     input[type="text"],
     input[type="date"],
     select {
@@ -37,38 +56,30 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
+
     button {
       width: 100%;
       margin-top: 30px;
       padding: 12px;
-      background-color: #2b4f73;
-      color: white;
+      background: #2b4f73;
+      color: #fff;
       border: none;
       border-radius: 4px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.3s ease;
     }
+
     button:hover {
-      background-color: #1f3e5a;
-    }
-    .back {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 8px 14px;
-      background-color: #ccc;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
+      background: #1f3e5a;
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <a href="{{ url_for('region3') }}" class="back">← Повернутися</a>
-    <h2>Редагувати підписника — Округ 3</h2>
+    <h2>Редагувати підписника — Округ 3</h2>
 
     <form method="POST" action="{{ url_for('edit_region3', subscriber_id=subscriber.id) }}">
       <label>Прізвище</label>
@@ -87,7 +98,7 @@
       <input type="text" name="phone" value="{{ subscriber.phone }}" required>
 
       <label>Вулиця</label>
-      <select name="street" id="street" required onchange="updateBuildings3()">
+      <select id="street" name="street" required onchange="updateBuildings()">
         <option value="">Оберіть вулицю</option>
         {% for street in address_data.keys() %}
           <option value="{{ street }}" {% if subscriber.street == street %}selected{% endif %}>{{ street }}</option>
@@ -95,21 +106,22 @@
       </select>
 
       <label>Будинок</label>
-      <select name="building" id="building" required onchange="updateDistrict3()">
+      <select id="building" name="building" required onchange="updateDistrict()">
         <option value="">Оберіть будинок</option>
+        <!-- Будинки додаються скриптом -->
       </select>
-
-      <label>Виборча дільниця</label>
-      <input type="text" name="district" id="district" value="{{ subscriber.district }}" readonly>
 
       <label>Квартира</label>
       <input type="text" name="apartment" value="{{ subscriber.apartment }}">
 
-      <label>Активіст</label>
-      <input type="text" name="activist" value="{{ subscriber.activist }}" list="activist-options" required>
+      <label>Виборча дільниця</label>
+      <input type="text" id="district" name="district" value="{{ subscriber.district }}" readonly>
+
+       <label>Активіст</label>
+      <input type="text" name="activist" list="activist-options" value="{{ subscriber.activist }}" required>
       <datalist id="activist-options">
         {% for a in activists %}
-          <option value="{{ a.name }}">
+          <option value="{{ a.name }}"></option>
         {% endfor %}
       </datalist>
 
@@ -118,11 +130,11 @@
   </div>
 
   <script>
-    const addressData3 = {{ address_data_json|safe }};
+    const addressData = {{ address_data_json | safe }};
     const selectedStreet = "{{ subscriber.street }}";
     const selectedBuilding = "{{ subscriber.building }}";
 
-    function updateBuildings3() {
+    function updateBuildings() {
       const street = document.getElementById("street").value;
       const buildingSelect = document.getElementById("building");
       const districtInput = document.getElementById("district");
@@ -130,28 +142,37 @@
       buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
       districtInput.value = "";
 
-      if (addressData3[street]) {
-        addressData3[street].buildings.forEach(function(building) {
-          const option = document.createElement("option");
-          option.value = building;
-          option.text = building;
-          if (building === selectedBuilding) option.selected = true;
-          buildingSelect.add(option);
+      if (addressData[street]) {
+        Object.entries(addressData[street].buildings).forEach(([b, d]) => {
+          const opt = document.createElement("option");
+          opt.value = b;
+          opt.textContent = b;
+          if (b === selectedBuilding) opt.selected = true;
+          buildingSelect.appendChild(opt);
         });
+
+        if (addressData[street].buildings[selectedBuilding]) {
+          districtInput.value = addressData[street].buildings[selectedBuilding];
+        }
       }
     }
 
-    function updateDistrict3() {
+    function updateDistrict() {
       const street = document.getElementById("street").value;
+      const building = document.getElementById("building").value;
       const districtInput = document.getElementById("district");
-      if (addressData3[street]) {
-        districtInput.value = addressData3[street].district;
+
+      if (addressData[street] && addressData[street].buildings[building]) {
+        districtInput.value = addressData[street].buildings[building];
+      } else {
+        districtInput.value = "";
       }
     }
 
     window.onload = function () {
-      updateBuildings3();
-      updateDistrict3();
+      document.getElementById("street").value = selectedStreet;
+      updateBuildings();
+      updateDistrict();
     };
   </script>
 </body>
