@@ -4948,7 +4948,6 @@ def login():
             error = 'Невірне ім’я або пароль'
     return render_template('login.html', error=error)
 
-
 @app.route('/dashboard')
 def dashboard():
     if 'username' not in session:
@@ -4957,16 +4956,20 @@ def dashboard():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Підрахунок загальної кількості підписників та газет
-    c.execute("""
-        SELECT
-            IFNULL(SUM(subscribers_count), 0),
-            IFNULL(SUM(newspapers_count), 0)
-        FROM activists
-    """)
-    totals = c.fetchone()
-    total_subscribers = totals[0]
-    total_newspapers = totals[1]
+    # Отримати загальну кількість підписників по всіх округах
+    total_subscribers = 0
+    for i in range(1, 43):
+        table = f"regions{i}"
+        try:
+            c.execute(f"SELECT COUNT(*) FROM {table}")
+            total_subscribers += c.fetchone()[0]
+        except sqlite3.Error:
+            # Якщо таблиця не існує або помилка, просто пропускаємо
+            continue
+
+    # Загальна кількість газет із таблиці activists
+    c.execute("SELECT IFNULL(SUM(newspapers_count), 0) FROM activists")
+    total_newspapers = c.fetchone()[0]
 
     conn.close()
 
