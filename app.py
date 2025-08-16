@@ -5207,10 +5207,30 @@ def activists():
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT * FROM activists")
+
+    # Об'єднання всіх 42 таблиць підписників (беремо тільки поле activist)
+    union_query = " UNION ALL ".join([f"SELECT activist FROM regions{i}" for i in range(1, 43)])
+
+    # Запит для отримання активістів із підрахунком кількості підписників
+    query = f"""
+        SELECT a.id, a.large_okrug, a.okrug, a.last_name, a.first_name, a.middle_name,
+               a.address, a.phone, a.birth_date,
+               IFNULL(cnt.sub_count, 0) as subscribers_count,
+               a.newspapers_count, a.location
+        FROM activists a
+        LEFT JOIN (
+            SELECT activist, COUNT(*) as sub_count
+            FROM ({union_query})
+            GROUP BY activist
+        ) cnt
+        ON TRIM(LOWER(cnt.activist)) = TRIM(LOWER(a.last_name || ' ' || a.first_name || ' ' || a.middle_name))
+    """
+
+    c.execute(query)
     rows = c.fetchall()
     conn.close()
 
+    # Формуємо дані для шаблону
     data = [{
         'id': row[0],
         'large_okrug': row[1],
@@ -5221,13 +5241,12 @@ def activists():
         'address': row[6],
         'phone': row[7],
         'birth_date': row[8],
-        'subscribers_count': row[9],
+        'subscribers_count': row[9],   # тут уже автоматично пораховано
         'newspapers_count': row[10],
         'location': row[11]
     } for row in rows]
 
     return render_template('activists.html', data=data)
-
 
 @app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
