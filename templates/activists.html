@@ -66,16 +66,52 @@
     </style>
 </head>
 <body>
+
+   
     <div class="top-bar">
         <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
         <a href="{{ url_for('add_activist') }}" class="add-button">+ Додати активіста</a>
     </div>
+
+<h2>Активісти</h2>
 
 <form action="{{ url_for('export_activists') }}" method="get" style="margin-bottom: 15px;">
     <button type="submit" class="btn btn-success">
         Експорт в Excel
     </button>
 </form>
+
+<div class="filters">
+    <label>
+      Пошук:
+      <input type="search" id="searchInput" placeholder="— Введіть для пошуку…">
+    </label>
+    <label>
+      Округ:
+      <select id="okrugFilter">
+        <option value="all">— Всі —</option>
+        {% for i in range(1, 43) %}
+          <option value="{{ i }}">Округ {{ i }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Локація:
+      <select id="locationFilter">
+        <option value="all">— Всі —</option>
+        {% for i in range(1, 21) %}
+          <option value="Л{{ i }}">Л{{ i }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Сортування:
+      <select id="sortOrder">
+        <option value="az">А→Я</option>
+        <option value="za">Я→А</option>
+      </select>
+    </label>
+  </div>
 
 
     <table>
