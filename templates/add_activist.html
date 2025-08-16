@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>{% if edit %}Редагувати{% else %}Додати{% endif %} активіста</title>
+    <title>Додати активіста</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -76,52 +76,52 @@
 <body>
     <div class="wrapper">
         <a href="{{ url_for('activists') }}" class="back-button">← Повернутися</a>
-        <form method="POST" action="{% if edit %}{{ url_for('edit_activist', activist_id=activist.get('id', 0)) }}{% else %}{{ request.path }}{% endif %}">
-            <h2>{% if edit %}Редагувати{% else %}Додати{% endif %} активіста</h2>
+        <form method="POST" action="{{ request.path }}">
+            <h2>Додати активіста</h2>
 
             <label for="okrug">Округ</label>
             <select id="okrug" name="okrug" onchange="updateLargeOkrug()" required>
                 <option value="">Оберіть округ</option>
                 {% for i in range(1, 43) %}
-                    <option value="{{ i }}" {% if edit and activist['okrug'] == i|string %}selected{% endif %}>{{ i }}</option>
+                    <option value="{{ i }}">{{ i }}</option>
                 {% endfor %}
             </select>
 
-            <input type="hidden" name="large_okrug" id="large_okrug" value="{{ activist['large_okrug'] if edit else '' }}">
+            <input type="hidden" name="large_okrug" id="large_okrug" value="">
 
             <label>Прізвище</label>
-            <input type="text" name="last_name" value="{{ activist['last_name'] if edit else '' }}" required>
+            <input type="text" name="last_name" required>
 
             <label>Імʼя</label>
-            <input type="text" name="first_name" value="{{ activist['first_name'] if edit else '' }}" required>
+            <input type="text" name="first_name" required>
 
             <label>По батькові</label>
-            <input type="text" name="middle_name" value="{{ activist['middle_name'] if edit else '' }}" required>
+            <input type="text" name="middle_name" required>
 
             <label>Адреса</label>
-            <input type="text" name="address" value="{{ activist['address'] if edit else '' }}" required>
+            <input type="text" name="address" required>
 
             <label>Телефон</label>
-            <input type="text" name="phone" value="{{ activist['phone'] if edit else '' }}" required>
+            <input type="text" name="phone" required>
 
             <label>Дата народження</label>
-            <input type="date" name="birth_date" value="{{ activist['birth_date'] if edit else '' }}" required>
+            <input type="date" name="birth_date" required>
 
             <label>Кількість підписників</label>
-            <input type="number" name="subscribers_count" value="{{ activist['subscribers_count'] if edit else 0 }}" required>
+            <input type="number" name="subscribers_count" value="0" readonly>
 
             <label>Кількість газет</label>
-            <input type="number" name="newspapers_count" value="{{ activist['newspapers_count'] if edit else 0 }}" required>
+            <input type="number" name="newspapers_count" value="0" required>
 
             <label>Локація</label>
             <select name="location" required>
                 <option value="">Оберіть локацію</option>
                 {% for i in range(1, 21) %}
-                    <option value="Л{{ i }}" {% if edit and activist['location'] == 'Л' ~ i %}selected{% endif %}>Л{{ i }}</option>
+                    <option value="Л{{ i }}">Л{{ i }}</option>
                 {% endfor %}
             </select>
 
-            <button type="submit">{% if edit %}Зберегти зміни{% else %}Додати активіста{% endif %}</button>
+            <button type="submit">Додати активіста</button>
         </form>
     </div>
 </body>
