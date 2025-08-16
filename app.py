@@ -5233,49 +5233,6 @@ def activists():
     rows = c.fetchall()
     conn.close()
 
-    # Створюємо Excel-файл
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Активісти"
-
-    # Заголовки (додаємо 5 пустих колонок)
-    headers = [
-        "№ п/п", "Локація", "Округ", "Прізвище", "Ім’я", "По-батькові",
-        "Адреса", "Телефон", "Дата народження",
-        "Кількість підписників", "Кількість газет",
-        "", "", "", "", ""
-    ]
-    ws.append(headers)
-
-    # Заповнення рядків (додаємо 5 пустих колонок для кожного рядка)
-    for idx, row in enumerate(rows, start=1):
-        ws.append([
-            idx,              # № п/п
-            row[1],           # Локація
-            row[2],           # Округ
-            row[3],           # Прізвище
-            row[4],           # Ім’я
-            row[5],           # По-батькові
-            row[6],           # Адреса
-            row[7],           # Телефон
-            row[8],           # Дата народження
-            row[9],           # Кількість підписників
-            row[10],          # Кількість газет
-            "", "", "", "", ""  # 5 порожніх колонок
-        ])
-
-    # Зберігаємо у пам’ять
-    output = io.BytesIO()
-    wb.save(output)
-    output.seek(0)
-
-    return send_file(
-        output,
-        as_attachment=True,
-        download_name="activists.xlsx",
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-
     data = [{
         'id': row[0],
         'large_okrug': row[1],
@@ -5386,6 +5343,83 @@ def edit_activist(activist_id):
 
     return render_template('add_activist.html', edit=True, activist=activist)
 
+import io
+from flask import send_file, session, redirect, url_for
+from openpyxl import Workbook
+import sqlite3
+
+@app.route('/activists/export')
+def export_activists():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Об'єднуємо всіх підписників з 42 округів
+    union_query = " UNION ALL ".join([f"SELECT activist FROM regions{i}" for i in range(1, 43)])
+
+    # Підрахунок кількості підписників для кожного активіста
+    query = f"""
+        SELECT a.id, a.location, a.okrug, a.last_name, a.first_name, a.middle_name,
+               a.address, a.phone, a.birth_date,
+               IFNULL(cnt.sub_count, 0) as subscribers_count,
+               a.newspapers_count
+        FROM activists a
+        LEFT JOIN (
+            SELECT activist, COUNT(*) as sub_count
+            FROM ({union_query})
+            GROUP BY activist
+        ) cnt
+        ON TRIM(LOWER(cnt.activist)) = TRIM(LOWER(a.last_name || ' ' || a.first_name))
+    """
+
+    c.execute(query)
+    rows = c.fetchall()
+    conn.close()
+
+    # Створюємо Excel-файл
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Активісти"
+
+    # Заголовки колонок (11 даних + 5 пустих)
+    headers = [
+        "№ п/п", "Локація", "Округ", "Прізвище", "Ім’я", "По-батькові",
+        "Адреса", "Телефон", "Дата народження",
+        "Кількість підписників", "Кількість газет",
+        "", "", "", "", ""
+    ]
+    ws.append(headers)
+
+    # Додаємо рядки даних
+    for idx, row in enumerate(rows, start=1):
+        ws.append([
+            idx,          # № п/п
+            row[1],       # Локація
+            row[2],       # Округ
+            row[3],       # Прізвище
+            row[4],       # Ім’я
+            row[5],       # По-батькові
+            row[6],       # Адреса
+            row[7],       # Телефон
+            row[8],       # Дата народження
+            row[9],       # Кількість підписників
+            row[10],      # Кількість газет
+            "", "", "", "", ""  # 5 порожніх колонок
+        ])
+
+    # Зберігаємо у пам’ять і віддаємо файл на завантаження
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="activists.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 @app.route('/activists/delete/<int:activist_id>', methods=['POST'])
 def delete_activist(activist_id):
