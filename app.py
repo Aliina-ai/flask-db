@@ -4953,8 +4953,30 @@ def login():
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('dashboard.html', username=session['username'], role=session['role'])
 
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Підрахунок загальної кількості підписників та газет
+    c.execute("""
+        SELECT
+            IFNULL(SUM(subscribers_count), 0),
+            IFNULL(SUM(newspapers_count), 0)
+        FROM activists
+    """)
+    totals = c.fetchone()
+    total_subscribers = totals[0]
+    total_newspapers = totals[1]
+
+    conn.close()
+
+    return render_template(
+        'dashboard.html',
+        username=session['username'],
+        role=session['role'],
+        total_subscribers=total_subscribers,
+        total_newspapers=total_newspapers
+    )
 
 @app.route('/logout')
 def logout():
