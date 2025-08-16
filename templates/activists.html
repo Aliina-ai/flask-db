@@ -71,6 +71,13 @@
         <a href="{{ url_for('add_activist') }}" class="add-button">+ Додати активіста</a>
     </div>
 
+<form action="{{ url_for('export_activists') }}" method="get" style="margin-bottom: 15px;">
+    <button type="submit" class="btn btn-success">
+        Експорт в Excel
+    </button>
+</form>
+
+
     <table>
         <thead>
             <tr>
