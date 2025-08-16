@@ -1,183 +1,260 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <title>Активісти</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f7f9fb;
-            margin: 0;
-            padding: 30px;
-        }
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-        .back-button, .add-button {
-            background-color: #2b4f73;
-            border: none;
-            color: #fff;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            text-decoration: none;
+<meta charset="UTF-8">
+<title>Активісти</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f7f9fb;
+    margin: 0;
+    padding: 30px;
+  }
 
-        }
+  /* Верхня панель */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+  }
 
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
+  .top-bar a {
+    background-color: #2b4f73;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s;
+  }
 
-        .filters label {
-            font-size: 14px;
-            display: flex;
-            flex-direction: column;
-        }
+  .top-bar a:hover {
+    background-color: #3b5f85;
+  }
 
-        .filters input,
-        .filters select {
-            padding: 6px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-            font-size: 14px;
-        }
-        th {
-            background-color: #2b4f73;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f1f5f9;
-        }
-        .actions {
-            text-align: center;
-        }
-        .action-btn {
-            padding: 6px 10px;
-            margin: 2px;
-            font-size: 13px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .edit-btn {
-            background: #4caf50;
-            color: #fff;
-        }
-        .back {
-            background: #ccc;
-            color: #333;
-        }
-    </style>
+  h2 {
+    color: #2b4f73;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  /* Фільтри */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .filters label {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+  }
+
+  .filters input, .filters select {
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  /* Таблиця */
+  .table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  table {
+    width: 100%;
+    min-width: 1200px;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    font-size: 14px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: #2b4f73;
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  tr:hover {
+    background-color: #f1f5f9;
+  }
+
+  /* Дії */
+  .actions {
+    text-align: center;
+  }
+
+  .action-btn {
+    padding: 6px 10px;
+    margin: 2px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .edit-btn { background: #4caf50; color: #fff; }
+  .edit-btn:hover { background: #45a043; }
+
+  .delete-btn { background: #e53935; color: #fff; }
+  .delete-btn:hover { background: #d32f2f; }
+
+  /* Кнопка назад */
+  .back-button { background: #ccc; color: #333; }
+  .back-button:hover { background: #bbb; }
+</style>
 </head>
 <body>
 
-   
-    <div class="top-bar">
-        <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
-        <a href="{{ url_for('add_activist') }}" class="add-button">+ Додати активіста</a>
-    </div>
+<div class="top-bar">
+  <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
+  <a href="{{ url_for('add_activist') }}" class="add-button">+ Додати активіста</a>
+</div>
 
 <h2>Активісти</h2>
 
 <form action="{{ url_for('export_activists') }}" method="get" style="margin-bottom: 15px;">
-    <button type="submit" class="btn btn-success">
-        Експорт в Excel
-    </button>
+  <button type="submit" class="add-button">Експорт в Excel</button>
 </form>
 
 <div class="filters">
-    <label>
-      Пошук:
-      <input type="search" id="searchInput" placeholder="— Введіть для пошуку…">
-    </label>
-    <label>
-      Округ:
-      <select id="okrugFilter">
-        <option value="all">— Всі —</option>
-        {% for i in range(1, 43) %}
-          <option value="{{ i }}">Округ {{ i }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>
-      Локація:
-      <select id="locationFilter">
-        <option value="all">— Всі —</option>
-        {% for i in range(1, 21) %}
-          <option value="Л{{ i }}">Л{{ i }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>
-      Сортування:
-      <select id="sortOrder">
-        <option value="az">А→Я</option>
-        <option value="za">Я→А</option>
-      </select>
-    </label>
-  </div>
+  <label>
+    Пошук:
+    <input type="search" id="searchInput" placeholder="— Введіть для пошуку…">
+  </label>
+  <label>
+    Округ:
+    <select id="okrugFilter">
+      <option value="all">— Всі —</option>
+      {% for i in range(1, 43) %}
+      <option value="{{ i }}">Округ {{ i }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>
+    Локація:
+    <select id="locationFilter">
+      <option value="all">— Всі —</option>
+      {% for i in range(1, 21) %}
+      <option value="Л{{ i }}">Л{{ i }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>
+    Сортування:
+    <select id="sortOrder">
+      <option value="az">А→Я</option>
+      <option value="za">Я→А</option>
+    </select>
+  </label>
+</div>
 
+<div class="table-container">
+<table id="activistsTable">
+  <thead>
+    <tr>
+      <th>Великий округ</th>
+      <th>Округ</th>
+      <th>Прізвище</th>
+      <th>Імʼя</th>
+      <th>По батькові</th>
+      <th>Адреса</th>
+      <th>Телефон</th>
+      <th>Дата народження</th>
+      <th>Підписники</th>
+      <th>Газети</th>
+      <th>Локація</th>
+      <th>Дії</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+    <tr>
+      <td>{{ row.large_okrug }}</td>
+      <td>{{ row.okrug }}</td>
+      <td>{{ row.last_name }}</td>
+      <td>{{ row.first_name }}</td>
+      <td>{{ row.middle_name }}</td>
+      <td>{{ row.address }}</td>
+      <td>{{ row.phone }}</td>
+      <td>{{ row.birth_date }}</td>
+      <td>{{ row.subscribers_count }}</td>
+      <td>{{ row.newspapers_count }}</td>
+      <td>{{ row.location }}</td>
+      <td class="actions">
+        <a href="{{ url_for('edit_activist', activist_id=row.id) }}">
+          <button class="action-btn edit-btn">Редагувати</button>
+        </a>
+        <form method="POST" action="{{ url_for('delete_activist', activist_id=row.id) }}" style="display:inline;">
+          <button class="action-btn delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Великий округ</th>
-                <th>Округ</th>
-                <th>Прізвище</th>
-                <th>Імʼя</th>
-                <th>По батькові</th>
-                <th>Адреса</th>
-                <th>Телефон</th>
-                <th>Дата народження</th>
-                <th>Підписники</th>
-                <th>Газети</th>
-                <th>Локація</th>
-                <th>Дії</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                <td>{{ row.large_okrug }}</td>
-                <td>{{ row.okrug }}</td>
-                <td>{{ row.last_name }}</td>
-                <td>{{ row.first_name }}</td>
-                <td>{{ row.middle_name }}</td>
-                <td>{{ row.address }}</td>
-                <td>{{ row.phone }}</td>
-                <td>{{ row.birth_date }}</td>
-                <td>{{ row.subscribers_count }}</td>
-                <td>{{ row.newspapers_count }}</td>
-                <td>{{ row.location }}</td>
-                <td class="actions">
-                    <a href="{{ url_for('edit_activist', activist_id=row.id) }}">
-                        <button class="action-btn edit-btn">Редагувати</button>
-                    </a>
-                    <form method="POST" action="{{ url_for('delete_activist', activist_id=row.id) }}" style="display:inline;">
-                        <button class="action-btn delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<script>
+// Фільтри та сортування
+const searchInput = document.getElementById('searchInput');
+const okrugFilter = document.getElementById('okrugFilter');
+const locationFilter = document.getElementById('locationFilter');
+const sortOrder = document.getElementById('sortOrder');
+const table = document.getElementById('activistsTable').tBodies[0];
+
+function filterAndSortTable() {
+  const search = searchInput.value.toLowerCase();
+  const okrug = okrugFilter.value;
+  const location = locationFilter.value;
+  const order = sortOrder.value;
+
+  let rows = Array.from(table.rows);
+
+  // Фільтруємо
+  rows.forEach(row => {
+    const lastName = row.cells[2].textContent.toLowerCase();
+    const rowOkrug = row.cells[1].textContent;
+    const rowLocation = row.cells[10].textContent;
+
+    const matchSearch = lastName.includes(search);
+    const matchOkrug = okrug === "all" || rowOkrug === okrug;
+    const matchLocation = location === "all" || rowLocation === location;
+
+    row.style.display = (matchSearch && matchOkrug && matchLocation) ? "" : "none";
+  });
+
+  // Сортування
+  rows = rows.filter(r => r.style.display !== "none");
+  rows.sort((a,b) => {
+    const nameA = a.cells[2].textContent.toLowerCase();
+    const nameB = b.cells[2].textContent.toLowerCase();
+    return order === "az" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+  });
+
+  // Застосовуємо порядок
+  rows.forEach(r => table.appendChild(r));
+}
+
+searchInput.addEventListener('input', filterAndSortTable);
+okrugFilter.addEventListener('change', filterAndSortTable);
+locationFilter.addEventListener('change', filterAndSortTable);
+sortOrder.addEventListener('change', filterAndSortTable);
+</script>
+
 </body>
 </html>
-
