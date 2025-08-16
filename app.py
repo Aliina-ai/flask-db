@@ -5230,6 +5230,49 @@ def activists():
     rows = c.fetchall()
     conn.close()
 
+    # Створюємо Excel-файл
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Активісти"
+
+    # Заголовки (додаємо 5 пустих колонок)
+    headers = [
+        "№ п/п", "Локація", "Округ", "Прізвище", "Ім’я", "По-батькові",
+        "Адреса", "Телефон", "Дата народження",
+        "Кількість підписників", "Кількість газет",
+        "", "", "", "", ""
+    ]
+    ws.append(headers)
+
+    # Заповнення рядків (додаємо 5 пустих колонок для кожного рядка)
+    for idx, row in enumerate(rows, start=1):
+        ws.append([
+            idx,              # № п/п
+            row[1],           # Локація
+            row[2],           # Округ
+            row[3],           # Прізвище
+            row[4],           # Ім’я
+            row[5],           # По-батькові
+            row[6],           # Адреса
+            row[7],           # Телефон
+            row[8],           # Дата народження
+            row[9],           # Кількість підписників
+            row[10],          # Кількість газет
+            "", "", "", "", ""  # 5 порожніх колонок
+        ])
+
+    # Зберігаємо у пам’ять
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="activists.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
     data = [{
         'id': row[0],
         'large_okrug': row[1],
