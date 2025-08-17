@@ -5541,10 +5541,10 @@ def region1():
         WHERE LOWER(TRIM(district_name)) = LOWER('1')
         LIMIT 1
     """)
-    responsible_small_row = c.fetchone()
-    small_district_responsible = (
-        f"{responsible_small_row[0]} {responsible_small_row[1]} {responsible_small_row[2]}"
-        if responsible_small_row else None
+    responsible_row = c.fetchone()
+    district_responsible = (
+        f"{responsible_row[0]} {responsible_row[1]} {responsible_row[2]}"
+        if responsible_row else None
     )
 
     conn.close()
@@ -5555,7 +5555,7 @@ def region1():
         streets=streets,
         buildings=buildings,
         large_district_responsible=large_district_responsible,
-        small_district_responsible=small_district_responsible
+        district_responsible=district_responsible
     )
 
 @app.route('/regions1/add', methods=['GET', 'POST'])
