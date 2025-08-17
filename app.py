@@ -5140,8 +5140,8 @@ def regions():
 
 @app.route('/add_region', methods=['GET', 'POST'])
 def add_region():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
     if request.method == 'POST':
         # Отримуємо дані з форми
@@ -5155,22 +5155,28 @@ def add_region():
         birth_date = request.form.get('birthdate')
         location = request.form.get('location')
 
+        # Формуємо назву округу автоматично
+        district_name = f"Округ {okrug_num}"
+
         # Вставка в базу даних
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
         c.execute("""
             INSERT INTO regions (
-                large_okrug, okrug_num, last_name, first_name, middle_name,
+                large_okrug, district_name, okrug_num, last_name, first_name, middle_name,
                 address, phone, birth_date, location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (large_okrug, okrug_num, last_name, first_name, middle_name,
-              address, phone, birth_date, location))
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            large_okrug, district_name, okrug_num, last_name, first_name, middle_name,
+            address, phone, birth_date, location
+        ))
         conn.commit()
         conn.close()
-        return redirect(url_for('regions'))  # Повернення до списку округів
 
-    # GET-запит — відображення порожньої форми
-    conn.close()
+        return redirect(url_for('regions'))
+
+    # GET-запит: відображення форми додавання
     return render_template('add_region.html', edit=False)
-
 
 @app.route('/regions/edit/<int:region_id>', methods=['GET', 'POST'])
 def edit_region(region_id):
