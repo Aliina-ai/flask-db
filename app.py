@@ -5145,7 +5145,7 @@ def regions():
             'address': row[6],
             'phone': row[7],
             'birth_date': row[8],
-            'location': row[10]
+            'location': row[9]
         })
 
     conn.close()
