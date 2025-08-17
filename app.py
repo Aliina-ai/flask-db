@@ -5138,38 +5138,37 @@ def regions():
 
     return render_template('regions.html', data=data)
 
-
-@app.route('/regions/add', methods=['GET', 'POST'])
-def add_region():
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Недостатньо прав')
-        return redirect(url_for('regions'))
+@app.route('/add_regions', methods=['GET', 'POST'])
+def add_regions():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
 
     if request.method == 'POST':
-        num = int(request.form['okrug_num'])
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute('''
-            INSERT INTO regions (
-                large_okrug, district_name, last_name, first_name, middle_name,
-                address, phone, birth_date, location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            ((num - 1) // 7 + 1),
-            num,
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['address'],
-            request.form['phone'],
-            request.form['birth_date'],
-            request.form['location']
-        ))
+        large_okrug = request.form.get('large_okrug')
+        okrug_num = request.form.get('okrug_num')
+        last_name = request.form.get('last_name')
+        first_name = request.form.get('first_name')
+        middle_name = request.form.get('middle_name')
+        address = request.form.get('address')
+        phone = request.form.get('phone')
+        birth_date = request.form.get('birth_date')
+        location = request.form.get('location')
+
+        c.execute("""
+            INSERT INTO regions 
+            (large_okrug, okrug_num, last_name, first_name, middle_name, address, phone, birth_date, location)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (large_okrug, okrug_num, last_name, first_name, middle_name, address, phone, birth_date, location))
+
         conn.commit()
         conn.close()
-        return redirect(url_for('regions'))
+        return redirect(url_for('regions'))  # повернення на список округів
 
-    return render_template('add_edit_region.html', edit=False)
+    # GET-запит – просто рендеримо форму
+    conn.close()
+    return render_template('add_regions.html', edit=False)
+
 
 @app.route('/regions/edit/<int:region_id>', methods=['GET', 'POST'])
 def edit_region(region_id):
