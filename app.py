@@ -5158,7 +5158,7 @@ def add_region():
 
     if request.method == 'POST':
         large_okrug = request.form.get('large_okrug')
-        okrug = request.form.get('district_name')
+        district_name = request.form.get('district_name')
         last_name = request.form.get('last_name')
         first_name = request.form.get('first_name')
         middle_name = request.form.get('middle_name')
@@ -5170,10 +5170,8 @@ def add_region():
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute("""
-            INSERT INTO regions (
-                large_okrug, district_name, last_name, first_name, middle_name,
-                address, phone, birth_date, location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO regions (large_okrug, district_name, last_name, first_name, middle_name, address, phone, birth_date, location)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (large_okrug, district_name, last_name, first_name, middle_name,
               address, phone, birth_date, location))
         conn.commit()
@@ -5181,7 +5179,7 @@ def add_region():
 
         return redirect(url_for('regions'))
 
-    return render_template('add_region.html')
+    return render_template('add_region.html', edit=False, region={})
 
 @app.route('/edit_region', methods=['GET', 'POST'])
 def edit_region():
