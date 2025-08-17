@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Додати округ</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      max-width: 650px;
+      margin: 40px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    h2 {
+      text-align: center;
+      color: #2b4f73;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px;
+      background-color: #2b4f73;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      background-color: #ccc;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+  <script>
+    function updateLargeOkrug() {
+      const okrug = parseInt(document.getElementById('okrug').value);
+      let large = '';
+      if (okrug >= 1 && okrug <= 7) large = 'Округ 1';
+      else if (okrug >= 8 && okrug <= 14) large = 'Округ 2';
+      else if (okrug >= 15 && okrug <= 20) large = 'Округ 3';
+      else if (okrug >= 21 && okrug <= 28) large = 'Округ 4';
+      else if (okrug >= 29 && okrug <= 35) large = 'Округ 5';
+      else if (okrug >= 36 && okrug <= 42) large = 'Округ 6';
+      document.getElementById('large_okrug').value = large;
+    }
+  </script>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="{{ url_for('okrugs') }}" class="back-button">← Повернутися</a>
+    <form method="POST" action="{{ request.path }}">
+      <h2>Додати округ</h2>
+
+      <!-- Округ -->
+      <label for="okrug">Номер округу</label>
+      <select id="okrug" name="okrug" onchange="updateLargeOkrug()" required>
+        <option value="">Оберіть округ</option>
+        {% for i in range(1, 43) %}
+          <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+      </select>
+      <input type="hidden" name="large_okrug" id="large_okrug" value="">
+
+      <!-- ПІБ -->
+      <label for="last_name">Прізвище</label>
+      <input type="text" id="last_name" name="last_name" required>
+
+      <label for="first_name">Ім’я</label>
+      <input type="text" id="first_name" name="first_name" required>
+
+      <label for="middle_name">По батькові</label>
+      <input type="text" id="middle_name" name="middle_name" required>
+
+      <!-- Адреса -->
+      <label for="address">Адреса</label>
+      <input type="text" id="address" name="address" required>
+
+      <!-- Телефон -->
+      <label for="phone">Телефон</label>
+      <input type="text" id="phone" name="phone" required>
+
+      <!-- Дата народження -->
+      <label for="birth_date">Дата народження</label>
+      <input type="date" id="birth_date" name="birth_date" required>
+
+      <!-- Локація -->
+      <label for="location">Локація</label>
+      <select id="location" name="location" required>
+        <option value="">Оберіть локацію</option>
+        {% for i in range(1, 21) %}
+          <option value="Л{{ i }}">Л{{ i }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit">Додати округ</button>
+    </form>
+  </div>
+</body>
+</html>
