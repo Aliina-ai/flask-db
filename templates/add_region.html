@@ -67,6 +67,20 @@
   }
 
 </style>
+
+  <script>
+        function updateLargeOkrug() {
+            const okrug = parseInt(document.getElementById('okrug').value);
+            let large = '';
+            if (okrug >= 1 && okrug <= 7) large = 'Округ 1';
+            else if (okrug >= 8 && okrug <= 14) large = 'Округ 2';
+            else if (okrug >= 15 && okrug <= 20) large = 'Округ 3';
+            else if (okrug >= 21 && okrug <= 28) large = 'Округ 4';
+            else if (okrug >= 29 && okrug <= 35) large = 'Округ 5';
+            else if (okrug >= 36 && okrug <= 42) large = 'Округ 6';
+            document.getElementById('large_okrug').value = large;
+        }
+    </script>
 </head>
 <body>
 
@@ -128,25 +142,6 @@
 
   <button type="submit">Додати округ</button>
 </form>
-
-<script>
-const districtSelect = document.getElementById('districtSelect');
-const largeOkrugInput = document.getElementById('largeOkrug');
-
-districtSelect.addEventListener('change', () => {
-  const district = parseInt(districtSelect.value);
-
-  let largeOkrug = '';
-  if(district >= 1 && district <= 7) largeOkrug = 'Великий округ 1';
-  else if(district >= 8 && district <= 14) largeOkrug = 'Великий округ 2';
-  else if(district >= 15 && district <= 20) largeOkrug = 'Великий округ 3';
-  else if(district >= 21 && district <= 28) largeOkrug = 'Великий округ 4';
-  else if(district >= 29 && district <= 35) largeOkrug = 'Великий округ 5';
-  else if(district >= 36 && district <= 42) largeOkrug = 'Великий округ 6';
-
-  largeOkrugInput.value = largeOkrug;
-});
-</script>
 
 </body>
 </html>
