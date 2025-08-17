@@ -5152,6 +5152,45 @@ def okrugs():
 
     return render_template('okrugs.html', data=data)
 
+@app.route('/okrugs/add', methods=['GET', 'POST'])
+def add_okrug():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати округи.')
+        return redirect(url_for('okrugs'))
+
+    if request.method == 'POST':
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+
+        # Підтягуємо дані з форми
+        large_okrug = request.form['large_okrug']
+        okrug = request.form['okrug']
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        address = request.form['address']
+        phone = request.form['phone']
+        birth_date = request.form['birth_date']
+        location = request.form['location']
+
+        # Додаємо новий округ
+        c.execute('''
+            INSERT INTO okrugs (
+                large_okrug, okrug, last_name, first_name, middle_name,
+                address, phone, birth_date, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            large_okrug, okrug, last_name, first_name, middle_name,
+            address, phone, birth_date, location
+        ))
+
+        conn.commit()
+        conn.close()
+        flash('Округ успішно додано!')
+        return redirect(url_for('okrugs'))
+
+    # GET-запит – показати форму
+    return render_template('add_okrug.html')
 
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
