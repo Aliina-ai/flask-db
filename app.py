@@ -5135,7 +5135,8 @@ def okrugs():
         'address': row[6],
         'phone': row[7],
         'birth_date': row[8],
-        'location': row[9]
+        'activists_count': row[9],
+        'location': row[10]
     } for row in rows]
 
     return render_template('okrugs.html', data=data)
