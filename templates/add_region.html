@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Додати округ</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      background: #ccc;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    h2 {
+      text-align: center;
+      color: #2b4f73;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    input[readonly] {
+      background-color: #f0f0f0;
+    }
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px;
+      background: #2b4f73;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    function updateLargeOkrug() {
+      const regionSelect = document.querySelector('select[name="okrug_num"]');
+      const largeOkrugInput = document.querySelector('input[name="large_okrug"]');
+      const value = parseInt(regionSelect.value);
+      if (!isNaN(value)) {
+        const group = Math.ceil(value / 7);
+        largeOkrugInput.value = group;
+      } else {
+        largeOkrugInput.value = '';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      updateLargeOkrug();
+      document.querySelector('select[name="okrug_num"]').addEventListener('change', updateLargeOkrug);
+    });
+  </script>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="{{ url_for('regions') }}" class="back">← Повернутися</a>
+    <form method="POST" action="{{ url_for('add_region') }}">
+
+      <h2>Додати округ</h2>
+
+      <label>Великий округ</label>
+      <input type="text" name="large_okrug" readonly>
+
+      <label>№ округу</label>
+      <select name="okrug_num" required>
+        <option value="">Оберіть...</option>
+        {% for i in range(1, 43) %}
+          <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Прізвище</label>
+      <input type="text" name="last_name" required>
+
+      <label>Ім’я</label>
+      <input type="text" name="first_name" required>
+
+      <label>По батькові</label>
+      <input type="text" name="middle_name" required>
+
+      <label>Адреса</label>
+      <input type="text" name="address" required>
+
+      <label>Телефон</label>
+      <input type="text" name="phone" required>
+
+      <label>Дата народження</label>
+      <input type="date" name="birthdate" required>
+
+      <label>Локація</label>
+      <select name="location" required>
+        <option value="">Оберіть...</option>
+        {% for i in range(1, 21) %}
+          {% set loc = 'Л' ~ i %}
+          <option value="{{ loc }}">{{ loc }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit">Додати</button>
+    </form>
+  </div>
+</body>
+</html>
