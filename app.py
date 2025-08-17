@@ -5128,7 +5128,7 @@ def regions():
     c = conn.cursor()
 
     # Отримуємо всі округи
-    c.execute("SELECT * FROM regions ORDER BY okrug")
+    c.execute("SELECT * FROM regions")
     rows = c.fetchall()
 
     data = []
