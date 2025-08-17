@@ -5481,19 +5481,6 @@ def region1():
         if responsible_large_row else None
     )
 
-    # Отримання відповідального за Округ 1
-    c.execute("""
-        SELECT last_name, first_name, middle_name
-        FROM regions
-        WHERE LOWER(TRIM(district_name)) = LOWER('1')
-        LIMIT 1
-    """)
-    responsible_row = c.fetchone()
-    district_responsible = (
-        f"{responsible_row[0]} {responsible_row[1]} {responsible_row[2]}"
-        if responsible_row else None
-    )
-
     conn.close()
     return render_template(
         'region1.html',
