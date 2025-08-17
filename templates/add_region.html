@@ -63,29 +63,12 @@
       cursor: pointer;
     }
   </style>
-  <script>
-    function updateLargeOkrug() {
-      const regionSelect = document.querySelector('select[name="okrug_num"]');
-      const largeOkrugInput = document.querySelector('input[name="large_okrug"]');
-      const value = parseInt(regionSelect.value);
-      if (!isNaN(value)) {
-        const group = Math.ceil(value / 7);
-        largeOkrugInput.value = group;
-      } else {
-        largeOkrugInput.value = '';
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', function() {
-      updateLargeOkrug();
-      document.querySelector('select[name="okrug_num"]').addEventListener('change', updateLargeOkrug);
-    });
-  </script>
 </head>
 <body>
   <div class="wrapper">
     <a href="{{ url_for('regions') }}" class="back">← Повернутися</a>
     <h2>Додати округ</h2>
+
     <form method="POST" action="{{ url_for('add_region') }}">
       <label>Великий округ</label>
       <input type="text" name="large_okrug" readonly>
@@ -128,5 +111,29 @@
       <button type="submit">Додати</button>
     </form>
   </div>
+
+  <script>
+    function updateLargeOkrug() {
+      const regionSelect = document.querySelector('select[name="okrug_num"]');
+      const largeOkrugInput = document.querySelector('input[name="large_okrug"]');
+      const value = parseInt(regionSelect.value);
+
+      if (!isNaN(value)) {
+        if (value >= 1 && value <= 7) largeOkrugInput.value = 1;
+        else if (value >= 8 && value <= 14) largeOkrugInput.value = 2;
+        else if (value >= 15 && value <= 20) largeOkrugInput.value = 3;
+        else if (value >= 21 && value <= 28) largeOkrugInput.value = 4;
+        else if (value >= 29 && value <= 35) largeOkrugInput.value = 5;
+        else if (value >= 36 && value <= 42) largeOkrugInput.value = 6;
+      } else {
+        largeOkrugInput.value = '';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      updateLargeOkrug();
+      document.querySelector('select[name="okrug_num"]').addEventListener('change', updateLargeOkrug);
+    });
+  </script>
 </body>
 </html>
