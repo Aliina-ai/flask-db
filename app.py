@@ -5183,6 +5183,38 @@ def add_region():
 
     return render_template('add_region.html')
 
+@app.route('/edit_region', methods=['GET', 'POST'])
+def edit_region():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        large_okrug = request.form.get('large_okrug')
+        okrug = int(request.form.get('district_name'))
+        last_name = request.form.get('last_name')
+        first_name = request.form.get('first_name')
+        middle_name = request.form.get('middle_name')
+        address = request.form.get('address')
+        phone = request.form.get('phone')
+        birth_date = request.form.get('birth_date')
+        location = request.form.get('location')
+
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("""
+            INSERT INTO regions (
+                large_okrug, district_name, last_name, first_name, middle_name,
+                address, phone, birth_date, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (large_okrug, district_name, last_name, first_name, middle_name,
+              address, phone, birth_date, location))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('regions'))
+
+    return render_template('edit_region.html')
+
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
 def activists():
