@@ -5135,10 +5135,6 @@ def regions():
     for row in rows:
         region_id = row[0]
 
-        # Підрахунок кількості активістів для цього округу
-        c.execute("SELECT COUNT(*) FROM activists WHERE region=?", (region_id,))
-        activists_count = c.fetchone()[0]
-
         data.append({
             'id': row[0],
             'large_okrug': row[1],
