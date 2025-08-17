@@ -5128,6 +5128,14 @@ def okrugs():
     c.execute("SELECT * FROM okrugs")  # або з нової таблиці, якщо створили окрему
     rows = c.fetchall()
 
+    data = []
+    for row in okrugs_rows:
+        okrug_id = row[2]  # Номер округу з таблиці okrugs
+
+        # Підрахунок активістів для цього округу
+        c.execute("SELECT COUNT(*) FROM activists WHERE okrug = ?", (okrug_id,))
+        activists_count = c.fetchone()[0]
+
     data = [{
         'id': row[0],
         'large_okrug': row[1],
