@@ -54,39 +54,23 @@
       border-radius: 6px;
       font-size: 14px;
       text-decoration: none;
-    }
-    .back {
-      background-color: #2b4f73;
-      border: none;
       color: #fff;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      text-decoration: none;
-    }
-    .add {
       background-color: #2b4f73;
-      border: none;
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-size: 14px;
-      text-decoration: none;
     }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <a href="{{ url_for('dashboard') }}" class="btn back">← Повернутися</a>
-    <a href="{{ url_for('add_region') }}" class="btn add">+ Додати округ</a>
+    <a href="{{ url_for('dashboard') }}" class="btn">← Повернутися</a>
+    <a href="{{ url_for('add_region') }}" class="btn">+ Додати округ</a>
   </div>
 
   <table class="table">
     <thead>
       <tr>
         <th>Великий округ</th>
-        <th>Назва округу</th>
+        <th>№ округу</th>
         <th>Прізвище</th>
         <th>Ім'я</th>
         <th>По батькові</th>
@@ -101,7 +85,7 @@
       {% for row in data %}
       <tr>
         <td>{{ row.large_okrug }}</td>
-        <td>{{ row.district_name }}</td>
+        <td>{{ row.okrug_num }}</td>
         <td>{{ row.last_name }}</td>
         <td>{{ row.first_name }}</td>
         <td>{{ row.middle_name }}</td>
@@ -125,5 +109,3 @@
 
 </body>
 </html>
-
-
