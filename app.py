@@ -5527,25 +5527,25 @@ def region1():
         FROM regions_large
         WHERE LOWER(TRIM(okrug)) = LOWER('Округ 1')
         LIMIT 1
-     """)
-     responsible_large_row = c.fetchone()
-     large_district_responsible = (
-         f"{responsible_large_row[0]} {responsible_large_row[1]} {responsible_large_row[2]}"
-         if responsible_large_row else None
-     )
+    """)
+    responsible_large_row = c.fetchone()
+    large_district_responsible = (
+        f"{responsible_large_row[0]} {responsible_large_row[1]} {responsible_large_row[2]}"
+        if responsible_large_row else None
+    )
 
-     # Отримання відповідального за Округ 1
-     c.execute("""
-         SELECT last_name, first_name, middle_name
-         FROM regions
-         WHERE LOWER(TRIM(district_name)) = LOWER('1')
-         LIMIT 1
-     """)
-     responsible_small_row = c.fetchone()
-     small_district_responsible = (
-         f"{responsible_small_row[0]} {responsible_small_row[1]} {responsible_small_row[2]}"
-         if responsible_small_row else None
-     )
+    # Отримання відповідального за Округ 1
+    c.execute("""
+        SELECT last_name, first_name, middle_name
+        FROM regions
+        WHERE LOWER(TRIM(district_name)) = LOWER('1')
+        LIMIT 1
+    """)
+    responsible_small_row = c.fetchone()
+    small_district_responsible = (
+        f"{responsible_small_row[0]} {responsible_small_row[1]} {responsible_small_row[2]}"
+        if responsible_small_row else None
+    )
 
     conn.close()
     return render_template(
