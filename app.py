@@ -5127,25 +5127,67 @@ def regions():
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT * FROM regions ORDER BY CAST(okrug AS INTEGER)")
+
+    # Отримуємо всі округи
+    c.execute("SELECT * FROM regions ORDER BY okrug")
     rows = c.fetchall()
+
+    data = []
+    for row in rows:
+        region_id = row[0]
+
+        # Підрахунок кількості активістів для цього округу
+        c.execute("SELECT COUNT(*) FROM activists WHERE region=?", (region_id,))
+        activists_count = c.fetchone()[0]
+
+        data.append({
+            'id': row[0],
+            'large_okrug': row[1],
+            'okrug': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'address': row[6],
+            'phone': row[7],
+            'birth_date': row[8],
+            'activists_count': activists_count,
+            'location': row[10]
+        })
+
     conn.close()
-
-    data = [{
-        'id': row[0],
-        'large_okrug': row[1],
-        'okrug': row[2],
-        'last_name': row[3],
-        'first_name': row[4],
-        'middle_name': row[5],
-        'address': row[6],
-        'phone': row[7],
-        'birth_date': row[8],
-        'activists_count': row[9],
-        'location': row[10]
-    } for row in rows]
-
     return render_template('regions.html', data=data)
+
+@app.route('/add_region', methods=['GET', 'POST'])
+def add_region():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        large_okrug = request.form.get('large_okrug')
+        okrug = int(request.form.get('okrug'))
+        last_name = request.form.get('last_name')
+        first_name = request.form.get('first_name')
+        middle_name = request.form.get('middle_name')
+        address = request.form.get('address')
+        phone = request.form.get('phone')
+        birth_date = request.form.get('birth_date')
+        location = request.form.get('location')
+
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("""
+            INSERT INTO regions (
+                large_okrug, okrug, last_name, first_name, middle_name,
+                address, phone, birth_date, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (large_okrug, okrug, last_name, first_name, middle_name,
+              address, phone, birth_date, location))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('regions'))
+
+    return render_template('add_region.html')
 
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
