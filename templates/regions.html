@@ -4,108 +4,137 @@
   <meta charset="UTF-8">
   <title>Округи</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f7f9fb;
-      padding: 30px;
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #f7f9fb; 
+      padding: 30px; 
     }
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      font-size: 14px;
-      text-align: left;
-    }
-    th {
-      background: #2b4f73;
-      color: #fff;
-    }
-    .actions {
+    h1 {
       text-align: center;
-    }
-    .action-btn {
-      padding: 6px 10px;
-      margin: 2px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .edit-btn {
-      background: #4caf50;
-      color: #fff;
-    }
-    .delete-btn {
-      background: #e53935;
-      color: #fff;
+      color: #2b4f73;
+      margin-bottom: 30px;
     }
     .top-bar {
+      margin-bottom: 20px; 
+      display: flex; 
+      justify-content: space-between; 
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn { 
+      padding: 10px 16px; 
+      border: none; 
+      border-radius: 6px; 
+      font-size: 14px; 
+      text-decoration: none; 
+      color: #fff; 
+      background-color: #2b4f73; 
+    }
+    .filters {
       margin-bottom: 20px;
       display: flex;
-      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    .btn {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
+    .filters input, .filters select {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
       font-size: 14px;
-      text-decoration: none;
-      color: #fff;
-      background-color: #2b4f73;
     }
+    .table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      background: #fff; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+    }
+    th, td { 
+      border: 1px solid #ddd; 
+      padding: 10px; 
+      font-size: 14px; 
+      text-align: left; 
+    }
+    th { 
+      background: #2b4f73; 
+      color: #fff; 
+    }
+    .actions { text-align: center; }
+    .action-btn { 
+      padding: 6px 10px; 
+      margin: 2px; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+    .edit-btn { background: #4caf50; color: #fff; }
+    .delete-btn { background: #e53935; color: #fff; }
   </style>
 </head>
 <body>
 
-  <div class="top-bar">
-    <a href="{{ url_for('dashboard') }}" class="btn">← Повернутися</a>
-    <a href="{{ url_for('add_region') }}" class="btn">+ Додати округ</a>
-  </div>
+<h1>Список Відповідальних</h1>
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Великий округ</th>
-        <th>№ округу</th>
-        <th>Прізвище</th>
-        <th>Ім'я</th>
-        <th>По батькові</th>
-        <th>Адреса</th>
-        <th>Телефон</th>
-        <th>Дата народження</th>
-        <th>Локація</th>
-        <th>Дії</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in data %}
-      <tr>
-        <td>{{ row.large_okrug }}</td>
-        <td>{{ row.okrug_num }}</td>
-        <td>{{ row.last_name }}</td>
-        <td>{{ row.first_name }}</td>
-        <td>{{ row.middle_name }}</td>
-        <td>{{ row.address }}</td>
-        <td>{{ row.phone }}</td>
-        <td>{{ row.birth_date }}</td>
-        <td>{{ row.location }}</td>
-        <td class="actions">
-          <a href="{{ url_for('edit_region', region_id=row.id) }}">
-            <button class="action-btn edit-btn">Редагувати</button>
-          </a>
-          <form method="POST" action="{{ url_for('delete_region', region_id=row.id) }}" 
-                onsubmit="return confirm('Видалити?');" style="display:inline">
-            <button type="submit" class="action-btn delete-btn">Видалити</button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="top-bar">
+  <a href="{{ url_for('dashboard') }}" class="btn">← Повернутися</a>
+  <a href="{{ url_for('add_region') }}" class="btn">+ Додати округ</a>
+</div>
+
+<div class="filters">
+  <input type="text" name="search" placeholder="Пошук..." value="{{ request.args.get('search', '') }}">
+  
+  <select name="sort_last_name">
+    <option value="">Сортування за прізвищем</option>
+    <option value="asc" {% if request.args.get('sort_last_name') == 'asc' %}selected{% endif %}>А → Я</option>
+    <option value="desc" {% if request.args.get('sort_last_name') == 'desc' %}selected{% endif %}>Я → А</option>
+  </select>
+
+  <button class="btn" onclick="this.closest('form').submit();">Фільтрувати</button>
+</div>
+
+<form method="GET">
+<table class="table">
+  <thead>
+    <tr>
+      <th>Великий округ</th>
+      <th>Округ</th>
+      <th>Прізвище</th>
+      <th>Ім'я</th>
+      <th>По батькові</th>
+      <th>Адреса</th>
+      <th>Телефон</th>
+      <th>Дата народження</th>
+      <th>Активістів</th>
+      <th>Локація</th>
+      <th>Дії</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+    <tr>
+      <td>{{ row.large_okrug }}</td>
+      <td>{{ row.okrug }}</td>
+      <td>{{ row.last_name }}</td>
+      <td>{{ row.first_name }}</td>
+      <td>{{ row.middle_name }}</td>
+      <td>{{ row.address }}</td>
+      <td>{{ row.phone }}</td>
+      <td>{{ row.birth_date }}</td>
+      <td>{{ row.activists_count }}</td>
+      <td>{{ row.location }}</td>
+      <td class="actions">
+        <a href="{{ url_for('edit_region', region_id=row.id) }}">
+          <button class="action-btn edit-btn">Редагувати</button>
+        </a>
+        <form method="POST" action="{{ url_for('delete_region', region_id=row.id) }}" onsubmit="return confirm('Видалити?');" style="display:inline">
+          <button type="submit" class="action-btn delete-btn">Видалити</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</form>
 
 </body>
 </html>
