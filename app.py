@@ -44,7 +44,7 @@ def init_db():
                 address TEXT,
                 phone TEXT,
                 birth_date TEXT,
-                activists_count INTEGER,  -- кількість активістів закріплених за округом
+                activists_count INTEGER,
                 location TEXT
             )
         ''')
