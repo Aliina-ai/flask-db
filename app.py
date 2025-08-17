@@ -5158,7 +5158,7 @@ def add_region():
 
     if request.method == 'POST':
         large_okrug = request.form.get('large_okrug')
-        okrug = int(request.form.get('district_name'))
+        okrug = request.form.get('district_name')
         last_name = request.form.get('last_name')
         first_name = request.form.get('first_name')
         middle_name = request.form.get('middle_name')
@@ -5190,7 +5190,7 @@ def edit_region():
 
     if request.method == 'POST':
         large_okrug = request.form.get('large_okrug')
-        okrug = int(request.form.get('district_name'))
+        okrug = request.form.get('district_name')
         last_name = request.form.get('last_name')
         first_name = request.form.get('first_name')
         middle_name = request.form.get('middle_name')
