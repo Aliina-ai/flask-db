@@ -5520,30 +5520,32 @@ def region1():
     # Унікальні вулиці та будинки
     streets = sorted(set(row['street'] for row in data))
     buildings = sorted(set(row['building'] for row in data))
-
+    
     # Отримання відповідального за Великий округ 1
     c.execute("""
         SELECT last_name, first_name, middle_name
         FROM regions_large
         WHERE LOWER(TRIM(okrug)) = LOWER('Округ 1')
         LIMIT 1
-    """)
-    row_large = c.fetchone()
-    large_district_responsible = (
-        f"{row_large[0]} {row_large[1]} {row_large[2]}" if row_large else None
-    )
-
-    # Отримання відповідального за Округ 1
-    c.execute("""
-        SELECT last_name, first_name, middle_name
-        FROM regions
-        WHERE LOWER(TRIM(district)) = LOWER('1')
-        LIMIT 1
      """)
-     row_small = c.fetchone()
+     responsible_large_row = c.fetchone()
+     large_district_responsible = (
+         f"{responsible_large_row[0]} {responsible_large_row[1]} {responsible_large_row[2]}"
+         if responsible_large_row else None
+     )
+
+     # Отримання відповідального за Округ 1
+     c.execute("""
+         SELECT last_name, first_name, middle_name
+         FROM regions
+         WHERE LOWER(TRIM(district_name)) = LOWER('1')
+         LIMIT 1
+     """)
+     responsible_small_row = c.fetchone()
      small_district_responsible = (
-        f"{row_small[0]} {row_small[1]} {row_small[2]}" if row_small else None
-    )
+         f"{responsible_small_row[0]} {responsible_small_row[1]} {responsible_small_row[2]}"
+         if responsible_small_row else None
+     )
 
     conn.close()
     return render_template(
