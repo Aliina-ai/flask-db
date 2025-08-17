@@ -5528,10 +5528,9 @@ def region1():
         WHERE LOWER(TRIM(okrug)) = LOWER('Округ 1')
         LIMIT 1
     """)
-    responsible_row = c.fetchone()
+    row_large = c.fetchone()
     large_district_responsible = (
-        f"{responsible_row[0]} {responsible_row[1]} {responsible_row[2]}"
-        if responsible_row else None
+        f"{row_large[0]} {row_large[1]} {row_large[2]}" if row_large else None
     )
 
     # Отримання відповідального за Округ 1
@@ -5540,11 +5539,10 @@ def region1():
         FROM regions
         WHERE LOWER(TRIM(district)) = LOWER('1')
         LIMIT 1
-    """)
-    responsible_row = c.fetchone()
-    large_district_responsible = (
-        f"{responsible_row[0]} {responsible_row[1]} {responsible_row[2]}"
-        if responsible_row else None
+     """)
+     row_small = c.fetchone()
+     small_district_responsible = (
+        f"{row_small[0]} {row_small[1]} {row_small[2]}" if row_small else None
     )
 
     conn.close()
@@ -5554,7 +5552,8 @@ def region1():
         activists=activists,
         streets=streets,
         buildings=buildings,
-        large_district_responsible=large_district_responsible
+        large_district_responsible=large_district_responsible,
+        small_district_responsible=small_district_responsible
     )
 
 @app.route('/regions1/add', methods=['GET', 'POST'])
