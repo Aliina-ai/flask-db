@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Округи</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f7f9fb;
+    margin: 0;
+    padding: 30px;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+  }
+
+  .top-bar a {
+    background-color: #2b4f73;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s;
+  }
+
+  .top-bar a:hover {
+    background-color: #3b5f85;
+  }
+
+  h2 {
+    color: #2b4f73;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    font-size: 14px;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th {
+    background-color: #2b4f73;
+    color: #fff;
+    cursor: default;
+    user-select: none;
+  }
+
+  tr:hover {
+    background-color: #f1f5f9;
+  }
+
+  .actions {
+    text-align: center;
+  }
+
+  .action-btn {
+    padding: 6px 10px;
+    margin: 2px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .edit-btn { background: #4caf50; color: #fff; }
+  .edit-btn:hover { background: #45a043; }
+
+  .delete-btn { background: #e53935; color: #fff; }
+  .delete-btn:hover { background: #d32f2f; }
+
+  .back-button { background: #ccc; color: #333; }
+  .back-button:hover { background: #bbb; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
+  <a href="{{ url_for('add_okrug') }}" class="add-button">+ Додати округ</a>
+</div>
+
+<h2>Округи</h2>
+
+<div class="table-container">
+<table id="okrugsTable">
+  <thead>
+    <tr>
+      <th>Великий округ</th>
+      <th>Округ</th>
+      <th>Прізвище</th>
+      <th>Ім’я</th>
+      <th>По батькові</th>
+      <th>Адреса</th>
+      <th>Телефон</th>
+      <th>Дата народження</th>
+      <th>Кількість активістів</th>
+      <th>Локація</th>
+      <th>Дії</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in data %}
+    <tr>
+      <td>{{ row.large_okrug }}</td>
+      <td>{{ row.okrug }}</td>
+      <td>{{ row.last_name }}</td>
+      <td>{{ row.first_name }}</td>
+      <td>{{ row.middle_name }}</td>
+      <td>{{ row.address }}</td>
+      <td>{{ row.phone }}</td>
+      <td>{{ row.birth_date }}</td>
+      <td>{{ row.activists_count }}</td>
+      <td>{{ row.location }}</td>
+      <td class="actions">
+        <a href="{{ url_for('edit_okrug', okrug_id=row.id) }}">
+          <button class="action-btn edit-btn">Редагувати</button>
+        </a>
+        <form method="POST" action="{{ url_for('delete_okrug', okrug_id=row.id) }}" style="display:inline;">
+          <button class="action-btn delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+</body>
+</html>
