@@ -5144,6 +5144,132 @@ def regions():
 
     return render_template('regions.html', data=data)
 
+@app.route('/add_region', methods=['GET', 'POST'])
+def add_region():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        large_okrug = request.form.get('large_okrug')
+        district_name = request.form.get('district_name')
+        last_name = request.form.get('last_name')
+        first_name = request.form.get('first_name')
+        middle_name = request.form.get('middle_name')
+        address = request.form.get('address')
+        phone = request.form.get('phone')
+        birth_date = request.form.get('birth_date')
+        location = request.form.get('location')
+
+        with sqlite3.connect(DB_PATH) as conn:
+            c = conn.cursor()
+            c.execute('''
+                INSERT INTO regions 
+                (large_okrug, district_name, last_name, first_name, middle_name, address, phone, birth_date, location)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (large_okrug, district_name, last_name, first_name, middle_name, address, phone, birth_date, location))
+            conn.commit()
+
+        return redirect(url_for('regions'))
+
+    return render_template('add_region.html')
+    
+@app.route('/add_region', methods=['GET', 'POST'])
+def add_region():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        district_name = request.form.get('district_name')
+        large_okrug = request.form.get('large_okrug')
+        last_name = request.form.get('last_name')
+        first_name = request.form.get('first_name')
+        middle_name = request.form.get('middle_name')
+        address = request.form.get('address')
+        phone = request.form.get('phone')
+        birth_date = request.form.get('birth_date')
+        location = request.form.get('location')
+
+        with sqlite3.connect(DB_PATH) as conn:
+            c = conn.cursor()
+            c.execute('''
+                INSERT INTO regions
+                (large_okrug, district_name, last_name, first_name, middle_name, address, phone, birth_date, location)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (large_okrug, district_name, last_name, first_name, middle_name, address, phone, birth_date, location))
+            conn.commit()
+
+        return redirect(url_for('regions'))
+
+    return render_template('add_region.html')
+
+@app.route('/edit_region/<int:region_id>', methods=['GET', 'POST'])
+def edit_region(region_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+
+        if request.method == 'POST':
+            district_name = request.form.get('district_name')
+            large_okrug = request.form.get('large_okrug')
+            last_name = request.form.get('last_name')
+            first_name = request.form.get('first_name')
+            middle_name = request.form.get('middle_name')
+            address = request.form.get('address')
+            phone = request.form.get('phone')
+            birth_date = request.form.get('birth_date')
+            location = request.form.get('location')
+
+            c.execute('''
+                UPDATE regions
+                SET large_okrug = ?, district_name = ?, last_name = ?, first_name = ?, middle_name = ?,
+                    address = ?, phone = ?, birth_date = ?, location = ?
+                WHERE id = ?
+            ''', (large_okrug, district_name, last_name, first_name, middle_name,
+                  address, phone, birth_date, location, region_id))
+            conn.commit()
+            return redirect(url_for('regions'))
+
+        # GET - отримуємо дані для заповнення форми
+        c.execute("SELECT * FROM regions WHERE id = ?", (region_id,))
+        row = c.fetchone()
+        if row is None:
+            return "Запис не знайдено", 404
+
+        data = {
+            'id': row[0],
+            'large_okrug': row[1],
+            'district_name': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'address': row[6],
+            'phone': row[7],
+            'birth_date': row[8],
+            'location': row[9]
+        }
+
+    return render_template('edit_region.html', data=data)
+
+@app.route('/delete_region/<int:region_id>', methods=['POST'])
+def delete_region(region_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        # Перевірка, чи існує запис
+        c.execute("SELECT * FROM regions WHERE id = ?", (region_id,))
+        if c.fetchone() is None:
+            return "Запис не знайдено", 404
+
+        # Видалення запису
+        c.execute("DELETE FROM regions WHERE id = ?", (region_id,))
+        conn.commit()
+
+    return redirect(url_for('regions'))
+
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
 def activists():
