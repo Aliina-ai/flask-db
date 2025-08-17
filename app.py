@@ -4948,17 +4948,6 @@ def expand_buildings42():  # заміни xx на номер округу
         }
     }
 
-@app.route('/check_columns')
-def check_columns():
-    import sqlite3
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("PRAGMA table_info(regions)")
-    columns = c.fetchall()
-    conn.close()
-    # Повертаємо назви стовпців у зручному вигляді
-    return "<br>".join([f"{col[1]} ({col[2]})" for col in columns])
-
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
@@ -5499,7 +5488,6 @@ def region1():
         streets=streets,
         buildings=buildings,
         large_district_responsible=large_district_responsible,
-        district_responsible=district_responsible
     )
 
 @app.route('/regions1/add', methods=['GET', 'POST'])
