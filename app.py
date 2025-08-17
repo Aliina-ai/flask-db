@@ -5131,13 +5131,21 @@ def regions():
     conn.close()
 
     data = [{
-        'id': row[0], 'large_okrug': row[1], 'district_name': row[2],
-        'last_name': row[3], 'first_name': row[4], 'middle_name': row[5],
-        'address': row[6], 'phone': row[7], 'birth_date': row[8], 'location': row[9]
+        'id': row[0],
+        'large_okrug': row[1],
+        'okrug_num': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'location': row[9]
     } for row in rows]
 
     return render_template('regions.html', data=data)
 
+# -------------------- Додати округ --------------------
 @app.route('/add_region', methods=['GET', 'POST'])
 def add_region():
     if 'username' not in session:
@@ -5152,102 +5160,92 @@ def add_region():
         middle_name = request.form.get('middle_name')
         address = request.form.get('address')
         phone = request.form.get('phone')
-        birth_date = request.form.get('birthdate')
+        birth_date = request.form.get('birth_date')
         location = request.form.get('location')
 
-        # Формуємо назву округу автоматично
-        district_name = f"Округ {okrug_num}"
-
-        # Вставка в базу даних
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute("""
             INSERT INTO regions (
-                large_okrug, district_name, okrug_num, last_name, first_name, middle_name,
+                large_okrug, okrug_num, last_name, first_name, middle_name,
                 address, phone, birth_date, location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            large_okrug, district_name, okrug_num, last_name, first_name, middle_name,
-            address, phone, birth_date, location
-        ))
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (large_okrug, okrug_num, last_name, first_name, middle_name,
+              address, phone, birth_date, location))
         conn.commit()
         conn.close()
 
         return redirect(url_for('regions'))
 
-    # GET-запит: відображення форми додавання
-    return render_template('add_region.html', edit=False)
+    return render_template('add_region.html')
 
-@app.route('/regions/edit/<int:region_id>', methods=['GET', 'POST'])
+# -------------------- Редагувати округ --------------------
+@app.route('/edit_region/<int:region_id>', methods=['GET', 'POST'])
 def edit_region(region_id):
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може редагувати.')
-        return redirect(url_for('regions'))
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     if request.method == 'POST':
-        location = ', '.join(request.form.getlist('location'))
-
-        c.execute('''
-            UPDATE regions SET large_okrug=?, district_name=?, last_name=?, first_name=?,
-                middle_name=?, address=?, phone=?, birth_date=?, location=?
+        c.execute("""
+            UPDATE regions SET
+                large_okrug=?, okrug_num=?, last_name=?, first_name=?, middle_name=?,
+                address=?, phone=?, birth_date=?, location=?
             WHERE id=?
-        ''', (
-            request.form['large_okrug'],
-            request.form['district_name'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['address'],
-            request.form['phone'],
-            request.form['birth_date'],
-            location,
+        """, (
+            request.form.get('large_okrug'),
+            request.form.get('okrug_num'),
+            request.form.get('last_name'),
+            request.form.get('first_name'),
+            request.form.get('middle_name'),
+            request.form.get('address'),
+            request.form.get('phone'),
+            request.form.get('birth_date'),
+            request.form.get('location'),
             region_id
         ))
-
         conn.commit()
         conn.close()
         return redirect(url_for('regions'))
 
-    # GET-запит: отримуємо дані для редагування
-    c.execute('SELECT * FROM regions WHERE id=?', (region_id,))
+    c.execute("SELECT * FROM regions WHERE id=?", (region_id,))
     row = c.fetchone()
     conn.close()
 
     if not row:
-        flash('Підписника не знайдено.')
+        flash('Округ не знайдено.')
         return redirect(url_for('regions'))
 
     region = {
         'id': row[0],
         'large_okrug': row[1],
-        'district_name': row[2],
-        'okrug_num': int(row[2]) if row[2] else None,
+        'okrug_num': row[2],
         'last_name': row[3],
         'first_name': row[4],
         'middle_name': row[5],
         'address': row[6],
         'phone': row[7],
-     }
+        'birth_date': row[8],
+        'location': row[9]
+    }
 
-    return render_template('add_edit_region.html', edit=True, region=region)
+    return render_template('add_region.html', edit=True, region=region)
 
-@app.route('/regions/delete/<int:region_id>', methods=['POST'])
+# -------------------- Видалити округ --------------------
+@app.route('/delete_region/<int:region_id>', methods=['POST'])
 def delete_region(region_id):
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може видаляти.')
-        return redirect(url_for('regions'))
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('DELETE FROM regions WHERE id = ?', (region_id,))
+    c.execute("DELETE FROM regions WHERE id=?", (region_id,))
     conn.commit()
     conn.close()
-    flash('Підписника успішно видалено.')
+    flash('Округ успішно видалено.')
     return redirect(url_for('regions'))
-
 
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
