@@ -1,74 +1,65 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<title>Додати округ</title>
-<style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f7f9fb;
-    margin: 0;
-    padding: 30px;
-  }
-
-  h2 {
-    color: #2b4f73;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  form {
-    background: #fff;
-    padding: 20px 25px;
-    border-radius: 8px;
-    max-width: 600px;
-    margin: 0 auto;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
-
-  label {
-    display: block;
-    margin-bottom: 12px;
-    font-size: 14px;
-  }
-
-  input, select {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 4px;
-  }
-
-  button {
-    background-color: #2b4f73;
-    color: #fff;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-top: 15px;
-    transition: background 0.3s;
-  }
-
-  button:hover { background-color: #3b5f85; }
-
-  .top-bar {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .top-bar a {
-    text-decoration: none;
-    color: #2b4f73;
-    font-size: 14px;
-  }
-
-</style>
-
-  <script>
+    <meta charset="UTF-8">
+    <title>Додати активіста</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f7f9fb;
+            margin: 0;
+            padding: 0;
+        }
+        .wrapper {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #2b4f73;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            background-color: #2b4f73;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 14px;
+            background-color: #ccc;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+    <script>
         function updateLargeOkrug() {
             const okrug = parseInt(document.getElementById('okrug').value);
             let large = '';
@@ -83,14 +74,12 @@
     </script>
 </head>
 <body>
+    <div class="wrapper">
+        <a href="{{ url_for('region') }}" class="back-button">← Повернутися</a>
+        <form method="POST" action="{{ request.path }}">
+            <h2>Додати активіста</h2>
 
-<div class="top-bar">
-  <a href="{{ url_for('regions') }}">← Повернутися до списку округів</a>
-</div>
-
-<h2>Додати новий округ</h2>
-
-  <label for="okrug">Округ</label>
+            <label for="okrug">Округ</label>
             <select id="okrug" name="okrug" onchange="updateLargeOkrug()" required>
                 <option value="">Оберіть округ</option>
                 {% for i in range(1, 43) %}
@@ -100,42 +89,34 @@
 
             <input type="hidden" name="large_okrug" id="large_okrug" value="">
 
-  <label>
-    Прізвище:
-    <input type="text" name="last_name" required>
-  </label>
-  <label>
-    Імʼя:
-    <input type="text" name="first_name" required>
-  </label>
-  <label>
-    По батькові:
-    <input type="text" name="middle_name">
-  </label>
-  <label>
-    Адреса:
-    <input type="text" name="address">
-  </label>
-  <label>
-    Телефон:
-    <input type="text" name="phone">
-  </label>
-  <label>
-    Дата народження:
-    <input type="date" name="birth_date">
-  </label>
-  <label>
-    Локація:
-    <select name="location" required>
-      <option value="">— Оберіть локацію —</option>
-      {% for i in range(1, 21) %}
-        <option value="Л{{ i }}">Л{{ i }}</option>
-      {% endfor %}
-    </select>
-  </label>
+            <label>Прізвище</label>
+            <input type="text" name="last_name" required>
 
-  <button type="submit">Додати округ</button>
-</form>
+            <label>Імʼя</label>
+            <input type="text" name="first_name" required>
 
+            <label>По батькові</label>
+            <input type="text" name="middle_name" required>
+
+            <label>Адреса</label>
+            <input type="text" name="address" required>
+
+            <label>Телефон</label>
+            <input type="text" name="phone" required>
+
+            <label>Дата народження</label>
+            <input type="date" name="birth_date" required>
+
+            <label>Локація</label>
+            <select name="location" required>
+                <option value="">Оберіть локацію</option>
+                {% for i in range(1, 21) %}
+                    <option value="Л{{ i }}">Л{{ i }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Додати</button>
+        </form>
+    </div>
 </body>
 </html>
