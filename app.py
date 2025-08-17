@@ -5215,6 +5215,20 @@ def edit_region():
 
     return render_template('edit_region.html')
 
+@app.route('/regions/delete/<int:region_id>', methods=['POST'])
+def delete_region(region_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти записи.')
+        return redirect(url_for('regions'))
+
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute('DELETE FROM regions WHERE id = ?', (region_id,))
+        conn.commit()
+
+    flash('Запис успішно видалено.')
+    return redirect(url_for('regions'))
+
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
 def activists():
