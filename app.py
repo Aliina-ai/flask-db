@@ -34,6 +34,21 @@ def init_db():
         ''')
 
         c.execute('''
+            CREATE TABLE IF NOT EXISTS regions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                large_okrug TEXT,
+                district_name TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                address TEXT,
+                phone TEXT,
+                birth_date TEXT,
+                location TEXT
+            )
+        ''')
+
+        c.execute('''
             CREATE TABLE IF NOT EXISTS activists (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 large_okrug TEXT,
