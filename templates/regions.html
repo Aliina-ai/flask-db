@@ -1,98 +1,135 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Округи</title>
-  <style>
-    body { 
-      font-family: 'Segoe UI', sans-serif; 
-      background: #f7f9fb; 
-      padding: 30px; 
+<meta charset="UTF-8">
+<title>Список округів</title>
+<style>
+  /* Загальні стилі */
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 40px;
+    color: #333;
+  }
+
+  h1 {
+    text-align: center;
+    color: #1e3a5f;
+    margin-bottom: 30px;
+    font-size: 32px;
+  }
+
+  /* Верхня панель */
+  .top-bar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #fff;
+    background-color: #1e3a5f;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+
+  .btn:hover {
+    background-color: #145187;
+  }
+
+  /* Таблиця */
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 12px 15px;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  th {
+    background-color: #1e3a5f;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  tr:hover {
+    background-color: #f1f5f9;
+  }
+
+  /* Дії */
+  .actions {
+    text-align: center;
+  }
+
+  .action-btn {
+    padding: 6px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+  }
+
+  .edit-btn {
+    background-color: #4caf50;
+    color: #fff;
+  }
+
+  .edit-btn:hover {
+    background-color: #449d48;
+  }
+
+  .delete-btn {
+    background-color: #e53935;
+    color: #fff;
+  }
+
+  .delete-btn:hover {
+    background-color: #c62828;
+  }
+
+  /* Адаптивність */
+  @media (max-width: 1200px) {
+    .table, th, td {
+      font-size: 13px;
     }
-    h1 {
-      text-align: center;
-      color: #2b4f73;
-      margin-bottom: 30px;
-    }
+  }
+
+  @media (max-width: 768px) {
     .top-bar {
-      margin-bottom: 20px; 
-      display: flex; 
-      justify-content: space-between; 
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .btn { 
-      padding: 10px 16px; 
-      border: none; 
-      border-radius: 6px; 
-      font-size: 14px; 
-      text-decoration: none; 
-      color: #fff; 
-      background-color: #2b4f73; 
-    }
-    .filters {
-      margin-bottom: 20px;
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
+      flex-direction: column;
       align-items: center;
     }
-    .filters input, .filters select {
-      padding: 6px 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      font-size: 14px;
+    th, td {
+      padding: 10px 8px;
     }
-    .table { 
-      width: 100%; 
-      border-collapse: collapse; 
-      background: #fff; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-    }
-    th, td { 
-      border: 1px solid #ddd; 
-      padding: 10px; 
-      font-size: 14px; 
-      text-align: left; 
-    }
-    th { 
-      background: #2b4f73; 
-      color: #fff; 
-    }
-    .actions { text-align: center; }
-    .action-btn { 
-      padding: 6px 10px; 
-      margin: 2px; 
-      border: none; 
-      border-radius: 4px; 
-      cursor: pointer; 
-    }
-    .edit-btn { background: #4caf50; color: #fff; }
-    .delete-btn { background: #e53935; color: #fff; }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-<h1>Список Відповідальних</h1>
+<h1>Список округів</h1>
 
 <div class="top-bar">
   <a href="{{ url_for('dashboard') }}" class="btn">← Повернутися</a>
   <a href="{{ url_for('add_region') }}" class="btn">+ Додати округ</a>
 </div>
 
-<div class="filters">
-  <input type="text" name="search" placeholder="Пошук..." value="{{ request.args.get('search', '') }}">
-  
-  <select name="sort_last_name">
-    <option value="">Сортування за прізвищем</option>
-    <option value="asc" {% if request.args.get('sort_last_name') == 'asc' %}selected{% endif %}>А → Я</option>
-    <option value="desc" {% if request.args.get('sort_last_name') == 'desc' %}selected{% endif %}>Я → А</option>
-  </select>
-
-  <button class="btn" onclick="this.closest('form').submit();">Фільтрувати</button>
-</div>
-
-<form method="GET">
 <table class="table">
   <thead>
     <tr>
@@ -126,7 +163,7 @@
         <a href="{{ url_for('edit_region', region_id=row.id) }}">
           <button class="action-btn edit-btn">Редагувати</button>
         </a>
-        <form method="POST" action="{{ url_for('delete_region', region_id=row.id) }}" onsubmit="return confirm('Видалити?');" style="display:inline">
+        <form method="POST" action="{{ url_for('delete_region', region_id=row.id) }}" style="display:inline;" onsubmit="return confirm('Видалити?');">
           <button type="submit" class="action-btn delete-btn">Видалити</button>
         </form>
       </td>
@@ -134,7 +171,6 @@
     {% endfor %}
   </tbody>
 </table>
-</form>
 
 </body>
 </html>
