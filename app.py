@@ -5138,13 +5138,13 @@ def regions():
 
     return render_template('regions.html', data=data)
 
-@app.route('/add_regions', methods=['GET', 'POST'])
-def add_regions():
+@app.route('/add_region', methods=['GET', 'POST'])
+def add_region():
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     if request.method == 'POST':
+        # Отримуємо дані з форми
         large_okrug = request.form.get('large_okrug')
         okrug_num = request.form.get('okrug_num')
         last_name = request.form.get('last_name')
@@ -5152,22 +5152,24 @@ def add_regions():
         middle_name = request.form.get('middle_name')
         address = request.form.get('address')
         phone = request.form.get('phone')
-        birth_date = request.form.get('birth_date')
+        birth_date = request.form.get('birthdate')
         location = request.form.get('location')
 
+        # Вставка в базу даних
         c.execute("""
-            INSERT INTO regions 
-            (large_okrug, okrug_num, last_name, first_name, middle_name, address, phone, birth_date, location)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (large_okrug, okrug_num, last_name, first_name, middle_name, address, phone, birth_date, location))
-
+            INSERT INTO regions (
+                large_okrug, okrug_num, last_name, first_name, middle_name,
+                address, phone, birth_date, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (large_okrug, okrug_num, last_name, first_name, middle_name,
+              address, phone, birth_date, location))
         conn.commit()
         conn.close()
-        return redirect(url_for('regions'))  # повернення на список округів
+        return redirect(url_for('regions'))  # Повернення до списку округів
 
-    # GET-запит – просто рендеримо форму
+    # GET-запит — відображення порожньої форми
     conn.close()
-    return render_template('add_regions.html', edit=False)
+    return render_template('add_region.html', edit=False)
 
 
 @app.route('/regions/edit/<int:region_id>', methods=['GET', 'POST'])
