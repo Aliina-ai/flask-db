@@ -5119,6 +5119,31 @@ def delete_region_large(region_id):
 
 # ---------- REGIONS ----------
 
+@app.route('/regions')
+def regions():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM regions")
+        rows = c.fetchall()
+
+    data = [{
+        'id': row[0],
+        'large_okrug': row[1],
+        'district_name': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'location': row[9]
+    } for row in rows]
+
+    return render_template('regions.html', data=data)
+
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
 def activists():
