@@ -37,17 +37,17 @@ def init_db():
             CREATE TABLE IF NOT EXISTS regions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 large_okrug TEXT,
-                okrug TEXT,
+                district_name TEXT,
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
                 address TEXT,
                 phone TEXT,
                 birth_date TEXT,
-                activists_count INTEGER,
                 location TEXT
             )
         ''')
+
 
         c.execute('''
             CREATE TABLE IF NOT EXISTS activists (
@@ -5128,7 +5128,7 @@ def regions():
     c = conn.cursor()
 
     # Отримуємо всі округи
-    c.execute("SELECT * FROM regions ORDER BY okrug")
+    c.execute("SELECT * FROM regions ORDER BY district_name")
     rows = c.fetchall()
 
     data = []
@@ -5142,7 +5142,7 @@ def regions():
         data.append({
             'id': row[0],
             'large_okrug': row[1],
-            'okrug': row[2],
+            'district_name': row[2],
             'last_name': row[3],
             'first_name': row[4],
             'middle_name': row[5],
@@ -5163,7 +5163,7 @@ def add_region():
 
     if request.method == 'POST':
         large_okrug = request.form.get('large_okrug')
-        okrug = int(request.form.get('okrug'))
+        okrug = int(request.form.get('district_name'))
         last_name = request.form.get('last_name')
         first_name = request.form.get('first_name')
         middle_name = request.form.get('middle_name')
@@ -5176,10 +5176,10 @@ def add_region():
         c = conn.cursor()
         c.execute("""
             INSERT INTO regions (
-                large_okrug, okrug, last_name, first_name, middle_name,
+                large_okrug, district_name, last_name, first_name, middle_name,
                 address, phone, birth_date, location
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (large_okrug, okrug, last_name, first_name, middle_name,
+        """, (large_okrug, district_name, last_name, first_name, middle_name,
               address, phone, birth_date, location))
         conn.commit()
         conn.close()
