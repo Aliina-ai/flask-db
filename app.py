@@ -5125,6 +5125,9 @@ def okrugs():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
+    c.execute("SELECT * FROM okrugs")  # або з нової таблиці, якщо створили окрему
+    rows = c.fetchall()
+
     data = [{
         'id': row[0],
         'large_okrug': row[1],
