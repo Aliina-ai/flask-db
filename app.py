@@ -12545,29 +12545,6 @@ def delete_region42(subscriber_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('region42'))
 
-@app.route('/list_tables')
-def list_tables():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    # Отримати всі таблиці в базі
-    c.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = [row[0] for row in c.fetchall()]
-
-    conn.close()
-
-    # Повертаємо простий HTML зі списком таблиць
-    html = "<h2>Список таблиць у базі даних</h2><ul>"
-    for table in tables:
-        html += f"<li>{table}</li>"
-    html += "</ul>"
-
-    return html
-
-
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
