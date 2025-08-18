@@ -1,6 +1,6 @@
 import sqlite3
 
-DB_PATH = "your_database.db"  # заміни на шлях до своєї бази
+DB_PATH = os.getenv("DB_PATH", "/data/db.sqlite")
 
 conn = sqlite3.connect(DB_PATH)
 c = conn.cursor()
