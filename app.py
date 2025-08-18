@@ -36,7 +36,6 @@ def init_db():
         c.execute('''
             CREATE TABLE IF NOT EXISTS okrugs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                large_okrug TEXT,
                 okrug TEXT,
                 last_name TEXT,
                 first_name TEXT,
@@ -5129,16 +5128,15 @@ def okrugs():
 
     data = [{
         'id': row[0],
-        'large_okrug': row[1],
-        'okrug': row[2],
-        'last_name': row[3],
-        'first_name': row[4],
-        'middle_name': row[5],
-        'address': row[6],
-        'phone': row[7],
-        'birth_date': row[8],
-        'activists': row[9],
-        'location': row[10]
+        'okrug': row[1],
+        'last_name': row[2],
+        'first_name': row[3],
+        'middle_name': row[4],
+        'address': row[5],
+        'phone': row[6],
+        'birth_date': row[7],
+        'activists': row[8],
+        'location': row[9]
     } for row in rows]
 
     return render_template('okrugs.html', data=data)
@@ -5154,7 +5152,6 @@ def add_okrug():
         c = conn.cursor()
 
         # Отримуємо дані з форми
-        large_okrug = request.form['large_okrug']
         okrug = request.form['okrug']
         last_name = request.form['last_name']
         first_name = request.form['first_name']
@@ -5168,11 +5165,11 @@ def add_okrug():
         # Вставка в таблицю
         c.execute('''
             INSERT INTO okrugs (
-                large_okrug, okrug, last_name, first_name, middle_name,
+                okrug, last_name, first_name, middle_name,
                 address, phone, birth_date, activist, location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            large_okrug, okrug, last_name, first_name, middle_name,
+            okrug, last_name, first_name, middle_name,
             address, phone, birth_date, activist, location
         ))
 
