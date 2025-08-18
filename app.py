@@ -37,7 +37,7 @@ def init_db():
             CREATE TABLE IF NOT EXISTS okrugs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 large_okrug TEXT,
-                district_name TEXT,
+                okrug TEXT,
                 last_name TEXT,
                 first_name TEXT,
                 middle_name TEXT,
