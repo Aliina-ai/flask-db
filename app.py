@@ -34,6 +34,22 @@ def init_db():
         ''')
 
         c.execute('''
+            CREATE TABLE IF NOT EXISTS okrugs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                large_okrug TEXT,
+                okrug TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                address TEXT,
+                phone TEXT,
+                birth_date TEXT,
+                activist TEXT,
+                location TEXT
+            )
+        ''')
+
+        c.execute('''
             CREATE TABLE IF NOT EXISTS activists (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 large_okrug TEXT,
@@ -5101,6 +5117,72 @@ def delete_region_large(region_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('regions_large'))
 
+@app.route('/okrugs')
+def okrugs():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM okrugs")
+        rows = c.fetchall()
+
+    data = [{
+        'id': row[0],
+        'large_okrug': row[1],
+        'okrug': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'activists': row[9],
+        'location': row[10]
+    } for row in rows]
+
+    return render_template('okrugs.html', data=data)
+
+@app.route('/okrugs/add', methods=['GET', 'POST'])
+def add_okrug():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('okrugs'))
+
+    if request.method == 'POST':
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+
+        # Отримуємо дані з форми
+        large_okrug = request.form['large_okrug']
+        okrug = request.form['okrug']
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        address = request.form['address']
+        phone = request.form['phone']
+        birth_date = request.form['birth_date']
+        activist = request.form['activist']
+        location = request.form['location']
+
+        # Вставка в таблицю
+        c.execute('''
+            INSERT INTO okrugs (
+                large_okrug, okrug, last_name, first_name, middle_name,
+                address, phone, birth_date, activist, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            large_okrug, okrug, last_name, first_name, middle_name,
+            address, phone, birth_date, activist, location
+        ))
+
+        conn.commit()
+        conn.close()
+        flash('Округ успішно додано!')
+        return redirect(url_for('okrugs'))
+
+    # GET-запит – показуємо форму
+    return render_template('add_okrug.html')
 
 # ---------- ACTIVISTS ----------
 @app.route('/activists')
