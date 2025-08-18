@@ -12638,17 +12638,31 @@ def check_table():
     conn.close()
     return "Таблиця okrugs існує" if table_exists else "Таблиця okrugs НЕ існує"
 
-@app.route('/drop_table')
-def drop_table():
+@app.route('/check_regions')
+def check_regions():
     import sqlite3
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Видаляємо таблицю okrugs
-    c.execute("DROP TABLE IF EXISTS okrugs")
+    # Перевіряємо, чи існує таблиця regions
+    c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='regions'")
+    table_exists = c.fetchone() is not None
+
+    conn.close()
+    return "Таблиця regions існує" if table_exists else "Таблиця regions НЕ існує"
+
+@app.route('/drop_regions')
+def drop_regions():
+    import sqlite3
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Видаляємо таблицю regions
+    c.execute("DROP TABLE IF EXISTS regions")
     conn.commit()
     conn.close()
-    return "Таблиця okrugs видалена"
+    return "Таблиця regions видалена"
+
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
