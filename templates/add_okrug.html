@@ -93,8 +93,13 @@
         <label>Кількість активістів:</label>
         <input type="text" name="activist"><br>
 
-        <label>Локація:</label>
-        <input type="text" name="location"><br>
+        <label>Локація</label>
+            <select name="location" required>
+                <option value="">Оберіть локацію</option>
+                {% for i in range(1, 21) %}
+                    <option value="Л{{ i }}">Л{{ i }}</option>
+                {% endfor %}
+            </select>
 
         <button type="submit">Додати</button>
     </form>
