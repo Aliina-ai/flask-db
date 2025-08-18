@@ -12625,6 +12625,31 @@ def delete_region42(subscriber_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('region42'))
 
+@app.route('/check_table')
+def check_table():
+    import sqlite3
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Перевіряємо, чи існує таблиця okrugs
+    c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='okrugs'")
+    table_exists = c.fetchone() is not None
+
+    conn.close()
+    return "Таблиця okrugs існує" if table_exists else "Таблиця okrugs НЕ існує"
+
+@app.route('/drop_table')
+def drop_table():
+    import sqlite3
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Видаляємо таблицю okrugs
+    c.execute("DROP TABLE IF EXISTS okrugs")
+    conn.commit()
+    conn.close()
+    return "Таблиця okrugs видалена"
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
