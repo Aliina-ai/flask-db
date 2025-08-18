@@ -34,21 +34,6 @@ def init_db():
         ''')
 
         c.execute('''
-            CREATE TABLE IF NOT EXISTS okrugs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                okrug TEXT,
-                last_name TEXT,
-                first_name TEXT,
-                middle_name TEXT,
-                address TEXT,
-                phone TEXT,
-                birth_date TEXT,
-                activist TEXT,
-                location TEXT
-            )
-        ''')
-
-        c.execute('''
             CREATE TABLE IF NOT EXISTS activists (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 large_okrug TEXT,
@@ -12662,6 +12647,31 @@ def drop_regions():
     conn.commit()
     conn.close()
     return "Таблиця regions видалена"
+
+@app.route('/check_table')
+def check_table():
+    import sqlite3
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Перевіряємо, чи існує таблиця okrugs
+    c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='okrugs'")
+    table_exists = c.fetchone() is not None
+
+    conn.close()
+    return "Таблиця okrugs існує" if table_exists else "Таблиця okrugs НЕ існує"
+
+@app.route('/drop_table')
+def drop_table():
+    import sqlite3
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Видаляємо таблицю okrugs
+    c.execute("DROP TABLE IF EXISTS okrugs")
+    conn.commit()
+    conn.close()
+    return "Таблиця okrugs видалена"
 
 
 # ---------- APP LAUNCH ----------
