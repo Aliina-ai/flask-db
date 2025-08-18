@@ -12595,6 +12595,25 @@ def drop_regions():
     conn.close()
     return "Таблиця regions видалена"
 
+@app.route('/check_okrugs_new')
+def check_okrugs_new():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Перевірка, чи існує таблиця okrugs_new
+    c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='okrugs_new';")
+    table_exists = c.fetchone() is not None
+
+    conn.close()
+
+    if table_exists:
+        return "Таблиця okrugs_new існує."
+    else:
+        return "Таблиця okrugs_new не знайдена."
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
