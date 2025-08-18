@@ -5125,31 +5125,33 @@ def okrugs():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    c.execute("SELECT * FROM okrugs")  # або з нової таблиці, якщо створили окрему
-    rows = c.fetchall()
+    # Вибираємо всі дані з таблиці okrugs
+    c.execute("SELECT * FROM okrugs")
+    okrugs_rows = c.fetchall()
 
     data = []
     for row in okrugs_rows:
-        okrug_id = row[2]  # Номер округу з таблиці okrugs
+        okrug_num = row[2]  # поле "okrug" у таблиці okrugs
 
-        # Підрахунок активістів для цього округу
-        c.execute("SELECT COUNT(*) FROM activists WHERE okrug = ?", (okrug_id,))
+        # Підрахунок кількості активістів по округу
+        c.execute("SELECT COUNT(*) FROM activists WHERE okrug = ?", (okrug_num,))
         activists_count = c.fetchone()[0]
 
-    data = [{
-        'id': row[0],
-        'large_okrug': row[1],
-        'okrug': row[2],
-        'last_name': row[3],
-        'first_name': row[4],
-        'middle_name': row[5],
-        'address': row[6],
-        'phone': row[7],
-        'birth_date': row[8],
-        'activists_count': row[9],
-        'location': row[10]
-    } for row in rows]
+        data.append({
+            'id': row[0],
+            'large_okrug': row[1],
+            'okrug': row[2],
+            'last_name': row[3],
+            'first_name': row[4],
+            'middle_name': row[5],
+            'address': row[6],
+            'phone': row[7],
+            'birth_date': row[8],
+            'location': row[9],
+            'activists_count': activists_count
+        })
 
+    conn.close()
     return render_template('okrugs.html', data=data)
 
 @app.route('/okrugs/add', methods=['GET', 'POST'])
