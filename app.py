@@ -12568,7 +12568,7 @@ def okrugs():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    c.execute(query)
+    c.execute("SELECT * FROM okrugs")
     rows = c.fetchall()
     conn.close()
 
