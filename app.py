@@ -12629,47 +12629,46 @@ def add_okrugs():
 @app.route('/okrugs/edit/<int:okrug_id>', methods=['GET', 'POST'])
 def edit_okrugs(okrug_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може редагувати.')
+        flash('Лише адміністратор може редагувати округи.')
         return redirect(url_for('okrugs'))
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     if request.method == 'POST':
-        # Оновлюємо дані активіста
+        large_okrug = request.form['large_okrug']
+        okrug = request.form['okrug']
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        address = request.form['address']
+        phone = request.form['phone']
+        birth_date = request.form['birth_date']
+        location = request.form['location']
+
         c.execute('''
-            UPDATE okrugs SET
-                large_okrug = ?, okrug = ?, last_name = ?, first_name = ?,
-                middle_name = ?, address = ?, phone = ?, birth_date = ?,
-                location = ?
-            WHERE id = ?
-        ''', (
-            request.form['large_okrug'],
-            request.form['okrug'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['address'],
-            request.form['phone'],
-            request.form['birth_date'],
-            request.form['location'],
-            okrug_id
-        ))
+            UPDATE okrugs
+            SET large_okrug=?, okrug=?, last_name=?, first_name=?, middle_name=?, 
+                address=?, phone=?, birth_date=?, location=?
+            WHERE id=?
+        ''', (large_okrug, okrug, last_name, first_name, middle_name,
+              address, phone, birth_date, location, okrug_id))
         conn.commit()
         conn.close()
-        flash('Дані активіста успішно оновлено.')
-        return redirect(url_for('activists'))
 
-    # Отримуємо поточні дані активіста для заповнення форми
-    c.execute('SELECT * FROM okrugs WHERE id = ?', (okrug_id,))
+        flash('Округ оновлено!')
+        return redirect(url_for('okrugs'))
+
+    # GET: отримати дані округу
+    c.execute("SELECT * FROM okrugs WHERE id = ?", (okrug_id,))
     row = c.fetchone()
     conn.close()
 
     if not row:
-        flash('Активіста не знайдено.')
+        flash("Округ не знайдено!")
         return redirect(url_for('okrugs'))
 
-    activist = {
+    okrug = {
         'id': row[0],
         'large_okrug': row[1],
         'okrug': row[2],
