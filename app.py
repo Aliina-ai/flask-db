@@ -764,6 +764,21 @@ def init_db():
             )
         ''')
 
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS okrugs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                large_okrug TEXT,
+                okrug TEXT,
+                last_name TEXT,
+                first_name TEXT,
+                middle_name TEXT,
+                address TEXT,
+                phone TEXT,
+                birth_date TEXT,
+                location TEXT
+            )
+        ''')
+
         conn.commit()
 
 def get_activists():
@@ -12544,6 +12559,144 @@ def delete_region42(subscriber_id):
 
     flash('Запис успішно видалено.')
     return redirect(url_for('region42'))
+
+@app.route('/okrugs')
+def okrugs():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    c.execute(query)
+    rows = c.fetchall()
+    conn.close()
+
+    data = [{
+        'id': row[0],
+        'large_okrug': row[1],
+        'okrug': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'location': row[9]
+    } for row in rows]
+
+    return render_template('okrugs.html', data=data)
+
+@app.route('/okrugs/add', methods=['GET', 'POST'])
+def add_okrugs():
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може додавати.')
+        return redirect(url_for('okrugs'))
+
+    if request.method == 'POST':
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+
+        # Підтягуємо дані з форми
+        large_okrug = request.form['large_okrug']
+        okrug = request.form['okrug']
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        address = request.form['address']
+        phone = request.form['phone']
+        birth_date = request.form['birth_date']
+        location = request.form['location']
+
+        c.execute('''
+            INSERT INTO okrugs (
+                large_okrug, okrug, last_name, first_name, middle_name,
+                address, phone, birth_date, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            large_okrug, okrug, last_name, first_name, middle_name,
+            address, phone, birth_date, location
+        ))
+
+        conn.commit()
+        conn.close()
+        flash('Активіста успішно додано!')
+        return redirect(url_for('okrugs'))
+
+    # GET-запит – показати форму
+    return render_template('add_okrugs.html')
+
+@app.route('/okrugs/edit/<int:okrug_id>', methods=['GET', 'POST'])
+def edit_okrugs(okrug_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може редагувати.')
+        return redirect(url_for('okrugs'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        # Оновлюємо дані активіста
+        c.execute('''
+            UPDATE okrugs SET
+                large_okrug = ?, okrug = ?, last_name = ?, first_name = ?,
+                middle_name = ?, address = ?, phone = ?, birth_date = ?,
+                location = ?
+            WHERE id = ?
+        ''', (
+            request.form['large_okrug'],
+            request.form['okrug'],
+            request.form['last_name'],
+            request.form['first_name'],
+            request.form['middle_name'],
+            request.form['address'],
+            request.form['phone'],
+            request.form['birth_date'],
+            request.form['location'],
+            okrug_id
+        ))
+        conn.commit()
+        conn.close()
+        flash('Дані активіста успішно оновлено.')
+        return redirect(url_for('activists'))
+
+    # Отримуємо поточні дані активіста для заповнення форми
+    c.execute('SELECT * FROM okrugs WHERE id = ?', (okrug_id,))
+    row = c.fetchone()
+    conn.close()
+
+    if not row:
+        flash('Активіста не знайдено.')
+        return redirect(url_for('okrugs'))
+
+    activist = {
+        'id': row[0],
+        'large_okrug': row[1],
+        'okrug': row[2],
+        'last_name': row[3],
+        'first_name': row[4],
+        'middle_name': row[5],
+        'address': row[6],
+        'phone': row[7],
+        'birth_date': row[8],
+        'location': row[11]
+    }
+
+    return render_template('edit_okrugs.html', okrug=okrug)
+
+@app.route('/okrugs/delete/<int:okrug_id>', methods=['POST'])
+def delete_okrugs(okrug_id):
+    if 'username' not in session or session.get('role') != 'admin':
+        flash('Лише адміністратор може видаляти.')
+        return redirect(url_for('okrugs'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DELETE FROM okrugs WHERE id = ?', (okrug_id,))
+    conn.commit()
+    conn.close()
+    flash('Запис успішно видалено.')
+    return redirect(url_for('okrug'))
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
