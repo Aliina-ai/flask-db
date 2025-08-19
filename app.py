@@ -12679,7 +12679,7 @@ def edit_okrugs(okrug_id):
         'address': row[6],
         'phone': row[7],
         'birth_date': row[8],
-        'location': row[11]
+        'location': row[9]
     }
 
     return render_template('edit_okrugs.html', okrug=okrug)
