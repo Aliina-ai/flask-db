@@ -87,7 +87,8 @@
                 {% endfor %}
             </select>
 
-            <input type="hidden" name="large_okrug" id="large_okrug" value="{{ activist['large_okrug'] }}">
+            <!-- ✅ виправлено activist -> okrug -->
+            <input type="hidden" name="large_okrug" id="large_okrug" value="{{ okrug['large_okrug'] }}">
 
             <label>Прізвище</label>
             <input type="text" name="last_name" value="{{ okrug['last_name'] }}" required>
