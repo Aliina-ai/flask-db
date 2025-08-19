@@ -76,42 +76,42 @@
 <body>
     <div class="wrapper">
         <a href="{{ url_for('okrugs') }}" class="back-button">← Повернутися</a>
-        <form method="POST" action="{{ url_for('edit_okrugs', okrug_id=activist.get('id', 0)) }}">
+        <form method="POST" action="{{ url_for('edit_okrugs', okrug_id=okrug.get('id', 0)) }}">
             <h2>Редагувати</h2>
 
             <label for="okrug">Округ</label>
             <select id="okrug" name="okrug" onchange="updateLargeOkrug()" required>
                 <option value="">Оберіть округ</option>
                 {% for i in range(1, 43) %}
-                    <option value="{{ i }}" {% if activist['okrug'] == i|string %}selected{% endif %}>{{ i }}</option>
+                    <option value="{{ i }}" {% if okrug['okrug'] == i|string %}selected{% endif %}>{{ i }}</option>
                 {% endfor %}
             </select>
 
             <input type="hidden" name="large_okrug" id="large_okrug" value="{{ activist['large_okrug'] }}">
 
             <label>Прізвище</label>
-            <input type="text" name="last_name" value="{{ activist['last_name'] }}" required>
+            <input type="text" name="last_name" value="{{ okrug['last_name'] }}" required>
 
             <label>Імʼя</label>
-            <input type="text" name="first_name" value="{{ activist['first_name'] }}" required>
+            <input type="text" name="first_name" value="{{ okrug['first_name'] }}" required>
 
             <label>По батькові</label>
-            <input type="text" name="middle_name" value="{{ activist['middle_name'] }}" required>
+            <input type="text" name="middle_name" value="{{ okrug['middle_name'] }}" required>
 
             <label>Адреса</label>
-            <input type="text" name="address" value="{{ activist['address'] }}" required>
+            <input type="text" name="address" value="{{ okrug['address'] }}" required>
 
             <label>Телефон</label>
-            <input type="text" name="phone" value="{{ activist['phone'] }}" required>
+            <input type="text" name="phone" value="{{ okrug['phone'] }}" required>
 
             <label>Дата народження</label>
-            <input type="date" name="birth_date" value="{{ activist['birth_date'] }}" required>
+            <input type="date" name="birth_date" value="{{ okrug['birth_date'] }}" required>
 
             <label>Локація</label>
             <select name="location" required>
                 <option value="">Оберіть локацію</option>
                 {% for i in range(1, 21) %}
-                    <option value="Л{{ i }}" {% if activist['location'] == 'Л' ~ i %}selected{% endif %}>Л{{ i }}</option>
+                    <option value="Л{{ i }}" {% if okrug['location'] == 'Л' ~ i %}selected{% endif %}>Л{{ i }}</option>
                 {% endfor %}
             </select>
 
