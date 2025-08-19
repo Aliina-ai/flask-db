@@ -12697,6 +12697,7 @@ def delete_okrugs(okrug_id):
     conn.close()
     flash('Запис успішно видалено.')
     return redirect(url_for('okrug'))
+    
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
