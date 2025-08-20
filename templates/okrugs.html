@@ -190,42 +190,44 @@
 <div class="table-container">
 <table id="okrugsTable">
   <thead>
-    <tr>
-      <th>Великий округ</th>
-      <th>Округ</th>
-      <th>Прізвище</th>
-      <th>Імʼя</th>
-      <th>По батькові</th>
-      <th>Адреса</th>
-      <th>Телефон</th>
-      <th>Дата народження</th>
-      <th>Локація</th>
-      <th>Дії</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in data %}
-    <tr>
-      <td>{{ row.large_okrug }}</td>
-      <td>{{ row.okrug }}</td>
-      <td>{{ row.last_name }}</td>
-      <td>{{ row.first_name }}</td>
-      <td>{{ row.middle_name }}</td>
-      <td>{{ row.address }}</td>
-      <td>{{ row.phone }}</td>
-      <td>{{ row.birth_date }}</td>
-      <td>{{ row.location }}</td>
-      <td class="actions">
-        <a href="{{ url_for('edit_okrugs', okrug_id=row.id) }}">
-          <button class="action-btn edit-btn">Редагувати</button>
-        </a>
-        <form method="POST" action="{{ url_for('delete_okrugs', okrug_id=row.id) }}" style="display:inline;">
-          <button class="action-btn delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+  <tr>
+    <th>Великий округ</th>
+    <th>Округ</th>
+    <th>Прізвище</th>
+    <th>Імʼя</th>
+    <th>По батькові</th>
+    <th>Адреса</th>
+    <th>Телефон</th>
+    <th>Дата народження</th>
+    <th>Локація</th>
+    <th>К-сть активістів</th>   <!-- 🔹 нова колонка -->
+    <th>Дії</th>
+  </tr>
+</thead>
+<tbody>
+  {% for row in data %}
+  <tr>
+    <td>{{ row.large_okrug }}</td>
+    <td>{{ row.okrug }}</td>
+    <td>{{ row.last_name }}</td>
+    <td>{{ row.first_name }}</td>
+    <td>{{ row.middle_name }}</td>
+    <td>{{ row.address }}</td>
+    <td>{{ row.phone }}</td>
+    <td>{{ row.birth_date }}</td>
+    <td>{{ row.location }}</td>
+    <td style="text-align:center;">{{ row.activist_count }}</td>  <!-- 🔹 вивід -->
+    <td class="actions">
+      <a href="{{ url_for('edit_okrugs', okrug_id=row.id) }}">
+        <button class="action-btn edit-btn">Редагувати</button>
+      </a>
+      <form method="POST" action="{{ url_for('delete_okrugs', okrug_id=row.id) }}" style="display:inline;">
+        <button class="action-btn delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
 </table>
 </div>
 
