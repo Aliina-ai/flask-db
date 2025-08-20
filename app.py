@@ -12696,6 +12696,29 @@ def delete_okrugs(okrug_id):
     conn.close()
     flash('Запис успішно видалено.')
     return redirect(url_for('okrug'))
+
+@app.route('/activists_count')
+def activists_count():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Рахуємо активістів по кожному округу
+    c.execute('''
+        SELECT okrug, COUNT(*) as activists_count
+        FROM activists
+        GROUP BY okrug
+        ORDER BY okrug
+    ''')
+    results = c.fetchall()
+    conn.close()
+
+    # Перетворюємо у список словників
+    data = [{'okrug': row[0], 'count': row[1]} for row in results]
+
+    return render_template('activists_count.html', data=data)
     
 
 # ---------- APP LAUNCH ----------
