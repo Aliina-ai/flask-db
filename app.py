@@ -12714,8 +12714,6 @@ def activists_count():
 
     # перетворюємо у список словників
     result = [{"okrug": row[0], "activists_count": row[1]} for row in rows]
-
-    return jsonify(result)
     
 
 # ---------- APP LAUNCH ----------
