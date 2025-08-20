@@ -12572,13 +12572,13 @@ def okrugs():
     # Витягуємо всі округи
     c.execute("SELECT * FROM okrugs")
     rows = c.fetchall()
-
+   
     data = []
     for row in rows:
-        okrug_id = row[0]
+        okrug_number = row[2]  # поле "okrug" у таблиці okrugs
 
-        # Підрахунок активістів у цьому окрузі
-        c.execute("SELECT COUNT(*) FROM activists WHERE okrug_id = ?", (okrug_id,))
+        # Підрахунок активістів по окрузі
+        c.execute("SELECT COUNT(*) FROM activists WHERE okrug = ?", (okrug_number,))
         activist_count = c.fetchone()[0]
 
         data.append({
