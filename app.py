@@ -775,7 +775,8 @@ def init_db():
                 address TEXT,
                 phone TEXT,
                 birth_date TEXT,
-                location TEXT
+                location TEXT,
+                activist_count TEXT
             )
         ''')
 
@@ -12568,24 +12569,34 @@ def okrugs():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
+    # Витягуємо всі округи
     c.execute("SELECT * FROM okrugs")
     rows = c.fetchall()
+
+    data = []
+    for row in rows:
+        okrug_id = row[0]
+
+        # Підрахунок активістів у цьому окрузі
+        c.execute("SELECT COUNT(*) FROM activists WHERE okrug_id = ?", (okrug_id,))
+        activist_count = c.fetchone()[0]
+
+        data.append({
+            "id": row[0],
+            "large_okrug": row[1],
+            "okrug": row[2],
+            "last_name": row[3],
+            "first_name": row[4],
+            "middle_name": row[5],
+            "address": row[6],
+            "phone": row[7],
+            "birth_date": row[8],
+            "location": row[9],
+            "activist_count": activist_count   # нове поле
+        })
+
     conn.close()
-
-    data = [{
-        'id': row[0],
-        'large_okrug': row[1],
-        'okrug': row[2],
-        'last_name': row[3],
-        'first_name': row[4],
-        'middle_name': row[5],
-        'address': row[6],
-        'phone': row[7],
-        'birth_date': row[8],
-        'location': row[9]
-    } for row in rows]
-
-    return render_template('okrugs.html', data=data)
+    return render_template("okrugs.html", data=data)
 
 @app.route('/okrugs/add', methods=['GET', 'POST'])
 def add_okrugs():
@@ -12696,30 +12707,6 @@ def delete_okrugs(okrug_id):
     conn.close()
     flash('Запис успішно видалено.')
     return redirect(url_for('okrug'))
-
-@app.route('/activists_count')
-def activists_count():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    # Рахуємо активістів по кожному округу
-    c.execute('''
-        SELECT okrug, COUNT(*) as activists_count
-        FROM activists
-        GROUP BY okrug
-        ORDER BY okrug
-    ''')
-    results = c.fetchall()
-    conn.close()
-
-    # Перетворюємо у список словників
-    data = [{'okrug': row[0], 'count': row[1]} for row in results]
-
-    return render_template('activists_count.html', data=data)
-
     
 
 # ---------- APP LAUNCH ----------
