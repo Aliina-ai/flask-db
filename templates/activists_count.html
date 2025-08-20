@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Кількість активістів по округах</title>
+</head>
+<body>
+    <h2>Кількість активістів по округах</h2>
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Округ</th>
+            <th>Кількість активістів</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td>{{ row.okrug }}</td>
+            <td>{{ row.count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
