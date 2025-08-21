@@ -12706,7 +12706,7 @@ def delete_okrugs(okrug_id):
     conn.commit()
     conn.close()
     flash('Запис успішно видалено.')
-    return redirect(url_for('okrug'))
+    return redirect(url_for('okrugs'))
 
 @app.route('/okrug_tree')
 def okrug_tree():
