@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Дерево округів</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background:#f7f9fb; padding:20px; }
+    .tree ul { list-style-type:none; padding-left:20px; }
+    .tree li { margin:5px 0; cursor:pointer; }
+    .nested { display:none; }
+    .active { display:block; }
+    .node { padding:5px 10px; background:#fff; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.1); display:inline-block; }
+  </style>
+</head>
+<body>
+  <h2>Структура округів</h2>
+  <div class="tree">
+    <ul>
+      {% for l in tree %}
+        <li>
+          <span class="node">Великий округ {{ l.large['okrug'] }} — {{ l.large['last_name'] }} {{ l.large['first_name'] }} {{ l.large['middle_name'] }}</span>
+          <ul class="nested">
+            {% for o in l.okrugs %}
+              <li>
+                <span class="node">Округ {{ o.okrug['okrug'] }} — {{ o.okrug['last_name'] }} {{ o.okrug['first_name'] }} {{ o.okrug['middle_name'] }}</span>
+                <ul class="nested">
+                  {% for a in o.activists %}
+                    <li><span class="node">{{ a['last_name'] }} {{ a['first_name'] }} {{ a['middle_name'] }}</span></li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <script>
+    // Робимо дерево розкладним
+    document.querySelectorAll(".node").forEach(function(node) {
+      node.addEventListener("click", function(e) {
+        let next = this.nextElementSibling;
+        if (next && next.classList.contains("nested")) {
+          next.classList.toggle("active");
+        }
+        e.stopPropagation();
+      });
+    });
+  </script>
+</body>
+</html>
