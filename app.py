@@ -12707,6 +12707,36 @@ def delete_okrugs(okrug_id):
     conn.close()
     flash('Запис успішно видалено.')
     return redirect(url_for('okrug'))
+
+@app.route('/okrug_tree')
+def okrug_tree():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    # 1. Великі округи
+    c.execute("SELECT * FROM regions_large")
+    large_okrugs = c.fetchall()
+
+    tree = []
+    for large in large_okrugs:
+        # 2. Підтягнемо округи для кожного великого округу
+        c.execute("SELECT * FROM okrugs WHERE large_okrug = ?", (large["okrug"],))
+        okrugs = c.fetchall()
+
+        okrug_list = []
+        for okrug in okrugs:
+            # 3. Підтягнемо активістів для кожного округу
+            c.execute("SELECT * FROM activists WHERE okrug = ?", (okrug["okrug"],))
+            activists = c.fetchall()
+            okrug_list.append({"okrug": okrug, "activists": activists})
+
+        tree.append({"large": large, "okrugs": okrug_list})
+
+    conn.close()
+    return render_template("okrug_tree.html", tree=tree)
+
+
     
 
 # ---------- APP LAUNCH ----------
