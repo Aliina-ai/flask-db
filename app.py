@@ -4986,6 +4986,10 @@ def dashboard():
     c.execute("SELECT IFNULL(SUM(newspapers_count), 0) FROM activists")
     total_newspapers = c.fetchone()[0]
 
+     # Загальна кількість активістів
+    c.execute("SELECT COUNT(*) FROM activists")
+    total_activists = c.fetchone()[0]
+
     conn.close()
 
     return render_template(
@@ -4993,7 +4997,8 @@ def dashboard():
         username=session['username'],
         role=session['role'],
         total_subscribers=total_subscribers,
-        total_newspapers=total_newspapers
+        total_newspapers=total_newspapers,
+        total_activists=total_activists
     )
 
 @app.route('/logout')
