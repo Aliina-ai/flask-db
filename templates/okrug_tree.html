@@ -2,14 +2,79 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Дерево округів</title>
+  <title>Структура</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background:#f7f9fb; padding:20px; }
-    .tree ul { list-style-type:none; padding-left:20px; }
-    .tree li { margin:5px 0; cursor:pointer; }
-    .nested { display:none; }
-    .active { display:block; }
-    .node { padding:5px 10px; background:#fff; border-radius:6px; box-shadow:0 2px 4px rgba(0,0,0,0.1); display:inline-block; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .tree {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .tree ul {
+      list-style-type: none;
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .tree li {
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    .nested {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .node {
+      padding: 6px 12px;
+      background: #f7f9fb;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: inline-block;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      color: #2b4f73;
+    }
+
+    .node:hover {
+      background: #e6edf5;
+      transform: translateX(3px);
+    }
+
+    /* Кнопка назад */
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      background: #ccc;
+      color: #333;
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .back-button:hover {
+      background: #bbb;
+    }
   </style>
 </head>
 <body>
@@ -36,6 +101,8 @@
     </ul>
   </div>
 
+  <a href="/" class="back-button">Назад</a>
+
   <script>
     // Робимо дерево розкладним
     document.querySelectorAll(".node").forEach(function(node) {
@@ -50,3 +117,4 @@
   </script>
 </body>
 </html>
+
