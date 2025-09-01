@@ -79,6 +79,9 @@
 </head>
 <body>
   <h2>Структура округів</h2>
+
+  <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
+  
   <div class="tree">
     <ul>
       {% for l in tree %}
@@ -100,8 +103,6 @@
       {% endfor %}
     </ul>
   </div>
-
-  <a href="/" class="back-button">Назад</a>
 
   <script>
     // Робимо дерево розкладним
