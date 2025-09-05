@@ -12741,7 +12741,52 @@ def okrug_tree():
     conn.close()
     return render_template("okrug_tree.html", tree=tree)
 
+@app.route('/passport', methods=['GET', 'POST'])
+def passport():
+    if 'username' not in session:
+        return redirect(url_for('login'))
 
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Формуємо список всіх таблиць округів
+    tables = [f"regions{i}" for i in range(1, 43)]
+    addresses = {}  # ключ: (street, building), значення: dict з info
+
+    for table in tables:
+        try:
+            c.execute(f"SELECT okrug, district, street, building, activist FROM {table}")
+            rows = c.fetchall()
+            for row in rows:
+                okrug, district, street, building, activist = row
+                key = (street, building)
+                if key not in addresses:
+                    addresses[key] = {
+                        'large_okrug': f"Округ {((okrug-1)//7)+1}",
+                        'okrug': okrug,
+                        'district': district,
+                        'street': street,
+                        'building': building,
+                        'activists': [],
+                        'entrances': None  # поле для під’їздів
+                    }
+                if activist and activist not in addresses[key]['activists']:
+                    addresses[key]['activists'].append(activist)
+        except sqlite3.OperationalError:
+            # Таблиці може не бути
+            continue
+
+    # POST-запит для редагування під’їздів (тільки адміністратор)
+    if request.method == 'POST' and session.get('role') == 'admin':
+        for key in addresses:
+            entrance_val = request.form.get(f"entrances_{key[0]}_{key[1]}")
+            if entrance_val:
+                addresses[key]['entrances'] = entrance_val
+        flash("Під’їзди оновлено!")
+        return redirect(url_for('passport'))
+
+    # Передаємо дані у шаблон
+    return render_template('passport.html', addresses=addresses, is_admin=(session.get('role')=='admin'))
     
 
 # ---------- APP LAUNCH ----------
