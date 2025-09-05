@@ -11,7 +11,7 @@ body {
     padding: 30px;
 }
 h2 {
-    color: #2b4f73;
+    color: #2b4f73; 
     text-align: center;
     margin-bottom: 20px;
 }
@@ -37,7 +37,25 @@ th {
     background-color: #2b4f73;
     color: white;
 }
+
+/* Розміри стовпчиків */
+th:nth-child(1), td:nth-child(1), /* Великий округ */
+th:nth-child(2), td:nth-child(2), /* Округ */
+th:nth-child(3), td:nth-child(3)  /* Виборча дільниця */ {
+    width: 100px;
+}
+
+th:nth-child(4), td:nth-child(4), /* Адреса */
+th:nth-child(5), td:nth-child(5)  /* ПІП активіста */ {
+    width: 250px;
+}
+
+th:nth-child(6), td:nth-child(6)  /* Під’їзди */ {
+    width: 100px;
+}
+
 tr:hover { background-color: #f1f5f9; }
+
 input[type="number"] {
     width: 60px;
     padding: 4px;
@@ -114,4 +132,3 @@ button:hover { background-color: #3b5f85; }
 
 </body>
 </html>
-
