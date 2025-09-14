@@ -5176,7 +5176,6 @@ def activists():
 
     return render_template('activists.html', data=data)
 
-
 @app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
     if 'username' not in session or session.get('role') != 'admin':
@@ -5212,67 +5211,6 @@ def add_activist():
 
         conn.commit()
         conn.close()
-        flash('Активіста успішно додано!')
-        return redirect(url_for('activists'))
-
-    # GET-запит – показати форму
-    return render_template('add_activist.html')
-@app.route('/activists/add', methods=['GET', 'POST'])
-def add_activist():
-    # Доступ лише для адміністратора
-    if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати.')
-        return redirect(url_for('activists'))
-
-    if request.method == 'POST':
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-
-        # Підтягуємо дані з форми
-        large_okrug = request.form['large_okrug']
-        okrug = request.form['okrug']
-        last_name = request.form['last_name']
-        first_name = request.form['first_name']
-        middle_name = request.form['middle_name']
-        address = request.form['address']
-        phone = request.form['phone']
-        birth_date = request.form['birth_date']
-        newspapers_count = request.form.get('newspapers_count', 0)
-        location = request.form['location']
-
-        # Вставка в базу (кількість підписників = 0)
-        c.execute('''
-            INSERT INTO activists (
-                large_okrug,
-                okrug,
-                last_name,
-                first_name,
-                middle_name,
-                address,
-                phone,
-                birth_date,
-                subscribers_count,
-                newspapers_count,
-                location
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (
-            large_okrug,
-            okrug,
-            last_name,
-            first_name,
-            middle_name,
-            address,
-            phone,
-            birth_date,
-            0,
-            newspapers_count,
-            location
-        ))
-
-        conn.commit()
-        conn.close()
-
         flash('Активіста успішно додано!')
         return redirect(url_for('activists'))
 
