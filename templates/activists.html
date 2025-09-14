@@ -4,142 +4,39 @@
 <meta charset="UTF-8">
 <title>Активісти</title>
 <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f7f9fb;
-    margin: 0;
-    padding: 30px;
-  }
+  body { font-family: 'Segoe UI', sans-serif; background-color: #f7f9fb; margin: 0; padding: 30px; }
 
   /* Верхня панель */
-  .top-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 25px;
-  }
+  .top-bar { display: flex; justify-content: space-between; margin-bottom: 25px; }
+  .top-bar a { background-color: #2b4f73; color: #fff; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; transition: background 0.3s; }
+  .top-bar a:hover { background-color: #3b5f85; }
 
-  .top-bar a {
-    background-color: #2b4f73;
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    transition: background 0.3s;
-  }
-
-  .top-bar a:hover {
-    background-color: #3b5f85;
-  }
-
-  h2 {
-    color: #2b4f73;
-    text-align: center;
-    margin-bottom: 15px;
-  }
+  h2 { color: #2b4f73; text-align: center; margin-bottom: 15px; }
 
   /* Фільтри */
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 15px;
-  }
+  .filters { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; align-items: flex-end; }
+  .filters label { display: flex; flex-direction: column; font-size: 14px; }
+  .filters input, .filters select { padding: 6px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; }
 
-  .filters label {
-    display: flex;
-    flex-direction: column;
-    font-size: 14px;
-  }
-
-  .filters input, .filters select {
-    padding: 6px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+  #filteredCount { font-weight: bold; font-size: 14px; margin-left: 20px; }
 
   /* Таблиця */
-  .table-container {
-    overflow-x: auto;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
-
-  table {
-    width: 100%;
-    min-width: 1200px;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 10px 12px;
-    font-size: 14px;
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  th {
-    background-color: #2b4f73;
-    color: #fff;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  tr:hover {
-    background-color: #f1f5f9;
-  }
+  .table-container { overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  table { width: 100%; min-width: 1200px; border-collapse: collapse; }
+  th, td { border: 1px solid #ddd; padding: 10px 12px; font-size: 14px; text-align: left; white-space: nowrap; }
+  th { background-color: #2b4f73; color: #fff; cursor: pointer; user-select: none; }
+  tr:hover { background-color: #f1f5f9; }
 
   /* Дії */
-  .actions {
-    text-align: center;
-  }
+  .actions { text-align: center; }
+  .action-btn { padding: 6px 10px; margin: 2px; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
+  .edit-btn { background: #4caf50; color: #fff; } .edit-btn:hover { background: #45a043; }
+  .delete-btn { background: #e53935; color: #fff; } .delete-btn:hover { background: #d32f2f; }
 
-  .action-btn {
-    padding: 6px 10px;
-    margin: 2px;
-    font-size: 13px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-
-<style>
-  .excel-btn {
-    background: #1d6f42;
-    color: #fff;
-    padding: 10px 18px;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  }
-
-  .excel-btn:hover {
-    background: #218c50;
-    transform: translateY(-1px);
-    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
-  }
-
-  .excel-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-
-  .edit-btn { background: #4caf50; color: #fff; }
-  .edit-btn:hover { background: #45a043; }
-
-  .delete-btn { background: #e53935; color: #fff; }
-  .delete-btn:hover { background: #d32f2f; }
+  /* Excel кнопка */
+  .excel-btn { background: #1d6f42; color: #fff; padding: 10px 18px; font-size: 14px; font-weight: 500; border: none; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+  .excel-btn:hover { background: #218c50; transform: translateY(-1px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); }
+  .excel-btn:active { transform: translateY(0); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
   /* Кнопка назад */
   .back-button { background: #ccc; color: #333; }
@@ -156,9 +53,7 @@
 <h2>Активісти</h2>
 
 <form action="{{ url_for('export_activists') }}" method="get" style="margin-bottom: 20px; text-align:right;">
-  <button type="submit" class="excel-btn">
-    📊 Експорт в Excel
-  </button>
+  <button type="submit" class="excel-btn">📊 Експорт в Excel</button>
 </form>
 
 <div class="filters">
@@ -191,6 +86,7 @@
       <option value="za">Я→А</option>
     </select>
   </label>
+  <div id="filteredCount">Відфільтровано: 0 записів</div>
 </div>
 
 <div class="table-container">
@@ -240,50 +136,79 @@
 </div>
 
 <script>
-// Фільтри та сортування
+// Фільтри та сортування з підрахунком кількості
 const searchInput = document.getElementById('searchInput');
 const okrugFilter = document.getElementById('okrugFilter');
 const locationFilter = document.getElementById('locationFilter');
 const sortOrder = document.getElementById('sortOrder');
 const table = document.getElementById('activistsTable').tBodies[0];
+const filteredCount = document.getElementById('filteredCount');
 
 function filterAndSortTable() {
   const search = searchInput.value.toLowerCase();
-  const okrug = okrugFilter.value;
-  const location = locationFilter.value;
+  const selectedOkrug = okrugFilter.value;
+  const selectedLocation = locationFilter.value;
   const order = sortOrder.value;
 
   let rows = Array.from(table.rows);
+  let visibleCount = 0;
 
-  // Фільтруємо
+  // Підрахунок кількості для фільтрів
+  let okrugCounts = {};
+  let locationCounts = {};
+
   rows.forEach(row => {
-    const lastName = row.cells[2].textContent.toLowerCase();
     const rowOkrug = row.cells[1].textContent;
     const rowLocation = row.cells[10].textContent;
+    const lastName = row.cells[2].textContent.toLowerCase();
 
     const matchSearch = lastName.includes(search);
-    const matchOkrug = okrug === "all" || rowOkrug === okrug;
-    const matchLocation = location === "all" || rowLocation === location;
+    const matchOkrug = selectedOkrug === "all" || rowOkrug === selectedOkrug;
+    const matchLocation = selectedLocation === "all" || rowLocation === selectedLocation;
 
-    row.style.display = (matchSearch && matchOkrug && matchLocation) ? "" : "none";
+    const show = matchSearch && matchOkrug && matchLocation;
+    row.style.display = show ? "" : "none";
+
+    if(show) visibleCount++;
+
+    // Рахуємо для всіх рядків
+    okrugCounts[rowOkrug] = (okrugCounts[rowOkrug] || 0) + 1;
+    locationCounts[rowLocation] = (locationCounts[rowLocation] || 0) + 1;
+  });
+
+  // Оновлюємо текст з кількістю
+  filteredCount.textContent = `Відфільтровано: ${visibleCount} записів`;
+
+  // Динамічне оновлення опцій select
+  Array.from(okrugFilter.options).forEach(opt => {
+    if(opt.value === "all") return;
+    const count = okrugCounts[opt.value] || 0;
+    opt.textContent = `Округ ${opt.value} (${count})`;
+  });
+  Array.from(locationFilter.options).forEach(opt => {
+    if(opt.value === "all") return;
+    const count = locationCounts[opt.value] || 0;
+    opt.textContent = `${opt.value} (${count})`;
   });
 
   // Сортування
-  rows = rows.filter(r => r.style.display !== "none");
-  rows.sort((a,b) => {
+  let visibleRows = rows.filter(r => r.style.display !== "none");
+  visibleRows.sort((a,b) => {
     const nameA = a.cells[2].textContent.toLowerCase();
     const nameB = b.cells[2].textContent.toLowerCase();
-    return order === "az" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+    return order === "az" ? nameA.localeCompare(nameB,'uk') : nameB.localeCompare(nameA,'uk');
   });
-
-  // Застосовуємо порядок
-  rows.forEach(r => table.appendChild(r));
+  visibleRows.forEach(r => table.appendChild(r));
 }
 
+// Події
 searchInput.addEventListener('input', filterAndSortTable);
 okrugFilter.addEventListener('change', filterAndSortTable);
 locationFilter.addEventListener('change', filterAndSortTable);
 sortOrder.addEventListener('change', filterAndSortTable);
+
+// Виклик при завантаженні
+filterAndSortTable();
 </script>
 
 </body>
