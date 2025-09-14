@@ -5123,94 +5123,6 @@ def delete_region_large(region_id):
     return redirect(url_for('regions_large'))
     
 # ---------- ACTIVISTS ----------
-@app.route('/activists')
-def activists():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    # ---------- НОВИЙ КОД: підтягування округів за адресою ----------
-    import re
-    region_tables = [f"regions{i}" for i in range(1, 43)]
-
-    c.execute("SELECT id, address FROM activists")
-    activists_data = c.fetchall()
-
-    for activist_id, address in activists_data:
-        if not address:
-            continue
-
-        # Шукаємо "вулиця + будинок" — наприклад "Шевченка 15"
-        match = re.match(r'(.+?)\s+(\d+\w*)$', address.strip())
-        if not match:
-            continue
-        street = match.group(1).strip()
-        building = match.group(2).strip()
-
-        found = False
-        for table in region_tables:
-            # Тут беремо okrug і large_okrug із таблиць regions
-            try:
-                c.execute(f"""
-                    SELECT okrug FROM {table}
-                    WHERE street=? AND building=?
-                    LIMIT 1
-                """, (street, building))
-                row = c.fetchone()
-                if row:
-                    okrug = row[0]
-
-                    # Оновлюємо колонку okrug у activists
-                    c.execute("UPDATE activists SET okrug=? WHERE id=?", (okrug, activist_id))
-                    found = True
-                    break
-            except sqlite3.OperationalError:
-                # Якщо таблиці ще нема – пропускаємо
-                continue
-    conn.commit()
-    # ---------- КІНЕЦЬ НОВОГО КОДУ ----------
-
-    # Об'єднання всіх 42 таблиць підписників
-    union_query = " UNION ALL ".join([f"SELECT activist FROM regions{i}" for i in range(1, 43)])
-
-    # Запит із підрахунком кількості підписників
-    query = f"""
-        SELECT a.id, a.large_okrug, a.okrug, a.last_name, a.first_name, a.middle_name,
-               a.address, a.phone, a.birth_date,
-               IFNULL(cnt.sub_count, 0) as subscribers_count,
-               a.newspapers_count, a.location
-        FROM activists a
-        LEFT JOIN (
-            SELECT activist, COUNT(*) as sub_count
-            FROM ({union_query})
-            GROUP BY activist
-        ) cnt
-        ON TRIM(LOWER(cnt.activist)) = TRIM(LOWER(a.last_name || ' ' || a.first_name))
-    """
-
-    c.execute(query)
-    rows = c.fetchall()
-    conn.close()
-
-    data = [{
-        'id': row[0],
-        'large_okrug': row[1],
-        'okrug': row[2],
-        'last_name': row[3],
-        'first_name': row[4],
-        'middle_name': row[5],
-        'address': row[6],
-        'phone': row[7],
-        'birth_date': row[8],
-        'subscribers_count': row[9],
-        'newspapers_count': row[10],
-        'location': row[11]
-    } for row in rows]
-
-    return render_template('activists.html', data=data)
-
 
 @app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
@@ -5232,50 +5144,6 @@ def add_activist():
         newspapers_count = request.form.get('newspapers_count', 0)
         location = request.form['location']
 
-        # ---------------- Автоматичне визначення округів ----------------
-        import re
-        large_okrug = None
-        okrug = None
-
-        match = re.match(r'(.+?)\s+(\d+\w*)$', address.strip())
-        if match:
-            street = match.group(1).strip()
-            building = match.group(2).strip()
-            region_tables = [f"regions{i}" for i in range(1, 43)]
-
-            for table in region_tables:
-                try:
-                    c.execute(f"""
-                        SELECT okrug FROM {table}
-                        WHERE street=? AND building=?
-                        LIMIT 1
-                    """, (street, building))
-                    row = c.fetchone()
-                    if row:
-                        okrug = row[0]
-                        # Якщо є колонка large_okrug у таблицях regions — витягуємо і її
-                        try:
-                            c.execute(f"""
-                                SELECT large_okrug FROM {table}
-                                WHERE street=? AND building=?
-                                LIMIT 1
-                            """, (street, building))
-                            lr = c.fetchone()
-                            if lr:
-                                large_okrug = lr[0]
-                        except sqlite3.OperationalError:
-                            pass
-                        break
-                except sqlite3.OperationalError:
-                    continue
-
-        # Якщо не знайшли автоматично — беремо те, що ввів користувач (для безпеки)
-        if not okrug:
-            okrug = request.form.get('okrug')
-        if not large_okrug:
-            large_okrug = request.form.get('large_okrug')
-        # ---------------------------------------------------------------
-
         # Вставка в базу (кількість підписників = 0)
         c.execute('''
             INSERT INTO activists (
@@ -5295,7 +5163,6 @@ def add_activist():
     # GET-запит – показати форму
     return render_template('add_activist.html')
 
-
 @app.route('/activists/edit/<int:activist_id>', methods=['GET', 'POST'])
 def edit_activist(activist_id):
     if 'username' not in session or session.get('role') != 'admin':
@@ -5306,52 +5173,7 @@ def edit_activist(activist_id):
     c = conn.cursor()
 
     if request.method == 'POST':
-        # ---------------- Автоматичне визначення округів ----------------
-        import re
-        address = request.form['address']
-        large_okrug = None
-        okrug = None
-
-        match = re.match(r'(.+?)\s+(\d+\w*)$', address.strip())
-        if match:
-            street = match.group(1).strip()
-            building = match.group(2).strip()
-            region_tables = [f"regions{i}" for i in range(1, 43)]
-
-            for table in region_tables:
-                try:
-                    c.execute(f"""
-                        SELECT okrug FROM {table}
-                        WHERE street=? AND building=?
-                        LIMIT 1
-                    """, (street, building))
-                    row = c.fetchone()
-                    if row:
-                        okrug = row[0]
-                        # Якщо є колонка large_okrug у таблицях regions — витягуємо і її
-                        try:
-                            c.execute(f"""
-                                SELECT large_okrug FROM {table}
-                                WHERE street=? AND building=?
-                                LIMIT 1
-                            """, (street, building))
-                            lr = c.fetchone()
-                            if lr:
-                                large_okrug = lr[0]
-                        except sqlite3.OperationalError:
-                            # Якщо нема такої колонки — пропускаємо
-                            pass
-                        break
-                except sqlite3.OperationalError:
-                    continue
-
-        # Якщо не знайшли автоматично — беремо те, що ввів користувач
-        if not okrug:
-            okrug = request.form.get('okrug')
-        if not large_okrug:
-            large_okrug = request.form.get('large_okrug')
-        # ---------------------------------------------------------------
-
+    
         # Оновлюємо дані активіста
         c.execute('''
             UPDATE activists SET
