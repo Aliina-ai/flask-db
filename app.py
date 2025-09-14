@@ -5217,10 +5217,9 @@ def add_activist():
 
     # GET-запит – показати форму
     return render_template('add_activist.html')
-
-
 @app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
+    # Доступ лише для адміністратора
     if 'username' not in session or session.get('role') != 'admin':
         flash('Лише адміністратор може додавати.')
         return redirect(url_for('activists'))
@@ -5230,6 +5229,8 @@ def add_activist():
         c = conn.cursor()
 
         # Підтягуємо дані з форми
+        large_okrug = request.form['large_okrug']
+        okrug = request.form['okrug']
         last_name = request.form['last_name']
         first_name = request.form['first_name']
         middle_name = request.form['middle_name']
@@ -5242,16 +5243,36 @@ def add_activist():
         # Вставка в базу (кількість підписників = 0)
         c.execute('''
             INSERT INTO activists (
-                large_okrug, okrug, last_name, first_name, middle_name,
-                address, phone, birth_date, subscribers_count, newspapers_count, location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                large_okrug,
+                okrug,
+                last_name,
+                first_name,
+                middle_name,
+                address,
+                phone,
+                birth_date,
+                subscribers_count,
+                newspapers_count,
+                location
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            large_okrug, okrug, last_name, first_name, middle_name,
-            address, phone, birth_date, 0, newspapers_count, location
+            large_okrug,
+            okrug,
+            last_name,
+            first_name,
+            middle_name,
+            address,
+            phone,
+            birth_date,
+            0,
+            newspapers_count,
+            location
         ))
 
         conn.commit()
         conn.close()
+
         flash('Активіста успішно додано!')
         return redirect(url_for('activists'))
 
