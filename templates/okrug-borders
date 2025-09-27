@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Межі округів</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h2 {
+      color: #2b4f73;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      padding: 10px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th {
+      background: #2b4f73;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f1f5f9;
+    }
+
+    /* кнопки дій – якщо знадобляться */
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .actions button {
+      padding: 6px 10px;
+      font-size: 13px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .edit-btn {
+      background: #4caf50;
+      color: white;
+    }
+
+    .edit-btn:hover {
+      background: #45a043;
+    }
+
+    .delete-btn {
+      background: #e53935;
+      color: white;
+    }
+
+    .delete-btn:hover {
+      background: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <h2>Межі округів</h2>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Округ</th>
+          <th>Виборча дільниця</th>
+          <th>Адреса</th>
+          <th>Попередня назва адреси</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>321097</td>
+          <td>вул. Гайок 1–4, 77/43, 139–145</td>
+          <td>стара назва (якщо була)</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>321098</td>
+          <td>вул. Гайок 5–6, 89, 103-105</td>
+          <td>стара назва (якщо була)</td>
+        </tr>
+        <!-- додавайте далі -->
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
