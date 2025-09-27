@@ -12798,7 +12798,11 @@ def passport():
 
     # Передаємо дані у шаблон
     return render_template('passport.html', addresses=addresses, is_admin=(session.get('role')=='admin'))
-    
+
+@app.route('/okrug-borders')
+def okrug_borders():
+    # Тут можна відразу дані підставляти з БД
+    return render_template('okrug-borders.html')
 
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
