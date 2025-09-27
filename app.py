@@ -5226,7 +5226,11 @@ def edit_activist(activist_id):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    if request.method == 'POST':
+        if request.method == 'POST':
+        # ✅ Зчитуємо дані з форми
+        large_okrug = request.form.get('large_okrug')
+        okrug = request.form.get('okrug')
+        address = request.form.get('address')
     
         # Оновлюємо дані активіста
         c.execute('''
