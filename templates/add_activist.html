@@ -71,21 +71,6 @@
             else if (okrug >= 36 && okrug <= 42) large = 'Округ 6';
             document.getElementById('large_okrug').value = large;
         }
-
-        function updateBuildings() {
-            const street = document.getElementById("street").value;
-            const buildingSelect = document.getElementById("building");
-            buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
-
-            if (addressData[street]) {
-                Object.keys(addressData[street].buildings).forEach(b => {
-                    const opt = document.createElement("option");
-                    opt.value = b;
-                    opt.textContent = b;
-                    buildingSelect.appendChild(opt);
-                });
-            }
-        }
     </script>
 </head>
 <body>
@@ -101,6 +86,7 @@
                     <option value="{{ i }}">{{ i }}</option>
                 {% endfor %}
             </select>
+
             <input type="hidden" name="large_okrug" id="large_okrug" value="">
 
             <label>Прізвище</label>
@@ -112,21 +98,8 @@
             <label>По батькові</label>
             <input type="text" name="middle_name" required>
 
-            <label>Адреса (вулиця)</label>
-            <select name="street" id="street" required onchange="updateBuildings()">
-                <option value="">Оберіть вулицю</option>
-                {% for street in address_data.keys() %}
-                    <option value="{{ street }}">{{ street }}</option>
-                {% endfor %}
-            </select>
-
-            <label>Будинок</label>
-            <select name="building" id="building" required>
-                <option value="">Оберіть будинок</option>
-            </select>
-
-            <label>Квартира</label>
-            <input type="text" name="apartment">
+            <label>Адреса</label>
+            <input type="text" name="address" required>
 
             <label>Телефон</label>
             <input type="text" name="phone" required>
@@ -151,10 +124,5 @@
             <button type="submit">Додати активіста</button>
         </form>
     </div>
-
-    <script>
-        const addressData = {{ address_data_json | safe }};
-    </script>
 </body>
 </html>
-
