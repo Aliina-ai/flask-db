@@ -4,6 +4,7 @@ import os
 import io
 from openpyxl import Workbook
 from flask import send_file
+from regions import expand_buildings_all
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -5212,13 +5213,8 @@ def activists():
 
 @app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
-    import json
-    from flask import request, redirect, url_for, flash, session, render_template
-    import sqlite3
-    from your_module import expand_buildings_all  # функція для адрес
-
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати.')
+        flash('Лише адміністратор може додавати активістів.')
         return redirect(url_for('activists'))
 
     conn = sqlite3.connect(DB_PATH)
@@ -5227,7 +5223,6 @@ def add_activist():
     if request.method == 'POST':
         street = request.form['street']
         building = request.form['building']
-        apartment = request.form.get('apartment', '')
         address_data = expand_buildings_all()
         district = address_data.get(street, {}).get('buildings', {}).get(building, '')
 
@@ -5243,24 +5238,25 @@ def add_activist():
             request.form['last_name'],
             request.form['first_name'],
             request.form['middle_name'],
-            street,           # адреса = вулиця
-            building,         # новий стовпчик будинок
-            apartment,        # новий стовпчик квартира
+            request.form['address'],
+            building,
+            request.form.get('apartment', ''),
             request.form['phone'],
             request.form['birth_date'],
-            0,                # subscribers_count
+            request.form.get('subscribers_count', 0),
             request.form.get('newspapers_count', 0),
             request.form['location']
         ))
 
         conn.commit()
         conn.close()
-        flash('Активіста успішно додано!')
         return redirect(url_for('activists'))
 
-    # GET-запит — підготовка шаблону
+    # GET-запит — підготовка форми
     c.execute("SELECT last_name, first_name, middle_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()]
+    existing_activists = [
+        {'name': f"{r[0]} {r[1]} {r[2]}".strip()} for r in c.fetchall()
+    ]
     conn.close()
 
     address_data = expand_buildings_all()
@@ -5268,7 +5264,7 @@ def add_activist():
         'add_activist.html',
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False),
-        activists=activists
+        activists=existing_activists
     )
 
 @app.route('/activists/edit/<int:activist_id>', methods=['GET', 'POST'])
