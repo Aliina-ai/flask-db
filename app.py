@@ -5405,8 +5405,8 @@ def region1():
     ]
 
     # Отримання активістів
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    c.execute("SELECT DISTINCT last_name, first_name, middle_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()]
 
     # Унікальні вулиці та будинки
     streets = sorted(set(row['street'] for row in data))
