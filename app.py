@@ -4949,38 +4949,55 @@ def expand_buildings42():  # заміни xx на номер округу
         }
     }
 
-def expand_buildings_all():
-    # Тут підключаємо всі твої функції expand_buildings1..42
-    from regions import (
-        expand_buildings1, expand_buildings2, expand_buildings3, expand_buildings4,
-        expand_buildings5, expand_buildings6, expand_buildings7, expand_buildings8,
-        expand_buildings9, expand_buildings10, expand_buildings11, expand_buildings12,
-        expand_buildings13, expand_buildings14, expand_buildings15, expand_buildings16,
-        expand_buildings17, expand_buildings18, expand_buildings19, expand_buildings20,
-        expand_buildings21, expand_buildings22, expand_buildings23, expand_buildings24,
-        expand_buildings25, expand_buildings26, expand_buildings27, expand_buildings28,
-        expand_buildings29, expand_buildings30, expand_buildings31, expand_buildings32,
-        expand_buildings33, expand_buildings34, expand_buildings35, expand_buildings36,
-        expand_buildings37, expand_buildings38, expand_buildings39, expand_buildings40,
-        expand_buildings41, expand_buildings42
-    )
+# Припускаємо, що всі твої функції expand_buildings1() ... expand_buildings42() вже визначені або імпортовані
 
+def expand_buildings_all():
     all_data = {}
-    for func in [
-        expand_buildings1, expand_buildings2, expand_buildings3, expand_buildings4,
-        expand_buildings5, expand_buildings6, expand_buildings7, expand_buildings8,
-        expand_buildings9, expand_buildings10, expand_buildings11, expand_buildings12,
-        expand_buildings13, expand_buildings14, expand_buildings15, expand_buildings16,
-        expand_buildings17, expand_buildings18, expand_buildings19, expand_buildings20,
-        expand_buildings21, expand_buildings22, expand_buildings23, expand_buildings24,
-        expand_buildings25, expand_buildings26, expand_buildings27, expand_buildings28,
-        expand_buildings29, expand_buildings30, expand_buildings31, expand_buildings32,
-        expand_buildings33, expand_buildings34, expand_buildings35, expand_buildings36,
-        expand_buildings37, expand_buildings38, expand_buildings39, expand_buildings40,
-        expand_buildings41, expand_buildings42
-    ]:
-        data = func()
-        all_data.update(data)
+    
+    # Додаємо дані всіх округів
+    all_data.update(expand_buildings1())
+    all_data.update(expand_buildings2())
+    all_data.update(expand_buildings3())
+    all_data.update(expand_buildings4())
+    all_data.update(expand_buildings5())
+    all_data.update(expand_buildings6())
+    all_data.update(expand_buildings7())
+    all_data.update(expand_buildings8())
+    all_data.update(expand_buildings9())
+    all_data.update(expand_buildings10())
+    all_data.update(expand_buildings11())
+    all_data.update(expand_buildings12())
+    all_data.update(expand_buildings13())
+    all_data.update(expand_buildings14())
+    all_data.update(expand_buildings15())
+    all_data.update(expand_buildings16())
+    all_data.update(expand_buildings17())
+    all_data.update(expand_buildings18())
+    all_data.update(expand_buildings19())
+    all_data.update(expand_buildings20())
+    all_data.update(expand_buildings21())
+    all_data.update(expand_buildings22())
+    all_data.update(expand_buildings23())
+    all_data.update(expand_buildings24())
+    all_data.update(expand_buildings25())
+    all_data.update(expand_buildings26())
+    all_data.update(expand_buildings27())
+    all_data.update(expand_buildings28())
+    all_data.update(expand_buildings29())
+    all_data.update(expand_buildings30())
+    all_data.update(expand_buildings31())
+    all_data.update(expand_buildings32())
+    all_data.update(expand_buildings33())
+    all_data.update(expand_buildings34())
+    all_data.update(expand_buildings35())
+    all_data.update(expand_buildings36())
+    all_data.update(expand_buildings37())
+    all_data.update(expand_buildings38())
+    all_data.update(expand_buildings39())
+    all_data.update(expand_buildings40())
+    all_data.update(expand_buildings41())
+    all_data.update(expand_buildings42())
+
     return all_data
 
 @app.route('/', methods=['GET', 'POST'])
