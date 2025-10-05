@@ -4948,6 +4948,40 @@ def expand_buildings42():  # заміни xx на номер округу
         }
     }
 
+def expand_buildings_all():
+    # Тут підключаємо всі твої функції expand_buildings1..42
+    from regions import (
+        expand_buildings1, expand_buildings2, expand_buildings3, expand_buildings4,
+        expand_buildings5, expand_buildings6, expand_buildings7, expand_buildings8,
+        expand_buildings9, expand_buildings10, expand_buildings11, expand_buildings12,
+        expand_buildings13, expand_buildings14, expand_buildings15, expand_buildings16,
+        expand_buildings17, expand_buildings18, expand_buildings19, expand_buildings20,
+        expand_buildings21, expand_buildings22, expand_buildings23, expand_buildings24,
+        expand_buildings25, expand_buildings26, expand_buildings27, expand_buildings28,
+        expand_buildings29, expand_buildings30, expand_buildings31, expand_buildings32,
+        expand_buildings33, expand_buildings34, expand_buildings35, expand_buildings36,
+        expand_buildings37, expand_buildings38, expand_buildings39, expand_buildings40,
+        expand_buildings41, expand_buildings42
+    )
+
+    all_data = {}
+    for func in [
+        expand_buildings1, expand_buildings2, expand_buildings3, expand_buildings4,
+        expand_buildings5, expand_buildings6, expand_buildings7, expand_buildings8,
+        expand_buildings9, expand_buildings10, expand_buildings11, expand_buildings12,
+        expand_buildings13, expand_buildings14, expand_buildings15, expand_buildings16,
+        expand_buildings17, expand_buildings18, expand_buildings19, expand_buildings20,
+        expand_buildings21, expand_buildings22, expand_buildings23, expand_buildings24,
+        expand_buildings25, expand_buildings26, expand_buildings27, expand_buildings28,
+        expand_buildings29, expand_buildings30, expand_buildings31, expand_buildings32,
+        expand_buildings33, expand_buildings34, expand_buildings35, expand_buildings36,
+        expand_buildings37, expand_buildings38, expand_buildings39, expand_buildings40,
+        expand_buildings41, expand_buildings42
+    ]:
+        data = func()
+        all_data.update(data)
+    return all_data
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None
