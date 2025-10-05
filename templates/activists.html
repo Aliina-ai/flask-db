@@ -92,46 +92,51 @@
 <div class="table-container">
 <table id="activistsTable">
   <thead>
-    <tr>
-      <th>Великий округ</th>
-      <th>Округ</th>
-      <th>Прізвище</th>
-      <th>Імʼя</th>
-      <th>По батькові</th>
-      <th>Адреса</th>
-      <th>Телефон</th>
-      <th>Дата народження</th>
-      <th>Підписники</th>
-      <th>Газети</th>
-      <th>Локація</th>
-      <th>Дії</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in data %}
-    <tr>
-      <td>{{ row.large_okrug }}</td>
-      <td>{{ row.okrug }}</td>
-      <td>{{ row.last_name }}</td>
-      <td>{{ row.first_name }}</td>
-      <td>{{ row.middle_name }}</td>
-      <td>{{ row.address }}</td>
-      <td>{{ row.phone }}</td>
-      <td>{{ row.birth_date }}</td>
-      <td>{{ row.subscribers_count }}</td>
-      <td>{{ row.newspapers_count }}</td>
-      <td>{{ row.location }}</td>
-      <td class="actions">
-        <a href="{{ url_for('edit_activist', activist_id=row.id) }}">
-          <button class="action-btn edit-btn">Редагувати</button>
-        </a>
-        <form method="POST" action="{{ url_for('delete_activist', activist_id=row.id) }}" style="display:inline;">
-          <button class="action-btn delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+<thead>
+  <tr>
+    <th>Великий округ</th>
+    <th>Округ</th>
+    <th>Прізвище</th>
+    <th>Імʼя</th>
+    <th>По батькові</th>
+    <th>Адреса</th>
+    <th>Будинок</th>       <!-- новий стовпчик -->
+    <th>Квартира</th>      <!-- новий стовпчик -->
+    <th>Телефон</th>
+    <th>Дата народження</th>
+    <th>Підписники</th>
+    <th>Газети</th>
+    <th>Локація</th>
+    <th>Дії</th>
+  </tr>
+</thead>
+<tbody>
+  {% for row in data %}
+  <tr>
+    <td>{{ row.large_okrug }}</td>
+    <td>{{ row.okrug }}</td>
+    <td>{{ row.last_name }}</td>
+    <td>{{ row.first_name }}</td>
+    <td>{{ row.middle_name }}</td>
+    <td>{{ row.address }}</td>
+    <td>{{ row.building }}</td>    <!-- новий стовпчик -->
+    <td>{{ row.apartment }}</td>   <!-- новий стовпчик -->
+    <td>{{ row.phone }}</td>
+    <td>{{ row.birth_date }}</td>
+    <td>{{ row.subscribers_count }}</td>
+    <td>{{ row.newspapers_count }}</td>
+    <td>{{ row.location }}</td>
+    <td class="actions">
+      <a href="{{ url_for('edit_activist', activist_id=row.id) }}">
+        <button class="action-btn edit-btn">Редагувати</button>
+      </a>
+      <form method="POST" action="{{ url_for('delete_activist', activist_id=row.id) }}" style="display:inline;">
+        <button class="action-btn delete-btn" onclick="return confirm('Ви впевнені, що хочете видалити?')">Видалити</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
 </table>
 </div>
 
