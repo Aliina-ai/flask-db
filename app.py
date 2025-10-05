@@ -5405,8 +5405,8 @@ def region1():
     ]
 
     # Отримання активістів
-    c.execute("SELECT DISTINCT last_name, first_name, middle_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()]
+    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
+    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
 
     # Унікальні вулиці та будинки
     streets = sorted(set(row['street'] for row in data))
@@ -5470,9 +5470,9 @@ def add_region1():
         conn.close()
         return redirect(url_for('region1'))
 
-    c.execute("SELECT last_name, first_name, middle_name FROM activists")
+    c.execute("SELECT last_name, first_name FROM activists")
     activists = [
-        {'name': f"{r[0]} {r[1]} {r[2]}"}  # Прізвище + ім'я + по батькові
+        {'name': f"{r[0]} {r[1]}"}  
         for r in c.fetchall()
     ]
 
@@ -5535,8 +5535,8 @@ def edit_region1(subscriber_id):
         'apartment': row[9], 'phone': row[10], 'activist': row[11]
     }
 
-    c.execute("SELECT last_name, first_name, middle_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()]
+    c.execute("SELECT last_name, first_name, FROM activists")
+    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
     address_data = expand_buildings_1()
     conn.close()
 
