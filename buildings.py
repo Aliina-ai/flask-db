@@ -1,5 +1,5 @@
 
-def expand_buildings_1():
+def expand_buildings_all():
     return {
         "вул.Гайок": {
             "buildings": {
@@ -26,10 +26,7 @@ def expand_buildings_1():
                 "399": "321098", "400": "321098", "401": "321098", "402": "321098", "403": "321098"
             }
         }
-    }
-
-def expand_buildings_2():
-    return {
+   
         "вул.Волонтерська": {
             "buildings": {
                 # ВД 321100
@@ -70,10 +67,7 @@ def expand_buildings_2():
                 "1": "321100"
             }
         }
-    }
-
-def expand_buildings3():
-    return {
+   
         "вул.Січневого прориву": {
             "buildings": {
                 # ВД 321101
@@ -136,11 +130,7 @@ def expand_buildings3():
                 "224": "321099", "226": "321099",
             }
         }
-    }
 
-
-def expand_buildings4():
-    return {
         "вул.Полковника Коновальця": {
             "buildings": {
                 "3к.ГУРТ": "321099", "3/1": "321099", "3/4": "321099",
@@ -177,11 +167,7 @@ def expand_buildings4():
                 "7": "321105", "9": "321105", "11": "321105",
             }
         }
-    }
 
-
-def expand_buildings5():
-    return {
         "бульв. Олександрійський": {
             "buildings": ["98", "102", "104"],
             "district": "321106"
@@ -206,10 +192,7 @@ def expand_buildings5():
             "buildings": [str(i) for i in range(1, 42)] + ["2А", "20А", "27А"],
             "district": "321108"
         }
-    }
 
-def expand_buildings6():
-    return {
         "бульв.Олександрійський": {
             "buildings": [
                 "54Г", "84", "86", "88", "92"
@@ -243,10 +226,7 @@ def expand_buildings6():
                          ["5А", "5Б", "7А", "34А", "80А", "80Б"],
             "district": "321109"
         }
-    }
 
-def expand_buildings7():
-    return {
         "вул. Василя Стуса": {
             "buildings": {
                 "10": "321112",
@@ -334,10 +314,7 @@ def expand_buildings7():
                 "157": "321113"
             }
         }
-    }
 
-def expand_buildings8():
-    return {
         "бульв. Олександрійський": {
             "buildings": {
                 "113": "321111",
@@ -358,10 +335,7 @@ def expand_buildings8():
                 "66": "321110"
             }
         }
-    }
 
-def expand_buildings9():
-    return {
         "бульв. Олександрійський": {
             "buildings": {
                 "131": "321114", "133": "321114", "135": "321114", "141": "321114",
@@ -459,8 +433,6 @@ def expand_buildings9():
         "тупик Глухий": {"buildings": {"2": "321115", "3": "321115", "4": "321115", "5": "321115", "7": "321115", "8": "321115"}}
     }
 
-def expand_buildings10():
-    return {
         "вул. Вокзальна": {
             "buildings": {
                 **{str(i): "321118" for i in range(3, 12)},
@@ -532,10 +504,7 @@ def expand_buildings10():
                 "62А": "321119", "76": "321119"
             }
         }
-    }
 
-def expand_buildings11():
-    return {
         "вул. Запорізька": {
             "buildings": {
                 "19": "321116",
@@ -645,8 +614,6 @@ def expand_buildings11():
         }
     }
 
-def expand_buildings12():
-    return {
         "вул. Андрея Шептицького": {
             "buildings": {
                 "70": "321121",
@@ -692,8 +659,6 @@ def expand_buildings12():
         }
     }
 
-def expand_buildings13():
-    return {
         "бульв. Олександрійський": {
             "buildings": {
                 "75": "321122", "20": "321125", "61": "321125", "61А": "321125",
@@ -787,10 +752,7 @@ def expand_buildings13():
                 "9": "321122", "11/12": "321122"
             }
         }
-    }
 
-def expand_buildings14():
-    return {
         "вул. Курсова": {
             "buildings": {
                 "18": "321124", "20": "321124", "22": "321124", "26": "321124",
@@ -857,10 +819,7 @@ def expand_buildings14():
                 "4": "321129"
             }
         }
-    }
 
-def expand_buildings15():
-    return {
         "бульв. Михайла Грушевського": {
             "buildings": {
                 "6": "321128", "10": "321128", "12": "321128", "12А": "321128", "40": "321128"
@@ -895,10 +854,7 @@ def expand_buildings15():
                 "50": "321133", "60": "321133", "62": "321133", "64/2": "321133"
             }
         }
-    }
 
-def expand_buildings16():
-    return {
         "бульв. Михайла Грушевського": {
             "buildings": {"44": "321130", "46": "321130"}
         },
@@ -1078,10 +1034,7 @@ def expand_buildings16():
                 "26":"321131","27":"321131","28":"321131","30":"321131","34":"321131","38":"321131","45":"321131"
             }
         }
-    }
 
-def expand_buildings17():
-    return {
         "вул. Павліченко": {
             "buildings": {
                 "12А": "321132", "14А": "321132", "19": "321132", "20": "321132",
@@ -1105,10 +1058,7 @@ def expand_buildings17():
                 **{str(i): "321135" for i in range(15,24)}, "25": "321135"
             }
         }
-    }
 
-def expand_buildings18():
-    return {
         "вул. Базарна": {
             "buildings": {
                 **{str(i): "321134" for i in range(3,20)}, "14/9": "321134", "15/15": "321134",
@@ -1230,10 +1180,7 @@ def expand_buildings18():
                 "1/11":"321136","2/1":"321136","4/27":"321136","16":"321136","18":"321136"
             }
         }
-    }
 
-def expand_buildings19():
-    return {
         "вул. Голубина": {
             "buildings": {
                 **{str(i): "321137" for i in range(4,7)}, "14/15": "321137", "15/24": "321137",
@@ -1346,8 +1293,6 @@ def expand_buildings19():
         "пров. Павліченко": {"buildings": {"8":"321138","10":"321138"}}
     }
 
-def expand_buildings20():
-    return {
         "вул. Шевченка": {
             "buildings": {
                 "91": "321139", "93": "321139", "95": "321139",
@@ -1374,10 +1319,7 @@ def expand_buildings20():
                 "3": "321139"
             }
         }
-    }
 
-def expand_buildings21():
-    return {
         "вул. Василя Вишиваного": {
             "buildings": {
                 "1":"321141","3":"321141","5":"321141","6":"321141","7":"321141",
@@ -1479,8 +1421,6 @@ def expand_buildings21():
         "просп. Незалежності": {"buildings": {"30":"321146","32":"321146"}}
     }
 
-def expand_buildings22():
-    return {
         "вул. Петера Новотні": {
             "buildings": {
                 "61А": "321142", "65": "321142", "67": "321142"
@@ -1515,8 +1455,6 @@ def expand_buildings22():
         }
     }
 
-def expand_buildings23():
-    return {
         "просп. Незалежності": {
             "buildings": {
                 "50/5": "321144", "52/4": "321144", "56А": "321144", "58": "321144",
@@ -1540,10 +1478,7 @@ def expand_buildings23():
                 "20": "321148", "22": "321148", "24": "321148", "26": "321148", "34": "321148"
             }
         }
-    }
 
-def expand_buildings24():
-    return {
         "просп. Незалежності": {
             "buildings": {
                 "59": "321149",
@@ -1567,10 +1502,7 @@ def expand_buildings24():
                 "14": "321150"
             }
         }
-    }
 
-def expand_buildings25():
-    return {
         "вул. Митрофанова": {
             "buildings": {
                 "1": "321145"
@@ -1594,10 +1526,7 @@ def expand_buildings25():
                 "46": "321147"
             }
         }
-    }
 
-def expand_buildings26():
-    return {
         "вул. Чорних Запорожців": {
             "buildings": {
                 "47/1": "321151"
@@ -1629,10 +1558,7 @@ def expand_buildings26():
                 "23": "321153"
             }
         }
-    }
 
-def expand_buildings27():
-    return {
         "вул. Героїв Крут": {
             "buildings": {
                 "29": "321152",
@@ -1660,10 +1586,7 @@ def expand_buildings27():
                 "36": "321152"
             }
         }
-    }
 
-def expand_buildings28():
-    return {
         "бульв. Княгині Ольги": {
             "buildings": {
                 "17": "321154",
@@ -1704,10 +1627,7 @@ def expand_buildings28():
                 "42": "321154"
             }
         }
-    }
 
-def expand_buildings29():
-    return {
         "вул. Героїв Крут": {
             "buildings": {
                 "45": "321157",
@@ -1742,10 +1662,7 @@ def expand_buildings29():
                 "12": "321158"
             }
         }
-    }
 
-def expand_buildings30():
-    return {
         "вул. Зенітного полку": {
             "buildings": {
                 "36": "321159",
@@ -1866,10 +1783,7 @@ def expand_buildings30():
                 "32": "321161"
             }
         }
-    }
 
-def expand_buildings31():
-    return {
         "вул. Героїв Крут": {
             "buildings": {
                 "61/20": "311160",
@@ -1891,10 +1805,7 @@ def expand_buildings31():
                 "84": "321162"
             }
         }
-    }
 
-def expand_buildings32():
-    return {
     "вул. Івана Кожедуба": {
         "buildings": {
             "123А": "321163", "123Б": "321163", "129А": "321163", "133А": "321163",
@@ -2008,10 +1919,7 @@ def expand_buildings32():
             "47": "321165", "49": "321165", "51": "321165"
         }
     }
-}
 
-def expand_buildings33():
-    return {
     "вул. Глиняна": {
         "buildings": {
             "1": "321167", "1А": "321167",
@@ -2071,10 +1979,7 @@ def expand_buildings33():
             "36": "321167", "38": "321167", "39": "321167"
         }
     }
-}
 
-def expand_buildings34():
-    return {
         # ВД 321166
         "вул.Анатолія Солов’яненка": {
             "buildings": {
@@ -2294,10 +2199,7 @@ def expand_buildings34():
                 "12": "321398", "14": "321398", "16": "321398", "18": "321398", "20": "321398", "22": "321398"
             }
         }
-    }
 
-def expand_buildings35():
-    return {
         # ВД 321169
         "вул.Архипа Люльки": {
             "buildings": {
@@ -2469,10 +2371,7 @@ def expand_buildings35():
                 "162": "321170", "164/6": "321170"
             }
         }
-    }
 
-def expand_buildings36():
-    return {
         # ВД 321171
         "вул.Василя Сухомлинського": {
             "buildings": {
@@ -2892,10 +2791,7 @@ def expand_buildings36():
                 "11А": "321172", "36А": "321172", "36Б": "321172"
             }
         }
-    }
 
-def expand_buildings37():
-    return {
         "вул.Академіка Кримського": {
             "buildings": {
                 "4": "321174", "6": "321174", "8": "321174", "10": "321174"
@@ -2926,9 +2822,7 @@ def expand_buildings37():
                 "3А": "321174"
             }
         }
-    }
-def expand_buildings38():
-    return {
+
         "вул.Академіка Вула": {
             "buildings": {
                 "4": "321175",
@@ -3079,9 +2973,7 @@ def expand_buildings38():
                 "128": "321176"
             }
         }
-    }
-def expand_buildings39():
-    return {
+
         "вул.Дружби": {
             "buildings": {
                 "5": "321177",
@@ -3818,10 +3710,7 @@ def expand_buildings39():
                 "4/1": "321178"
             }
         }
-    }
 
-def expand_buildings40():
-    return {
         "вул.Заярська": {
             "buildings": {
                 "1А": "321179", "4": "321179", "10/2": "321179", "11": "321179", "12/1": "321179",
@@ -4105,10 +3994,7 @@ def expand_buildings40():
                 "64": "321180", "64А": "321180", "64Б": "321180", "66": "321180", "68": "321180"
             }
         }
-    }
 
-def expand_buildings41():
-    return {
         "вул.Миколи Амосова": {
             "buildings": {
                 "2": "321181"
@@ -4132,10 +4018,7 @@ def expand_buildings41():
                 "6": "321182"
             }
         }
-    }
 
-def expand_buildings42():  # заміни xx на номер округу
-    return {
         "вул.Вернадського": {
             "buildings": {
                 "10": "321183"
