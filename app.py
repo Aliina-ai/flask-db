@@ -5479,7 +5479,7 @@ def add_region1():
     address_data = expand_buildings_1()
     return render_template(
         'add_region1.html',
-        activists=acts,
+        activists=activists,
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
