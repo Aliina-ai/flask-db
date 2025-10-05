@@ -4,7 +4,6 @@ import os
 import io
 from openpyxl import Workbook
 from flask import send_file
-from buildings import expand_buildings_all
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -5180,58 +5179,43 @@ def activists():
 @app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати активістів.')
+        flash('Лише адміністратор може додавати.')
         return redirect(url_for('activists'))
 
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
     if request.method == 'POST':
-        street = request.form['street']
-        building = request.form['building']
-        address_data = expand_buildings_all()
-        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
 
+        # Підтягуємо дані з форми
+        large_okrug = request.form['large_okrug']
+        okrug = request.form['okrug']
+        last_name = request.form['last_name']
+        first_name = request.form['first_name']
+        middle_name = request.form['middle_name']
+        address = request.form['address']
+        phone = request.form['phone']
+        birth_date = request.form['birth_date']
+        newspapers_count = request.form.get('newspapers_count', 0)
+        location = request.form['location']
+
+        # Вставка в базу (кількість підписників = 0)
         c.execute('''
             INSERT INTO activists (
                 large_okrug, okrug, last_name, first_name, middle_name,
-                address, building, apartment, phone, birth_date,
-                subscribers_count, newspapers_count, location
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                address, phone, birth_date, subscribers_count, newspapers_count, location
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            request.form['large_okrug'],
-            request.form['okrug'],
-            request.form['last_name'],
-            request.form['first_name'],
-            request.form['middle_name'],
-            request.form['address'],
-            building,
-            request.form.get('apartment', ''),
-            request.form['phone'],
-            request.form['birth_date'],
-            request.form.get('subscribers_count', 0),
-            request.form.get('newspapers_count', 0),
-            request.form['location']
+            large_okrug, okrug, last_name, first_name, middle_name,
+            address, phone, birth_date, 0, newspapers_count, location
         ))
 
         conn.commit()
         conn.close()
+        flash('Активіста успішно додано!')
         return redirect(url_for('activists'))
 
-    # GET-запит — підготовка форми
-    c.execute("SELECT last_name, first_name, middle_name FROM activists")
-    existing_activists = [
-        {'name': f"{r[0]} {r[1]} {r[2]}".strip()} for r in c.fetchall()
-    ]
-    conn.close()
-
-    address_data = expand_buildings_all()
-    return render_template(
-        'add_activist.html',
-        address_data=address_data,
-        address_data_json=json.dumps(address_data, ensure_ascii=False),
-        activists=existing_activists
-    )
+    # GET-запит – показати форму
+    return render_template('add_activist.html')
 
 @app.route('/activists/edit/<int:activist_id>', methods=['GET', 'POST'])
 def edit_activist(activist_id):
