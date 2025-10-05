@@ -4,7 +4,7 @@ import os
 import io
 from openpyxl import Workbook
 from flask import send_file
-from regions import expand_buildings_all
+from buildings import expand_buildings_all
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -4948,57 +4948,6 @@ def expand_buildings42():  # заміни xx на номер округу
             }
         }
     }
-
-# Припускаємо, що всі твої функції expand_buildings1() ... expand_buildings42() вже визначені або імпортовані
-
-def expand_buildings_all():
-    all_data = {}
-    
-    # Додаємо дані всіх округів
-    all_data.update(expand_buildings1())
-    all_data.update(expand_buildings2())
-    all_data.update(expand_buildings3())
-    all_data.update(expand_buildings4())
-    all_data.update(expand_buildings5())
-    all_data.update(expand_buildings6())
-    all_data.update(expand_buildings7())
-    all_data.update(expand_buildings8())
-    all_data.update(expand_buildings9())
-    all_data.update(expand_buildings10())
-    all_data.update(expand_buildings11())
-    all_data.update(expand_buildings12())
-    all_data.update(expand_buildings13())
-    all_data.update(expand_buildings14())
-    all_data.update(expand_buildings15())
-    all_data.update(expand_buildings16())
-    all_data.update(expand_buildings17())
-    all_data.update(expand_buildings18())
-    all_data.update(expand_buildings19())
-    all_data.update(expand_buildings20())
-    all_data.update(expand_buildings21())
-    all_data.update(expand_buildings22())
-    all_data.update(expand_buildings23())
-    all_data.update(expand_buildings24())
-    all_data.update(expand_buildings25())
-    all_data.update(expand_buildings26())
-    all_data.update(expand_buildings27())
-    all_data.update(expand_buildings28())
-    all_data.update(expand_buildings29())
-    all_data.update(expand_buildings30())
-    all_data.update(expand_buildings31())
-    all_data.update(expand_buildings32())
-    all_data.update(expand_buildings33())
-    all_data.update(expand_buildings34())
-    all_data.update(expand_buildings35())
-    all_data.update(expand_buildings36())
-    all_data.update(expand_buildings37())
-    all_data.update(expand_buildings38())
-    all_data.update(expand_buildings39())
-    all_data.update(expand_buildings40())
-    all_data.update(expand_buildings41())
-    all_data.update(expand_buildings42())
-
-    return all_data
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
