@@ -6836,8 +6836,11 @@ def add_region9():
         return redirect(url_for('region9'))
 
     # GET-запит — підготовка шаблону
-    c.execute("SELECT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    c.execute("SELECT last_name, first_name, middle_name FROM activists")
+    activists = [
+    {'full_name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()
+  ]
+
     conn.close()
 
     address_data = expand_buildings9()
