@@ -66,14 +66,17 @@
       border-radius: 4px;
       font-size: 14px;
     }
+    .form-group {
+      margin-bottom: 16px;
+    }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <a href="{{ url_for('region9') }}" class="back">← Повернутися</a>
     <h2>Редагувати підписника — Округ 9</h2>
+
     <form method="POST" action="{{ url_for('edit_region9', subscriber_id=subscriber.id) }}">
-      
       <label>Прізвище</label>
       <input type="text" name="last_name" value="{{ subscriber.last_name }}" required>
 
@@ -110,14 +113,13 @@
 
       <div class="form-group">
         <label>Активіст</label>
-        <input type="text" name="activist" list="activist-options" required>
+        <input type="text" name="activist" list="activist-options" value="{{ subscriber.activist }}" required>
         <datalist id="activist-options">
           {% for a in activists %}
-           <option value="{{ a.full_name }}">
+            <option value="{{ a.full_name }}">
           {% endfor %}
         </datalist>
-       </div>
-
+      </div>
 
       <button type="submit">Зберегти зміни</button>
     </form>
