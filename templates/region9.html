@@ -110,19 +110,22 @@
   <h2>Підписники — Округ 9</h2>
 
   <div class="filters">
-    <input type="text" id="searchInput" placeholder="Введіть для пошуку" oninput="filterTable()" />
+    <input type="text" id="searchInput" placeholder="Введіть для пошуку..." oninput="filterTable()" />
+
     <select id="activistFilter" onchange="filterTable()">
       <option value="">— Активіст —</option>
       {% for a in activists %}
-        <option value="{{ a.name }}">{{ a.name }}</option>
+        <option value="{{ a.full_name }}">{{ a.full_name }} ({{ a.sub_count }})</option>
       {% endfor %}
     </select>
+
     <select id="streetFilter" onchange="filterTable()">
       <option value="">— Вулиця —</option>
       {% for s in streets %}
         <option value="{{ s }}">{{ s }}</option>
       {% endfor %}
     </select>
+
     <select id="buildingFilter" onchange="filterTable()">
       <option value="">— Будинок —</option>
       {% for b in buildings %}
@@ -140,17 +143,17 @@
     <table id="region9Table">
       <thead>
         <tr>
-          <th onclick="sortTable(0)">Округ</th>
-          <th onclick="sortTable(1)">Виборча дільниця</th>
-          <th onclick="sortTable(2)">Прізвище</th>
-          <th onclick="sortTable(3)">Ім’я</th>
-          <th onclick="sortTable(4)">По батькові</th>
-          <th onclick="sortTable(5)">Дата народження</th>
-          <th onclick="sortTable(6)">Вулиця</th>
-          <th onclick="sortTable(7)">Буд.</th>
-          <th onclick="sortTable(8)">Кв.</th>
-          <th onclick="sortTable(9)">Телефон</th>
-          <th onclick="sortTable(10)">Активіст</th>
+          <th>Округ</th>
+          <th>Виборча дільниця</th>
+          <th>Прізвище</th>
+          <th>Ім’я</th>
+          <th>По батькові</th>
+          <th>Дата народження</th>
+          <th>Вулиця</th>
+          <th>Буд.</th>
+          <th>Кв.</th>
+          <th>Телефон</th>
+          <th>Активіст</th>
           <th>Дії</th>
         </tr>
       </thead>
@@ -190,7 +193,8 @@
   <script>
     function filterTable() {
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      const activist = document.getElementById('activistFilter').value;
+      const activistSelect = document.getElementById('activistFilter');
+      const activist = activistSelect.value.split(' (')[0]; // тільки ім'я без кількості
       const street = document.getElementById('streetFilter').value;
       const building = document.getElementById('buildingFilter').value;
       const sortOrder = document.getElementById('sortFilter').value;
@@ -198,14 +202,16 @@
       let rows = Array.from(document.querySelectorAll('#region9Table tbody tr'));
 
       rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const act = row.cells[10].textContent;
+        let rowActivist = row.cells[10].textContent.trim();
+        if (rowActivist.includes('(')) rowActivist = rowActivist.split('(')[0].trim();
+
         const rowStreet = row.cells[6].textContent;
         const rowBuilding = row.cells[7].textContent;
+        const rowText = row.textContent.toLowerCase();
 
         const show =
-          text.includes(searchTerm) &&
-          (activist === "" || act === activist) &&
+          rowText.includes(searchTerm) &&
+          (activistSelect.value === "" || rowActivist === activist) &&
           (street === "" || rowStreet === street) &&
           (building === "" || rowBuilding === building);
 
