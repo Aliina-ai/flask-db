@@ -6779,9 +6779,15 @@ def region9():
             'activist': row[11]
         })
 
-    # Унікальні активісти
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    # Отримуємо активістів, які є у таблиці regions9 та підраховуємо кількість підписників
+    c.execute("""
+        SELECT activist, COUNT(*) as sub_count
+        FROM regions9
+        WHERE activist IS NOT NULL AND activist != ''
+        GROUP BY activist
+        ORDER BY activist
+    """)
+    activists = [{'full_name': r[0], 'sub_count': r[1]} for r in c.fetchall()]
 
     # Унікальні вулиці
     c.execute("SELECT DISTINCT street FROM regions9")
