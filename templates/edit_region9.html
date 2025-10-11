@@ -108,13 +108,16 @@
       <label>Виборча дільниця</label>
       <input type="text" id="district" name="district" value="{{ subscriber.district }}" readonly>
 
-       <label>Активіст</label>
-      <input type="text" name="activist" list="activist-options" value="{{ subscriber.activist }}" required>
-      <datalist id="activist-options">
-        {% for a in activists %}
-          <option value="{{ a.name }}"></option>
-        {% endfor %}
-      </datalist>
+      <div class="form-group">
+        <label>Активіст</label>
+        <input type="text" name="activist" list="activist-options" required>
+        <datalist id="activist-options">
+          {% for a in activists %}
+           <option value="{{ a.full_name }}">
+          {% endfor %}
+        </datalist>
+       </div>
+
 
       <button type="submit">Зберегти зміни</button>
     </form>
