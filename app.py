@@ -5137,7 +5137,7 @@ def activists():
         [f"SELECT activist FROM regions{i}" for i in range(1, 43)]
     )
 
-    # Запит із підрахунком кількості підписників
+    # Запит із підрахунком кількості підписників, включаючи middle_name
     query = f"""
         SELECT a.id, a.large_okrug, a.okrug, a.last_name, a.first_name, a.middle_name,
                a.address, a.phone, a.birth_date,
@@ -5149,7 +5149,7 @@ def activists():
             FROM ({union_query})
             GROUP BY activist
         ) cnt
-        ON TRIM(LOWER(cnt.activist)) = TRIM(LOWER(a.last_name || ' ' || a.first_name))
+        ON TRIM(LOWER(cnt.activist)) = TRIM(LOWER(a.last_name || ' ' || a.first_name || ' ' || a.middle_name))
     """
 
     c.execute(query)
@@ -5175,7 +5175,7 @@ def activists():
     ]
 
     return render_template('activists.html', data=data)
-
+    
 @app.route('/activists/add', methods=['GET', 'POST'])
 def add_activist():
     if 'username' not in session or session.get('role') != 'admin':
