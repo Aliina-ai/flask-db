@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Редагувати підписника — Округ 12</title>
+  <title>Редагувати підписника — Округ 12</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -10,33 +10,19 @@
       margin: 0;
       padding: 40px;
     }
-
     .wrapper {
       max-width: 600px;
       margin: auto;
       background: #fff;
-      padding: 30px;
+      padding: 30px 40px;
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
-
     h2 {
       color: #2b4f73;
       text-align: center;
       margin-bottom: 25px;
     }
-
-    .back {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 8px 14px;
-      background: #ccc;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
     label {
       display: block;
       margin-top: 16px;
@@ -44,7 +30,6 @@
       font-size: 14px;
       color: #333;
     }
-
     input[type="text"],
     input[type="date"],
     select {
@@ -56,7 +41,6 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
-
     button {
       width: 100%;
       margin-top: 30px;
@@ -68,20 +52,31 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
-
     button:hover {
       background: #1f3e5a;
+    }
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      background: #ccc;
+      color: #333;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .form-group {
+      margin-bottom: 16px;
     }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <a href="{{ url_for('region12') }}" class="back">← Повернутися</a>
-    <h2>Редагувати підписника — Округ 12</h2>
+    <h2>Редагувати підписника — Округ 12</h2>
 
-    <form method="POST" action="{{ url_for('edit_region12', subscriber_id=subscriber.id) }}">
+    <form method="POST" action="{{ url_for('edit_region9', subscriber_id=subscriber.id) }}">
       <label>Прізвище</label>
       <input type="text" name="last_name" value="{{ subscriber.last_name }}" required>
 
@@ -108,7 +103,6 @@
       <label>Будинок</label>
       <select id="building" name="building" required onchange="updateDistrict()">
         <option value="">Оберіть будинок</option>
-        <!-- Будинки додаються скриптом -->
       </select>
 
       <label>Квартира</label>
@@ -117,13 +111,15 @@
       <label>Виборча дільниця</label>
       <input type="text" id="district" name="district" value="{{ subscriber.district }}" readonly>
 
-       <label>Активіст</label>
-      <input type="text" name="activist" list="activist-options" value="{{ subscriber.activist }}" required>
-      <datalist id="activist-options">
-        {% for a in activists %}
-          <option value="{{ a.name }}"></option>
-        {% endfor %}
-      </datalist>
+      <div class="form-group">
+        <label>Активіст</label>
+        <input type="text" name="activist" list="activist-options" value="{{ subscriber.activist }}" required>
+        <datalist id="activist-options">
+          {% for a in activists %}
+            <option value="{{ a.full_name }}">
+          {% endfor %}
+        </datalist>
+      </div>
 
       <button type="submit">Зберегти зміни</button>
     </form>
@@ -135,25 +131,21 @@
     const selectedBuilding = "{{ subscriber.building }}";
 
     function updateBuildings() {
-      const street = document.getElementById("street").value;
-      const buildingSelect = document.getElementById("building");
-      const districtInput = document.getElementById("district");
-
+      const street = document.getElementById('street').value;
+      const buildingSelect = document.getElementById('building');
+      const districtInput = document.getElementById('district');
       buildingSelect.innerHTML = '<option value="">Оберіть будинок</option>';
       districtInput.value = "";
 
       if (addressData[street]) {
         Object.entries(addressData[street].buildings).forEach(([b, d]) => {
-          const opt = document.createElement("option");
+          const opt = document.createElement('option');
           opt.value = b;
-          opt.textContent = b;
+          opt.text = b;
           if (b === selectedBuilding) opt.selected = true;
           buildingSelect.appendChild(opt);
         });
-
-        if (addressData[street].buildings[selectedBuilding]) {
-          districtInput.value = addressData[street].buildings[selectedBuilding];
-        }
+        districtInput.value = addressData[street].buildings[selectedBuilding] || '';
       }
     }
 
@@ -161,7 +153,6 @@
       const street = document.getElementById("street").value;
       const building = document.getElementById("building").value;
       const districtInput = document.getElementById("district");
-
       if (addressData[street] && addressData[street].buildings[building]) {
         districtInput.value = addressData[street].buildings[building];
       } else {
@@ -169,8 +160,8 @@
       }
     }
 
-    window.onload = function () {
-      document.getElementById("street").value = selectedStreet;
+    window.onload = function() {
+      document.getElementById('street').value = selectedStreet;
       updateBuildings();
       updateDistrict();
     };
