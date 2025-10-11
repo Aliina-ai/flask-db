@@ -6891,7 +6891,7 @@ def edit_region9(subscriber_id):
         conn.close()
         return redirect(url_for('region9'))
 
-    # GET — отримання даних
+    # GET — отримання даних підписника
     c.execute('SELECT * FROM regions9 WHERE id = ?', (subscriber_id,))
     row = c.fetchone()
     if not row:
@@ -6906,10 +6906,11 @@ def edit_region9(subscriber_id):
         'apartment': row[9], 'phone': row[10], 'activist': row[11]
     }
 
-    c.execute("SELECT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-    conn.close()
+    # Оновлений список активістів
+    c.execute("SELECT last_name, first_name, middle_name FROM activists")
+    activists = [{'full_name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()]
 
+    conn.close()
     address_data = expand_buildings9()
     return render_template(
         'edit_region9.html',
@@ -6918,6 +6919,7 @@ def edit_region9(subscriber_id):
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
+
 
 @app.route('/regions9/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region9(subscriber_id):
