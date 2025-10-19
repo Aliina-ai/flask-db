@@ -12831,6 +12831,8 @@ def passport():
             for row in rows:
                 okrug, district, street, building, activist, entrances, floors, apartments, per_entrance = row
                 key = (street, building)
+
+                # Якщо ключ новий, створюємо запис
                 if key not in addresses:
                     addresses[key] = {
                         'large_okrug': f"Округ {((okrug-1)//7)+1}",
@@ -12844,10 +12846,13 @@ def passport():
                         'apartments': apartments,
                         'apartments_per_entrance': per_entrance
                     }
+
+                # Додаємо активіста у список, якщо його ще немає
                 if activist and activist not in addresses[key]['activists']:
                     addresses[key]['activists'].append(activist)
+
         except sqlite3.OperationalError:
-            # Таблиці може не бути
+            # Таблиці може не існувати
             continue
 
     # POST-запит для редагування даних (тільки адміністратор)
@@ -12883,6 +12888,7 @@ def passport():
                 key[0],
                 key[1]
             ))
+
         conn.commit()
         flash("Дані оновлено!")
         return redirect(url_for('passport'))
