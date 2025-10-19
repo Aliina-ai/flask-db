@@ -12854,6 +12854,38 @@ def passport():
     # Передаємо дані у шаблон
     return render_template('passport.html', addresses=addresses, is_admin=(session.get('role')=='admin'))
 
+@app.route('/export_excel')
+def export_excel():
+    # Формуємо таблицю з даних
+    data = []
+    for key, val in addresses.items():
+        data.append({
+            "Великий округ": val.get('large_okrug'),
+            "Округ": val.get('okrug'),
+            "Виборча дільниця": val.get('district'),
+            "Адреса": f"{val.get('street', '')} {val.get('building', '')}",
+            "ПІП активіста": ", ".join(val.get('activists', [])),
+            "Кількість під’їздів": val.get('entrances'),
+            "Кількість поверхів": val.get('floors'),
+            "Кількість квартир": val.get('apartments'),
+            "Квартир у під’їзді": val.get('apartments_per_entrance')
+        })
+
+    df = pd.DataFrame(data)
+
+    # Створюємо Excel-файл у пам’яті
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Паспортизація')
+
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name='паспортізація.xlsx',
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
 @app.route('/okrug-borders')
 def okrug_borders():
     # Тут можна відразу дані підставляти з БД
