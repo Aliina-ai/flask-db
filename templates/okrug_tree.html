@@ -1,120 +1,21 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <title>Структура</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f7f9fb;
-      margin: 0;
-      padding: 30px;
-    }
-
-    h2 {
-      color: #2b4f73;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .tree {
-      background: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .tree ul {
-      list-style-type: none;
-      padding-left: 20px;
-      margin: 0;
-    }
-
-    .tree li {
-      margin: 6px 0;
-      cursor: pointer;
-    }
-
-    .nested {
-      display: none;
-    }
-
-    .active {
-      display: block;
-    }
-
-    .node {
-      padding: 6px 12px;
-      background: #f7f9fb;
-      border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      display: inline-block;
-      transition: all 0.3s ease;
-      font-size: 14px;
-      color: #2b4f73;
-    }
-
-    .node:hover {
-      background: #e6edf5;
-      transform: translateX(3px);
-    }
-
-    /* Кнопка назад */
-    .back-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 8px 14px;
-      background: #ccc;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    .back-button:hover {
-      background: #bbb;
-    }
-  </style>
-</head>
-<body>
-  <h2>Структура округів</h2>
-
-  <a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
-  
-  <div class="tree">
-    <ul>
-      {% for l in tree %}
-        <li>
-          <span class="node">Великий округ {{ l.large['okrug'] }} — {{ l.large['last_name'] }} {{ l.large['first_name'] }} {{ l.large['middle_name'] }}</span>
-          <ul class="nested">
-            {% for o in l.okrugs %}
-              <li>
-                <span class="node">Округ {{ o.okrug['okrug'] }} — {{ o.okrug['last_name'] }} {{ o.okrug['first_name'] }} {{ o.okrug['middle_name'] }}</span>
-                <ul class="nested">
-                  {% for a in o.activists %}
-                    <li><span class="node">{{ a['last_name'] }} {{ a['first_name'] }} {{ a['middle_name'] }}</span></li>
-                  {% endfor %}
-                </ul>
-              </li>
-            {% endfor %}
-          </ul>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-
-  <script>
-    // Робимо дерево розкладним
-    document.querySelectorAll(".node").forEach(function(node) {
-      node.addEventListener("click", function(e) {
-        let next = this.nextElementSibling;
-        if (next && next.classList.contains("nested")) {
-          next.classList.toggle("active");
-        }
-        e.stopPropagation();
-      });
-    });
-  </script>
-</body>
-</html>
-
+tree = [
+  {
+    "large": {"okrug": 1, "last_name": "Іваненко", "first_name": "Олег", "middle_name": "Петрович"},
+    "okrugs": [
+      {
+        "okrug": {"okrug": 1.1, "last_name": "Сидоренко", "first_name": "Марія", "middle_name": "Іванівна"},
+        "activists": [
+          {
+            "last_name": "Коваль",
+            "first_name": "Анна",
+            "middle_name": "Олегівна",
+            "subscribers": [
+              {"last_name": "Бондар", "first_name": "Ірина", "middle_name": "Миколаївна"},
+              {"last_name": "Петренко", "first_name": "Дмитро", "middle_name": "Іванович"}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
