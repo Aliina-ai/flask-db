@@ -1,134 +1,157 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<title>Паспортизація</title>
-<style>
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f7f9fb;
-    margin: 0;
-    padding: 30px;
-}
-h2 {
-    color: #2b4f73; 
-    text-align: center;
-    margin-bottom: 20px;
-}
-.table-container {
-    overflow-x: auto;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    padding: 10px;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px 12px;
-    font-size: 14px;
-    text-align: left;
-    vertical-align: top;
-}
-th {
-    background-color: #2b4f73;
-    color: white;
-}
+  <meta charset="UTF-8">
+  <title>Структура округів</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f8fb;
+      margin: 0;
+      padding: 40px;
+      color: #2b4f73;
+    }
 
-/* Розміри стовпчиків */
-th:nth-child(1), td:nth-child(1), /* Великий округ */
-th:nth-child(2), td:nth-child(2), /* Округ */
-th:nth-child(3), td:nth-child(3)  /* Виборча дільниця */ {
-    width: 100px;
-}
+    h2 {
+      text-align: center;
+      color: #1c3b57;
+      margin-bottom: 25px;
+      font-size: 28px;
+    }
 
-th:nth-child(4), td:nth-child(4), /* Адреса */
-th:nth-child(5), td:nth-child(5)  /* ПІП активіста */ {
-    width: 250px;
-}
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
 
-th:nth-child(6), td:nth-child(6)  /* Під’їзди */ {
-    width: 100px;
-}
+    .button {
+      padding: 10px 18px;
+      background: #2b4f73;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
 
-tr:hover { background-color: #f1f5f9; }
+    .button:hover {
+      background: #1e3c57;
+    }
 
-input[type="number"] {
-    width: 60px;
-    padding: 4px;
-    font-size: 14px;
-}
-button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #2b4f73;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-button:hover { background-color: #3b5f85; }
-.back-button {
-    display: inline-block;
-    margin-bottom: 20px;
-    padding: 8px 14px;
-    background-color: #ccc;
-    color: #333;
-    text-decoration: none;
-    border-radius: 4px;
-}
-.back-button:hover { background-color: #bbb; }
-</style>
+    .tree {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .tree ul {
+      list-style-type: none;
+      padding-left: 22px;
+    }
+
+    .tree li {
+      margin: 6px 0;
+      position: relative;
+    }
+
+    .tree li::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: -12px;
+      width: 8px;
+      height: 1px;
+      background: #d0d8e0;
+    }
+
+    .nested {
+      display: none;
+      margin-left: 15px;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .node {
+      display: inline-block;
+      background: #f2f6fa;
+      padding: 8px 14px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-size: 15px;
+    }
+
+    .node:hover {
+      background: #e4edf5;
+      transform: translateX(4px);
+    }
+
+    .activist-list {
+      margin-top: 8px;
+      padding-left: 18px;
+    }
+
+    .activist {
+      display: block;
+      padding: 6px 12px;
+      background: #f8fafc;
+      border-radius: 6px;
+      margin: 3px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+  </style>
 </head>
 <body>
+  <h2>Структура округів</h2>
 
-<a href="{{ url_for('dashboard') }}" class="back-button">← Повернутися</a>
-<h2>Паспортизація</h2>
+  <div class="controls">
+    <a href="{{ url_for('dashboard') }}" class="button">← Повернутися</a>
+    <a href="{{ url_for('export_excel') }}" class="button">📊 Експортувати в Excel</a>
+  </div>
 
-<form method="POST">
-<div class="table-container">
-<table>
-    <thead>
-        <tr>
-            <th>Великий округ</th>
-            <th>Округ</th>
-            <th>Виборча дільниця</th>
-            <th>Адреса</th>
-            <th>ПІП активіста</th>
-            <th>Кількість під’їздів</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for key, val in addresses.items() %}
-        <tr>
-            <td>{{ val.large_okrug }}</td>
-            <td>{{ val.okrug }}</td>
-            <td>{{ val.district }}</td>
-            <td>{{ val.street }} {{ val.building }}</td>
-            <td>
-                {% for a in val.activists %}
-                    {{ a }}<br>
-                {% endfor %}
-            </td>
-            <td>
-                {% if is_admin %}
-                    <input type="number" name="entrances_{{ key[0] }}_{{ key[1] }}" value="{{ val.entrances or '' }}">
-                {% else %}
-                    {{ val.entrances or '' }}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-</div>
-{% if is_admin %}
-<button type="submit">Зберегти під’їзди</button>
-{% endif %}
-</form>
+  <div class="tree">
+    <ul>
+      {% for l in tree %}
+        <li>
+          <span class="node">Великий округ {{ l.large['okrug'] }} — {{ l.large['last_name'] }} {{ l.large['first_name'] }} {{ l.large['middle_name'] }}</span>
+          <ul class="nested">
+            {% for o in l.okrugs %}
+              <li>
+                <span class="node">Округ {{ o.okrug['okrug'] }} — {{ o.okrug['last_name'] }} {{ o.okrug['first_name'] }} {{ o.okrug['middle_name'] }}</span>
+                <ul class="nested activist-list">
+                  {% for a in o.activists %}
+                    <li><span class="activist">{{ a['last_name'] }} {{ a['first_name'] }} {{ a['middle_name'] }}</span></li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 
+  <script>
+    // Розкривання вузлів дерева
+    document.querySelectorAll(".node").forEach(node => {
+      node.addEventListener("click", e => {
+        const next = node.nextElementSibling;
+        if (next && next.classList.contains("nested")) {
+          next.classList.toggle("active");
+        }
+        e.stopPropagation();
+      });
+    });
+  </script>
 </body>
 </html>
