@@ -790,7 +790,7 @@ def get_activists():
     conn.close()
     return activists
 
-def expand_buildings_1():
+def expand_buildings1():
     return {
         "вул.Гайок": {
             "buildings": {
@@ -819,7 +819,7 @@ def expand_buildings_1():
         }
     }
 
-def expand_buildings_2():
+def expand_buildings2():
     return {
         "вул.Волонтерська": {
             "buildings": {
