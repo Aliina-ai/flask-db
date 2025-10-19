@@ -12815,9 +12815,8 @@ def passport():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Список всіх таблиць округів
     tables = [f"regions{i}" for i in range(1, 43)]
-    addresses = {}  # ключ: (street, building), значення: dict з info
+    addresses = {}  # ключ: (street, building)
 
     # Отримуємо дані з бази
     for table in tables:
@@ -12832,7 +12831,6 @@ def passport():
                 okrug, district, street, building, activist, entrances, floors, apartments, per_entrance = row
                 key = (street, building)
 
-                # Якщо ключ новий, створюємо запис
                 if key not in addresses:
                     addresses[key] = {
                         'large_okrug': f"Округ {((okrug-1)//7)+1}",
@@ -12847,35 +12845,28 @@ def passport():
                         'apartments_per_entrance': per_entrance
                     }
 
-                # Додаємо активіста у список, якщо його ще немає
                 if activist and activist not in addresses[key]['activists']:
                     addresses[key]['activists'].append(activist)
 
         except sqlite3.OperationalError:
-            # Таблиці може не існувати
             continue
 
-    # POST-запит для редагування даних (тільки адміністратор)
+    # POST-запит для збереження даних (тільки адміністратор)
     if request.method == 'POST' and session.get('role') == 'admin':
         for key in addresses:
-            # Беремо дані з форми
-            entrance_val = request.form.get(f"entrances_{key[0]}_{key[1]}")
+            entrances_val = request.form.get(f"entrances_{key[0]}_{key[1]}")
             floors_val = request.form.get(f"floors_{key[0]}_{key[1]}")
             apartments_val = request.form.get(f"apartments_{key[0]}_{key[1]}")
             per_entrance_val = request.form.get(f"apartments_per_entrance_{key[0]}_{key[1]}")
 
-            # Оновлюємо словник для відображення
-            if entrance_val is not None:
-                addresses[key]['entrances'] = int(entrance_val)
-            if floors_val is not None:
-                addresses[key]['floors'] = int(floors_val)
-            if apartments_val is not None:
-                addresses[key]['apartments'] = int(apartments_val)
-            if per_entrance_val is not None:
-                addresses[key]['apartments_per_entrance'] = int(per_entrance_val)
+            # Оновлюємо словник
+            addresses[key]['entrances'] = int(entrances_val) if entrances_val else None
+            addresses[key]['floors'] = int(floors_val) if floors_val else None
+            addresses[key]['apartments'] = int(apartments_val) if apartments_val else None
+            addresses[key]['apartments_per_entrance'] = int(per_entrance_val) if per_entrance_val else None
 
-            # Оновлюємо базу даних
-            table_num = ((addresses[key]['okrug'] - 1) // 7) + 1
+            # Оновлюємо базу
+            table_num = ((addresses[key]['okrug'] - 1)//7) + 1
             c.execute(f"""
                 UPDATE regions{table_num}
                 SET entrances=?, floors=?, apartments=?, apartments_per_entrance=?
@@ -12895,6 +12886,7 @@ def passport():
 
     conn.close()
     return render_template('passport.html', addresses=addresses, is_admin=(session.get('role')=='admin'))
+
 
 @app.route('/export_excel')
 def export_excel():
