@@ -5377,17 +5377,21 @@ def subscribers_home():
         return redirect(url_for('login'))
     return render_template('subscribers_home.html')
 
-@app.route('/regions1', methods=['GET'])
+@app.route('/regions1')
 def region1():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Отримання всіх підписників
+    # Отримуємо всі підписники округу 1
     c.execute("SELECT * FROM regions1")
     rows = c.fetchall()
 
-    data = [
-        {
+    data = []
+    for row in rows:
+        data.append({
             'id': row[0],
             'okrug': row[1],
             'district': row[2],
@@ -5400,19 +5404,28 @@ def region1():
             'apartment': row[9],
             'phone': row[10],
             'activist': row[11]
-        }
-        for row in rows
-    ]
+        })
 
-    # Отримання активістів
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    # Отримуємо активістів, які є у таблиці regions1 та підраховуємо кількість підписників
+    c.execute("""
+        SELECT activist, COUNT(*) as sub_count
+        FROM regions1
+        WHERE activist IS NOT NULL AND activist != ''
+        GROUP BY activist
+        ORDER BY activist
+    """)
+    activists = [{'full_name': r[0], 'sub_count': r[1]} for r in c.fetchall()]
 
-    # Унікальні вулиці та будинки для фільтрів
-    streets = sorted(set(row['street'] for row in data))
-    buildings = sorted(set(row['building'] for row in data))
+    # Унікальні вулиці
+    c.execute("SELECT DISTINCT street FROM regions1")
+    streets = [row[0] for row in c.fetchall()]
+
+    # Унікальні будинки
+    c.execute("SELECT DISTINCT building FROM regions1")
+    buildings = [row[0] for row in c.fetchall()]
 
     conn.close()
+
     return render_template(
         'region1.html',
         data=data,
@@ -5512,7 +5525,7 @@ def edit_region1(subscriber_id):
         return redirect(url_for('region1'))
 
     # GET — отримання даних підписника
-    c.execute('SELECT * FROM regions10 WHERE id = ?', (subscriber_id,))
+    c.execute('SELECT * FROM regions1 WHERE id = ?', (subscriber_id,))
     row = c.fetchone()
     if not row:
         conn.close()
@@ -5539,10 +5552,12 @@ def edit_region1(subscriber_id):
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
+
+
 @app.route('/regions1/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region1(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може видаляти записи.')
+        flash('Лише адміністратор може видаляти.')
         return redirect(url_for('region1'))
 
     conn = sqlite3.connect(DB_PATH)
@@ -5550,21 +5565,24 @@ def delete_region1(subscriber_id):
     c.execute('DELETE FROM regions1 WHERE id = ?', (subscriber_id,))
     conn.commit()
     conn.close()
-
     flash('Запис успішно видалено.')
     return redirect(url_for('region1'))
 
-@app.route('/regions2', methods=['GET'])
+@app.route('/regions2')
 def region2():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Отримання всіх підписників
+    # Отримуємо всі підписники округу 2
     c.execute("SELECT * FROM regions2")
     rows = c.fetchall()
 
-    data = [
-        {
+    data = []
+    for row in rows:
+        data.append({
             'id': row[0],
             'okrug': row[1],
             'district': row[2],
@@ -5577,45 +5595,40 @@ def region2():
             'apartment': row[9],
             'phone': row[10],
             'activist': row[11]
-        }
-        for row in rows
-    ]
+        })
 
-    # Отримання активістів
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-
-    # Унікальні вулиці та будинки
-    streets = sorted(set(row['street'] for row in data))
-    buildings = sorted(set(row['building'] for row in data))
-
-    # Отримання відповідального за Великий округ 6
+    # Отримуємо активістів, які є у таблиці regions2 та підраховуємо кількість підписників
     c.execute("""
-        SELECT last_name, first_name, middle_name
-        FROM regions_large
-        WHERE LOWER(TRIM(okrug)) = LOWER('Округ 1')
-        LIMIT 1
+        SELECT activist, COUNT(*) as sub_count
+        FROM regions2
+        WHERE activist IS NOT NULL AND activist != ''
+        GROUP BY activist
+        ORDER BY activist
     """)
-    responsible_row = c.fetchone()
-    large_district_responsible = (
-        f"{responsible_row[0]} {responsible_row[1]} {responsible_row[2]}"
-        if responsible_row else None
-    )
+    activists = [{'full_name': r[0], 'sub_count': r[1]} for r in c.fetchall()]
+
+    # Унікальні вулиці
+    c.execute("SELECT DISTINCT street FROM regions2")
+    streets = [row[0] for row in c.fetchall()]
+
+    # Унікальні будинки
+    c.execute("SELECT DISTINCT building FROM regions2")
+    buildings = [row[0] for row in c.fetchall()]
 
     conn.close()
+
     return render_template(
         'region2.html',
         data=data,
         activists=activists,
         streets=streets,
-        buildings=buildings,
-        large_district_responsible=large_district_responsible
+        buildings=buildings
     )
 
 @app.route('/regions2/add', methods=['GET', 'POST'])
 def add_region2():
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати записи.')
+        flash('Лише адміністратор може додавати.')
         return redirect(url_for('region2'))
 
     conn = sqlite3.connect(DB_PATH)
@@ -5624,13 +5637,14 @@ def add_region2():
     if request.method == 'POST':
         street = request.form['street']
         building = request.form['building']
-        address_data = expand_buildings_2()
+        address_data = expand_buildings2()
         district = address_data.get(street, {}).get('buildings', {}).get(building, '')
 
         c.execute('''
-            INSERT INTO regions2 (okrug, district, last_name, first_name, middle_name,
-                                   birth_date, street, building, apartment, phone, activist)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO regions2 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             2, district,
             request.form['last_name'],
@@ -5643,18 +5657,23 @@ def add_region2():
             request.form['phone'],
             request.form['activist']
         ))
+
         conn.commit()
         conn.close()
         return redirect(url_for('region2'))
 
-    c.execute("SELECT last_name, first_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    # GET-запит — підготовка шаблону
+    c.execute("SELECT last_name, first_name, middle_name FROM activists")
+    activists = [
+    {'full_name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()
+  ]
+
     conn.close()
 
-    address_data = expand_buildings_2()
+    address_data = expand_buildings2()
     return render_template(
         'add_region2.html',
-        activists=acts,
+        activists=activists,
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
@@ -5672,7 +5691,7 @@ def edit_region2(subscriber_id):
         street = request.form['street']
         building = request.form['building']
         address_data = expand_buildings2()
-        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+        district = address_data.get(street, {}).get("buildings", {}).get(building, '')
 
         c.execute('''
             UPDATE regions2 SET
@@ -5696,6 +5715,7 @@ def edit_region2(subscriber_id):
         conn.close()
         return redirect(url_for('region2'))
 
+    # GET — отримання даних підписника
     c.execute('SELECT * FROM regions2 WHERE id = ?', (subscriber_id,))
     row = c.fetchone()
     if not row:
@@ -5710,23 +5730,25 @@ def edit_region2(subscriber_id):
         'apartment': row[9], 'phone': row[10], 'activist': row[11]
     }
 
-    c.execute("SELECT last_name, first_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-    address_data = expand_buildings_2()
-    conn.close()
+    # Оновлений список активістів
+    c.execute("SELECT last_name, first_name, middle_name FROM activists")
+    activists = [{'full_name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()]
 
+    conn.close()
+    address_data = expand_buildings2()
     return render_template(
         'edit_region2.html',
         subscriber=subscriber,
-        activists=acts,
+        activists=activists,
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
 
+
 @app.route('/regions2/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region2(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може видаляти записи.')
+        flash('Лише адміністратор може видаляти.')
         return redirect(url_for('region2'))
 
     conn = sqlite3.connect(DB_PATH)
@@ -5734,21 +5756,25 @@ def delete_region2(subscriber_id):
     c.execute('DELETE FROM regions2 WHERE id = ?', (subscriber_id,))
     conn.commit()
     conn.close()
-
     flash('Запис успішно видалено.')
     return redirect(url_for('region2'))
 
-@app.route('/regions3', methods=['GET'])
+
+@app.route('/regions3')
 def region3():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Отримання всіх підписників
+    # Отримуємо всі підписники округу 3
     c.execute("SELECT * FROM regions3")
     rows = c.fetchall()
 
-    data = [
-        {
+    data = []
+    for row in rows:
+        data.append({
             'id': row[0],
             'okrug': row[1],
             'district': row[2],
@@ -5761,45 +5787,40 @@ def region3():
             'apartment': row[9],
             'phone': row[10],
             'activist': row[11]
-        }
-        for row in rows
-    ]
+        })
 
-    # Отримання активістів
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
-
-    # Унікальні вулиці та будинки
-    streets = sorted(set(row['street'] for row in data))
-    buildings = sorted(set(row['building'] for row in data))
-
-    # Отримання відповідального за Великий округ 6
+    # Отримуємо активістів, які є у таблиці regions3 та підраховуємо кількість підписників
     c.execute("""
-        SELECT last_name, first_name, middle_name
-        FROM regions_large
-        WHERE LOWER(TRIM(okrug)) = LOWER('Округ 1')
-        LIMIT 1
+        SELECT activist, COUNT(*) as sub_count
+        FROM regions3
+        WHERE activist IS NOT NULL AND activist != ''
+        GROUP BY activist
+        ORDER BY activist
     """)
-    responsible_row = c.fetchone()
-    large_district_responsible = (
-        f"{responsible_row[0]} {responsible_row[1]} {responsible_row[2]}"
-        if responsible_row else None
-    )
+    activists = [{'full_name': r[0], 'sub_count': r[1]} for r in c.fetchall()]
+
+    # Унікальні вулиці
+    c.execute("SELECT DISTINCT street FROM regions3")
+    streets = [row[0] for row in c.fetchall()]
+
+    # Унікальні будинки
+    c.execute("SELECT DISTINCT building FROM regions3")
+    buildings = [row[0] for row in c.fetchall()]
 
     conn.close()
+
     return render_template(
         'region3.html',
         data=data,
         activists=activists,
         streets=streets,
-        buildings=buildings,
-        large_district_responsible=large_district_responsible
+        buildings=buildings
     )
 
 @app.route('/regions3/add', methods=['GET', 'POST'])
 def add_region3():
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може додавати записи.')
+        flash('Лише адміністратор може додавати.')
         return redirect(url_for('region3'))
 
     conn = sqlite3.connect(DB_PATH)
@@ -5812,9 +5833,10 @@ def add_region3():
         district = address_data.get(street, {}).get('buildings', {}).get(building, '')
 
         c.execute('''
-            INSERT INTO regions3 (okrug, district, last_name, first_name, middle_name,
-                                   birth_date, street, building, apartment, phone, activist)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO regions3 (
+                okrug, district, last_name, first_name, middle_name,
+                birth_date, street, building, apartment, phone, activist
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             3, district,
             request.form['last_name'],
@@ -5827,18 +5849,23 @@ def add_region3():
             request.form['phone'],
             request.form['activist']
         ))
+
         conn.commit()
         conn.close()
         return redirect(url_for('region3'))
 
-    c.execute("SELECT last_name, first_name FROM activists")
-    acts = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    # GET-запит — підготовка шаблону
+    c.execute("SELECT last_name, first_name, middle_name FROM activists")
+    activists = [
+    {'full_name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()
+  ]
+
     conn.close()
 
     address_data = expand_buildings3()
     return render_template(
         'add_region3.html',
-        activists=acts,
+        activists=activists,
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
@@ -5856,7 +5883,7 @@ def edit_region3(subscriber_id):
         street = request.form['street']
         building = request.form['building']
         address_data = expand_buildings3()
-        district = address_data.get(street, {}).get('buildings', {}).get(building, '')
+        district = address_data.get(street, {}).get("buildings", {}).get(building, '')
 
         c.execute('''
             UPDATE regions3 SET
@@ -5880,6 +5907,7 @@ def edit_region3(subscriber_id):
         conn.close()
         return redirect(url_for('region3'))
 
+    # GET — отримання даних підписника
     c.execute('SELECT * FROM regions3 WHERE id = ?', (subscriber_id,))
     row = c.fetchone()
     if not row:
@@ -5894,25 +5922,25 @@ def edit_region3(subscriber_id):
         'apartment': row[9], 'phone': row[10], 'activist': row[11]
     }
 
+    # Оновлений список активістів
     c.execute("SELECT last_name, first_name, middle_name FROM activists")
-    activists = [
-        {'full_name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()
-    ]
-    address_data = expand_buildings3()
-    conn.close()
+    activists = [{'full_name': f"{r[0]} {r[1]} {r[2]}"} for r in c.fetchall()]
 
+    conn.close()
+    address_data = expand_buildings3()
     return render_template(
         'edit_region3.html',
         subscriber=subscriber,
-        activists=acts,
+        activists=activists,
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
 
+
 @app.route('/regions3/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region3(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може видаляти записи.')
+        flash('Лише адміністратор може видаляти.')
         return redirect(url_for('region3'))
 
     conn = sqlite3.connect(DB_PATH)
@@ -5920,7 +5948,6 @@ def delete_region3(subscriber_id):
     c.execute('DELETE FROM regions3 WHERE id = ?', (subscriber_id,))
     conn.commit()
     conn.close()
-
     flash('Запис успішно видалено.')
     return redirect(url_for('region3'))
 
