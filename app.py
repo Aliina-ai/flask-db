@@ -7150,17 +7150,21 @@ def delete_region10(subscriber_id):
     flash('Запис успішно видалено.')
     return redirect(url_for('region10'))
 
-@app.route('/regions11', methods=['GET'])
+@app.route('/regions11')
 def region11():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # Отримання всіх підписників
+    # Отримуємо всі підписники округу 11
     c.execute("SELECT * FROM regions11")
     rows = c.fetchall()
 
-    data = [
-        {
+    data = []
+    for row in rows:
+        data.append({
             'id': row[0],
             'okrug': row[1],
             'district': row[2],
@@ -7173,19 +7177,28 @@ def region11():
             'apartment': row[9],
             'phone': row[10],
             'activist': row[11]
-        }
-        for row in rows
-    ]
+        })
 
-    # Отримання активістів
-    c.execute("SELECT DISTINCT last_name, first_name FROM activists")
-    activists = [{'name': f"{r[0]} {r[1]}"} for r in c.fetchall()]
+    # Отримуємо активістів, які є у таблиці regions11 та підраховуємо кількість підписників
+    c.execute("""
+        SELECT activist, COUNT(*) as sub_count
+        FROM regions11
+        WHERE activist IS NOT NULL AND activist != ''
+        GROUP BY activist
+        ORDER BY activist
+    """)
+    activists = [{'full_name': r[0], 'sub_count': r[1]} for r in c.fetchall()]
 
-    # Унікальні вулиці та будинки для фільтрів
-    streets = sorted(set(row['street'] for row in data))
-    buildings = sorted(set(row['building'] for row in data))
+    # Унікальні вулиці
+    c.execute("SELECT DISTINCT street FROM regions11")
+    streets = [row[0] for row in c.fetchall()]
+
+    # Унікальні будинки
+    c.execute("SELECT DISTINCT building FROM regions11")
+    buildings = [row[0] for row in c.fetchall()]
 
     conn.close()
+
     return render_template(
         'region11.html',
         data=data,
@@ -7312,10 +7325,12 @@ def edit_region11(subscriber_id):
         address_data=address_data,
         address_data_json=json.dumps(address_data, ensure_ascii=False)
     )
+
+
 @app.route('/regions11/delete/<int:subscriber_id>', methods=['POST'])
 def delete_region11(subscriber_id):
     if 'username' not in session or session.get('role') != 'admin':
-        flash('Лише адміністратор може видаляти записи.')
+        flash('Лише адміністратор може видаляти.')
         return redirect(url_for('region11'))
 
     conn = sqlite3.connect(DB_PATH)
@@ -7323,9 +7338,9 @@ def delete_region11(subscriber_id):
     c.execute('DELETE FROM regions11 WHERE id = ?', (subscriber_id,))
     conn.commit()
     conn.close()
-
     flash('Запис успішно видалено.')
     return redirect(url_for('region11'))
+
 
 @app.route('/regions12', methods=['GET'])
 def region12():
