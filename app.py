@@ -7115,7 +7115,7 @@ def edit_region10(subscriber_id):
     conn.close()
     address_data = expand_buildings10()
     return render_template(
-        'edit_region9.html',
+        'edit_region10.html',
         subscriber=subscriber,
         activists=activists,
         address_data=address_data,
