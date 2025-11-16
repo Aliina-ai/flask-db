@@ -12814,35 +12814,11 @@ def passport():
         return redirect(url_for('login'))
 
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     tables = [f"regions{i}" for i in range(1, 43)]
     addresses = {}  # ключ: (street, building)
 
-    # ----------------------------
-    # ФУНКЦІЇ ДЛЯ НОРМАЛІЗАЦІЇ
-    # ----------------------------
-    def clean_text(t):
-        if not t:
-            return ""
-        return str(t).strip().replace("\xa0", " ")
-
-    def normalize_street(street):
-        if not street:
-            return ""
-        s = clean_text(street).lower()
-        s = s.replace("вул.", "").replace("вулиця", "").strip()
-        return s.capitalize()
-
-    def normalize_building(building):
-        if not building:
-            return ""
-        return clean_text(building).upper()
-
-    # ----------------------------
-    # СТЯГУЄМО ДАНІ З УСІХ regionsX
-    # ----------------------------
     for table in tables:
         try:
             c.execute(f"""
@@ -12853,91 +12829,41 @@ def passport():
             rows = c.fetchall()
 
             for row in rows:
-                okrug = row["okrug"]
-                district = row["district"]
+                okrug, district, street, building, activist, entrances, floors, apartments, per_entrance = row
 
-                street_raw = row["street"]
-                building_raw = row["building"]
-                activist_raw = row["activist"]
+                if not street or not building:
+                    continue
 
-                # нормалізація для ключа
-                street = normalize_street(street_raw)
-                building = normalize_building(building_raw)
+                key = (street.strip(), building.strip())
 
-                key = (street, building)
-
-                # якщо адреса нова — створюємо
                 if key not in addresses:
                     addresses[key] = {
-                        'large_okrug': f"Округ {((okrug - 1) // 7) + 1}",
-                        'okrug': okrug,
-                        'district': district,
-                        'street': street_raw,      
-                        'building': building_raw,
-                        'activists': [],
-                        'entrances': row["entrances"],
-                        'floors': row["floors"],
-                        'apartments': row["apartments"],
-                        'apartments_per_entrance': row["apartments_per_entrance"],
+                        "large_okrug": f"Округ {((okrug - 1)//7) + 1}",
+                        "okrug": okrug,
+                        "district": district,
+                        "street": street.strip(),
+                        "building": building.strip(),
+                        "activists": [],
+                        "entrances": entrances,
+                        "floors": floors,
+                        "apartments": apartments,
+                        "apartments_per_entrance": per_entrance
                     }
 
-                # Додаємо активіста, якщо є
-                if activist_raw and activist_raw.strip():
-                    cleaned = activist_raw.strip()
-                    if cleaned not in addresses[key]['activists']:
-                        addresses[key]['activists'].append(cleaned)
+                # підтягуємо активіста тільки з колонки activist
+                if activist and activist.strip() not in addresses[key]["activists"]:
+                    addresses[key]["activists"].append(activist.strip())
 
         except sqlite3.OperationalError:
             continue
 
-    # ----------------------------------------
-    # ОНОВЛЕННЯ АДМІНОМ
-    # ----------------------------------------
-    if request.method == 'POST' and session.get('role') == 'admin':
-
-        for key, address in addresses.items():
-            form_key = f"{key[0]}_{key[1]}"
-
-            entrances = request.form.get(f"entrances_{form_key}")
-            floors = request.form.get(f"floors_{form_key}")
-            apartments = request.form.get(f"apartments_{form_key}")
-            per_entrance = request.form.get(f"apartments_per_entrance_{form_key}")
-
-            address['entrances'] = int(entrances) if entrances else None
-            address['floors'] = int(floors) if floors else None
-            address['apartments'] = int(apartments) if apartments else None
-            address['apartments_per_entrance'] = int(per_entrance) if per_entrance else None
-
-            table_num = ((address['okrug'] - 1) // 7) + 1
-
-            c.execute(f"""
-                UPDATE regions{table_num}
-                SET entrances=?, floors=?, apartments=?, apartments_per_entrance=?
-                WHERE street=? AND building=?
-            """, (
-                address['entrances'],
-                address['floors'],
-                address['apartments'],
-                address['apartments_per_entrance'],
-                address['street'],
-                address['building']
-            ))
-
-        conn.commit()
-        flash("Дані оновлено!")
-        return redirect(url_for('passport'))
-
     conn.close()
 
-    # Сортуємо адреси (список)
-    sorted_addresses = dict(sorted(
-        addresses.items(),
-        key=lambda x: (x[0][0], x[0][1])  # street, building
-    ))
-
-    return render_template('passport.html', addresses=sorted_addresses, is_admin=(session.get('role') == 'admin'))
-
-
+    return render_template(
+        'passport.html',
+        addresses=addresses,
+        is_admin=(session.get('role') == 'admin')
+    )
 
 @app.route('/export_excel')
 def export_excel():
