@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f7f9fb;
+      background: #f7f1fb;
       margin: 0;
       padding: 30px;
     }
@@ -70,7 +70,7 @@
       cursor: pointer;
     }
     tr:hover {
-      background: #f1f5f9;
+      background: #f1f5f1;
     }
     .actions {
       display: flex;
@@ -92,7 +92,7 @@
       background: #45a043;
     }
     .delete-btn {
-      background: #e53935;
+      background: #e53135;
       color: #fff;
     }
     .delete-btn:hover {
@@ -199,7 +199,7 @@
       const building = document.getElementById('buildingFilter').value;
       const sortOrder = document.getElementById('sortFilter').value;
 
-      let rows = Array.from(document.querySelectorAll('#region9Table tbody tr'));
+      let rows = Array.from(document.querySelectorAll('#region1Table tbody tr'));
 
       rows.forEach(row => {
         let rowActivist = row.cells[10].textContent.trim();
