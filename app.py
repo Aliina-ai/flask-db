@@ -13003,7 +13003,7 @@ def okrug_tree():
 @app.route('/passport', methods=['GET', 'POST'])
 def passport():
     # Тут можна відразу дані підставляти з БД
-    return render_template('okrug-borders.html')
+    return render_template('passport.html')
 
 @app.route('/okrug-borders')
 def okrug_borders():
