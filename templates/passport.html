@@ -106,53 +106,6 @@ th:nth-child(9), td:nth-child(9) {
             <th>Квартир у під’їзді</th>
         </tr>
     </thead>
-    <tbody>
-        {% for key, val in addresses.items() %}
-        <tr>
-            <td>{{ val.large_okrug }}</td>
-            <td>{{ val.okrug }}</td>
-            <td>{{ val.district }}</td>
-            <td>{{ val.street }} {{ val.building }}</td>
-            <td>
-                {% for a in val.activists %}
-                    {{ a }}<br>
-                {% endfor %}
-            </td>
-
-            <td>
-                {% if is_admin %}
-                    <input type="number" name="entrances_{{ key[0] }}_{{ key[1] }}" value="{{ val.entrances or '' }}">
-                {% else %}
-                    {{ val.entrances or '' }}
-                {% endif %}
-            </td>
-
-            <td>
-                {% if is_admin %}
-                    <input type="number" name="floors_{{ key[0] }}_{{ key[1] }}" value="{{ val.floors or '' }}">
-                {% else %}
-                    {{ val.floors or '' }}
-                {% endif %}
-            </td>
-
-            <td>
-                {% if is_admin %}
-                    <input type="number" name="apartments_{{ key[0] }}_{{ key[1] }}" value="{{ val.apartments or '' }}">
-                {% else %}
-                    {{ val.apartments or '' }}
-                {% endif %}
-            </td>
-
-            <td>
-                {% if is_admin %}
-                    <input type="number" name="apartments_per_entrance_{{ key[0] }}_{{ key[1] }}" value="{{ val.apartments_per_entrance or '' }}">
-                {% else %}
-                    {{ val.apartments_per_entrance or '' }}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
 </table>
 </div>
 
