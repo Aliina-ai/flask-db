@@ -2,11 +2,11 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Підписники — Округ 7</title>
+  <title>Підписники — Округ 7</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f7f9fb;
+      background: #f7f10fb;
       margin: 0;
       padding: 30px;
     }
@@ -22,6 +22,7 @@
       color: #fff;
       text-decoration: none;
       border-radius: 4px;
+      transition: background-color 0.3s ease;
     }
     .top-bar a:hover {
       background: #3b5f85;
@@ -34,7 +35,8 @@
     .filters {
       display: flex;
       gap: 12px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
     .filters input,
     .filters select {
@@ -47,7 +49,7 @@
       overflow-x: auto;
       background: #fff;
       border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
     table {
       width: 100%;
@@ -57,29 +59,30 @@
     th, td {
       padding: 10px 14px;
       border: 1px solid #ddd;
-      text-align: left;
       font-size: 14px;
+      text-align: left;
       white-space: nowrap;
     }
     th {
       background: #2b4f73;
       color: #fff;
       font-weight: 600;
+      cursor: pointer;
     }
     tr:hover {
-      background: #f1f5f9;
+      background: #f1f5f10;
     }
     .actions {
       display: flex;
       gap: 6px;
     }
     .actions button {
-      padding: 6px 12px;
+      padding: 6px 10px;
       font-size: 13px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s ease;
     }
     .edit-btn {
       background: #4caf50;
@@ -89,7 +92,7 @@
       background: #45a043;
     }
     .delete-btn {
-      background: #e53935;
+      background: #e531035;
       color: #fff;
     }
     .delete-btn:hover {
@@ -104,15 +107,35 @@
     <a href="{{ url_for('add_region7') }}">+ Додати підписника</a>
   </div>
 
-  <h2>Підписники — Округ 7</h2>
+  <h2>Підписники — Округ 7</h2>
 
   <div class="filters">
-    <input type="text" id="searchInput" placeholder="Введіть для пошуку" oninput="filterTable()">
+    <input type="text" id="searchInput" placeholder="Введіть для пошуку..." oninput="filterTable()" />
+
     <select id="activistFilter" onchange="filterTable()">
       <option value="">— Активіст —</option>
       {% for a in activists %}
-        <option value="{{ a.name }}">{{ a.name }}</option>
+        <option value="{{ a.full_name }}">{{ a.full_name }} ({{ a.sub_count }})</option>
       {% endfor %}
+    </select>
+
+    <select id="streetFilter" onchange="filterTable()">
+      <option value="">— Вулиця —</option>
+      {% for s in streets %}
+        <option value="{{ s }}">{{ s }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="buildingFilter" onchange="filterTable()">
+      <option value="">— Будинок —</option>
+      {% for b in buildings %}
+        <option value="{{ b }}">{{ b }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="sortFilter" onchange="filterTable()">
+      <option value="az">Прізвище: А → Я</option>
+      <option value="za">Прізвище: Я → А</option>
     </select>
   </div>
 
@@ -121,11 +144,11 @@
       <thead>
         <tr>
           <th>Округ</th>
-          <th>ВД</th>
+          <th>Виборча дільниця</th>
           <th>Прізвище</th>
           <th>Ім’я</th>
           <th>По батькові</th>
-          <th>Дата нар.</th>
+          <th>Дата народження</th>
           <th>Вулиця</th>
           <th>Буд.</th>
           <th>Кв.</th>
@@ -153,13 +176,15 @@
               <button type="button" class="edit-btn">Редагувати</button>
             </a>
             <form method="POST" action="{{ url_for('delete_region7', subscriber_id=row.id) }}" style="display:inline;">
-              <button type="submit" class="delete-btn" onclick="return confirm('Впевнені?');">Видалити</button>
+              <button type="submit" class="delete-btn" onclick="return confirm('Видалити запис?');">Видалити</button>
             </form>
           </td>
         </tr>
         {% endfor %}
         {% if data|length == 0 %}
-        <tr><td colspan="12" style="text-align:center; padding:20px;">Записи відсутні</td></tr>
+        <tr>
+          <td colspan="12" style="text-align: center; padding: 20px;">Записи відсутні</td>
+        </tr>
         {% endif %}
       </tbody>
     </table>
@@ -167,14 +192,41 @@
 
   <script>
     function filterTable() {
-      const term = document.getElementById('searchInput').value.toLowerCase();
-      const activist = document.getElementById('activistFilter').value;
-      document.querySelectorAll('#region7Table tbody tr').forEach(tr => {
-        const text = tr.textContent.toLowerCase();
-        const actCell = tr.cells[10].textContent;
-        const show = text.includes(term) && (activist === "" || actCell === activist);
-        tr.style.display = show ? "" : "none";
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const activistSelect = document.getElementById('activistFilter');
+      const activist = activistSelect.value.split(' (')[0]; // тільки ім'я без кількості
+      const street = document.getElementById('streetFilter').value;
+      const building = document.getElementById('buildingFilter').value;
+      const sortOrder = document.getElementById('sortFilter').value;
+
+      let rows = Array.from(document.querySelectorAll('#region7Table tbody tr'));
+
+      rows.forEach(row => {
+        let rowActivist = row.cells[10].textContent.trim();
+        if (rowActivist.includes('(')) rowActivist = rowActivist.split('(')[0].trim();
+
+        const rowStreet = row.cells[6].textContent;
+        const rowBuilding = row.cells[7].textContent;
+        const rowText = row.textContent.toLowerCase();
+
+        const show =
+          rowText.includes(searchTerm) &&
+          (activistSelect.value === "" || rowActivist === activist) &&
+          (street === "" || rowStreet === street) &&
+          (building === "" || rowBuilding === building);
+
+        row.style.display = show ? "" : "none";
       });
+
+      const visibleRows = rows.filter(r => r.style.display !== 'none');
+      visibleRows.sort((a, b) => {
+        const aText = a.cells[2].textContent.toLowerCase();
+        const bText = b.cells[2].textContent.toLowerCase();
+        return sortOrder === 'az' ? aText.localeCompare(bText) : bText.localeCompare(aText);
+      });
+
+      const tbody = document.querySelector('#region7Table tbody');
+      visibleRows.forEach(row => tbody.appendChild(row));
     }
   </script>
 
