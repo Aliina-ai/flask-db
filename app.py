@@ -13005,6 +13005,44 @@ def passport():
     # Тут можна відразу дані підставляти з БД
     return render_template('passport.html')
 
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # 1️⃣ — Отримуємо всі адреси з region1
+    c.execute("""
+        SELECT street, building, activist 
+        FROM regions1
+        WHERE activist IS NOT NULL AND activist != ''
+    """)
+    rows = c.fetchall()
+
+    # 2️⃣ — Створюємо карту: (вулиця, будинок) → ПІП активіста
+    activist_map = {}
+    for street, building, activist in rows:
+        key = (street.strip(), str(building).strip())
+        activist_map[key] = activist
+
+    # 3️⃣ — Твої дані "паспортизації" (ти їх вставляєш сам)
+    passport_data = [
+        {"okrug_big": 1, "okrug": 1, "district": 321097, "street": "вул.Гайок", "building": "177", 
+         "entrances": 1, "floors": 1, "apartments": 4, "per_entrance": 4},
+
+        {"okrug_big": 1, "okrug": 1, "district": 321098, "street": "вул.Гайок", "building": "5", 
+         "entrances": 4, "floors": 4, "apartments": 32, "per_entrance": 8},
+
+        # ... (сюди додаєш усі інші адреси)
+    ]
+
+    # 4️⃣ — Додаємо активіста автоматично
+    for row in passport_data:
+        key = (row["street"], str(row["building"]))
+        row["activist"] = activist_map.get(key, "")  # Якщо нема — поле пусте
+
+    conn.close()
+
+    return render_template("passport.html", data=passport_data)
+
+
 @app.route('/okrug-borders')
 def okrug_borders():
     # Тут можна відразу дані підставляти з БД
