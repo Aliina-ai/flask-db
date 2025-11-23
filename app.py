@@ -7713,7 +7713,7 @@ def edit_region13(subscriber_id):
         return redirect(url_for('region13'))
 
     # GET — отримання даних підписника
-    c.execute('SELECT * FROM regions11 WHERE id = ?', (subscriber_id,))
+    c.execute('SELECT * FROM regions13 WHERE id = ?', (subscriber_id,))
     row = c.fetchone()
     if not row:
         conn.close()
