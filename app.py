@@ -13,7 +13,7 @@ USERS = {
     'Аліна':     {'password': 'Gk47fBq2', 'role': 'admin'},
     'Наталія':   {'password': 'qF92KsLm', 'role': 'admin'},
     'Сергій':    {'password': 'xP74gVt1', 'role': 'operator'},
-    'Геннадій':  {'password': 'zT38mWc9', 'role': 'operator'},
+    'Людмила':  {'password': 'zT38mWc9', 'role': 'operator'},
 }
 
 def init_db():
