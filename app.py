@@ -13113,6 +13113,49 @@ def okrug_borders():
     # Тут можна відразу дані підставляти з БД
     return render_template('okrug-borders.html')
 
+@app.route("/export_all_regions")
+def export_all_regions():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Формуємо UNION запит автоматично
+    union_queries = []
+    for i in range(1, 43):
+        union_queries.append(f"SELECT {i} as region_number, okrug, district, last_name, first_name, middle_name, birth_date, street, building, apartment, phone, activist FROM regions{i}")
+
+    full_query = " UNION ALL ".join(union_queries)
+    cursor.execute(full_query)
+    rows = cursor.fetchall()
+    conn.close()
+
+    # Створюємо Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Всі округи"
+
+    headers = [
+        "Номер округу", "Округ", "Дільниця", "Прізвище", "Ім'я",
+        "По батькові", "Дата народження", "Вулиця",
+        "Будинок", "Квартира", "Телефон", "Активіст"
+    ]
+
+    ws.append(headers)
+
+    for row in rows:
+        ws.append(row)
+
+    # Зберігаємо в пам'яті
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="all_regions.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
 # ---------- APP LAUNCH ----------
 if __name__ == '__main__':
     init_db()
