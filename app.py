@@ -10,9 +10,9 @@ app.secret_key = 'your_secret_key'
 DB_PATH = os.getenv("DB_PATH", "/data/db.sqlite")
 
 USERS = {
-    'Аліна':     {'password': 'Gk47fBq2', 'role': 'admin'},
+    'Аліна':     {'password': '100119940esz257C', 'role': 'admin'},
     'Наталія':   {'password': 'qF92KsLm', 'role': 'admin'},
-    'Сергій':    {'password': 'xP74gVt1', 'role': 'operator'},
+    'Сергій':    {'password': '04061981', 'role': 'operator'},
     'Людмила':  {'password': '24081974', 'role': 'operator'},
 }
 
